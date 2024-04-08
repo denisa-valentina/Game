@@ -16,8 +16,7 @@ public class Keyboard implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -25,19 +24,24 @@ public class Keyboard implements KeyListener {
         switch ((e.getKeyCode()))
         {
             case KeyEvent.VK_A:
+                System.out.println("A este apasat");
                 gamePanel.getGame().getPlayer().setLeft(true);
                 break;
             case KeyEvent.VK_S:
+                System.out.println("S este apasat");
                 gamePanel.getGame().getPlayer().setDown(true);
                 break;
             case KeyEvent.VK_W:
+                System.out.println("W este apasat");
                 gamePanel.getGame().getPlayer().setUp(true);
                 break;
             case KeyEvent.VK_D:
+                System.out.println("D este apasat");
                 gamePanel.getGame().getPlayer().setRight(true);
                 break;
             case KeyEvent.VK_K:
             case KeyEvent.VK_L:
+                System.out.println("K/L este apasat");
                 gamePanel.getGame().getPlayer().setAttacking(true);
                 break;
         }

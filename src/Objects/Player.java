@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static Graphics.Constants.Player.*;
-import static Graphics.Constants.*;
 
 public class Player extends Entity {
 
@@ -100,7 +99,7 @@ public class Player extends Entity {
         obj.drawImage(animations[playerAction][spriteIndex], (int)getX(), (int)getY(), getWidth(), getHeight(), null);
     }
 
-     void loadImage() {
+    void loadImage() {
         InputStream []input = new InputStream[6]; // 6 animatii
         input[0] = getClass().getResourceAsStream("/Idle.png");
         input[1] = getClass().getResourceAsStream("/Run.png");
@@ -155,7 +154,7 @@ public class Player extends Entity {
             playerAction = IDLE;
         }
 
-        if(attacking) {
+        if(attacking && !moving) {
             playerAction = ATTACK_1;
         }
 

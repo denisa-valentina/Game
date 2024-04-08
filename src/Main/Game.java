@@ -25,6 +25,8 @@ public class Game implements Runnable{
         initAll();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
+
+        gamePanel.setFocusable(true);
         gamePanel.requestFocus(); // gets input focus
         start();
 
@@ -48,7 +50,6 @@ public class Game implements Runnable{
 
     public void update()
     {
-        //gamePanel.updateGame();
         player.update();
     }
 
@@ -64,10 +65,12 @@ public class Game implements Runnable{
         double timePerFrame = 1000000000.0 / FPS; // nanosecunde
         double timePerUpdate = 1000000000.0 / UPS; // intervalul de timp intre doua update-uri
 
-        int frames = 0;
-        long lastCheck = System.currentTimeMillis();
-        int updates = 0;
         long lastTime = System.nanoTime();
+
+        int frames = 0;
+        int updates = 0;
+        long lastCheck = System.currentTimeMillis();
+
 
         double dUpdates = 0; // delta updates
         double dFrames = 0; // delta frames
