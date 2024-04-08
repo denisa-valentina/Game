@@ -18,18 +18,14 @@ public class Game implements Runnable{
     private Thread gameThread; // referinta catre thread-ul de game loop
     private final int UPS = 200; // updates/second
     private final int FPS = 120; // frames/second
-
     private Player player;
 
 
     public Game() {
-
         initAll();
-
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus(); // gets input focus
-
         start();
 
     }
@@ -40,7 +36,8 @@ public class Game implements Runnable{
 
     private void initAll() {
 
-        player = new Player(200, 200, 85, 128, 8);
+        // x:200, y:200 - pozitia initiala
+        player = new Player(200, 200, 128, 128, 8);
     }
 
     private void start()
@@ -51,7 +48,6 @@ public class Game implements Runnable{
 
     public void update()
     {
-
         //gamePanel.updateGame();
         player.update();
     }
@@ -60,7 +56,6 @@ public class Game implements Runnable{
     {
         player.render(obj);
     }
-
 
     // game loop running
     @Override
@@ -107,7 +102,6 @@ public class Game implements Runnable{
 
         }
     }
-
     public void windowFocusLost()
     {
         player.resetDirection();

@@ -117,10 +117,10 @@ public class GamePanel extends JPanel {
            glitch-uri si desene anterioare inainte de a desena noi insine. Actioneaza precum un burete pe tabla */
         super.paintComponent(obj);
 
-        obj.setColor(Color.white);
+        /*obj.setColor(Color.white);
         for (int i = 0; i < 64; i++)
             for (int j = 0; j < 40; j++)
-                obj.fillRect(i * 20, j * 20, 20, 20);
+                obj.fillRect(i * 20, j * 20, 20, 20);*/
 
         game.render(obj);
 

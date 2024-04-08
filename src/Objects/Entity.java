@@ -3,14 +3,13 @@ package Objects;
 public abstract class Entity {
 
     private float x, y; // doar clasele care extind aceasta clasa pot utiliza aceste proprietati
-    private int width, height, sprites;
+    private int width, height;
 
-    public Entity(float x, float y, int width, int height, int sprites){
+    public Entity(float x, float y, int width, int height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.sprites = sprites;
     }
 
     public float getX()
@@ -29,10 +28,6 @@ public abstract class Entity {
     {
         return height;
     }
-    public int getSprites()
-    {
-        return sprites;
-    }
     public void setX(float x)
     {
         this.x = x;
@@ -49,10 +44,5 @@ public abstract class Entity {
     {
         this.height = height;
     }
-    public void setSprites(int sprites)
-    {
-        this.sprites = sprites;
-    }
-
 
 }

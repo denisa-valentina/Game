@@ -14,9 +14,9 @@ public class Keyboard implements KeyListener {
     {
         this.gamePanel = gamePanel;
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -58,10 +58,6 @@ public class Keyboard implements KeyListener {
                 break;
             case KeyEvent.VK_D:
                 gamePanel.getGame().getPlayer().setRight(false);
-                break;
-            case KeyEvent.VK_K:
-            case KeyEvent.VK_L:
-                gamePanel.getGame().getPlayer().setAttacking(true);
                 break;
         }
     }

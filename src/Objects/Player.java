@@ -17,120 +17,38 @@ public class Player extends Entity {
     private int playerAction = IDLE;
     private boolean moving = false, attacking = false;
     private boolean left, up, right, down;
-    private float playerSpeed = 1.5f;
+    private float playerSpeed = 1.0f;
 
     public Player(float x, float y, int width, int height, int sprites) {
-        super(x, y, width, height, sprites);
-        loadImage();
+        super(x, y, width, height);
+        //loadImage();
         loadAnimations();
     }
 
     public void update() {
+        updatePosition();
         updateSpriteTick();
         setAnimation();
-        updatePosition();
-    }
-
-    public void render(Graphics obj) {
-        obj.drawImage(animations[playerAction][spriteIndex], (int) getX(), (int) getY(), getWidth(), getHeight(), null);
-    }
-
-     void loadImage() {
-        InputStream input[] = new InputStream[6]; // 6 animatii
-        input[0] = getClass().getResourceAsStream("/Idle.png");
-        input[1] = getClass().getResourceAsStream("/Run.png");
-        input[2] = getClass().getResourceAsStream("/Jump.png");
-        input[3] = getClass().getResourceAsStream("/Attack_1.png");
-        input[4] = getClass().getResourceAsStream("/Attack_2.png");
-        input[5] = getClass().getResourceAsStream("/Dead.png");
-        try {
-            images = new BufferedImage[6];
-            for(int i=0;i<input.length;++i) {
-                images[i] = ImageIO.read(input[i]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                for(int i=0;i<input.length;++i) {
-                    input[i].close();  // trebuie sa si inchidem InputStream-ul, dar in cazul in care nu a fost
-                    // deschis cu succes vom utiliza un alt bloc de try-catch
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    private void loadAnimations() {
-        // 6 animations: Idle, Run, Jump, Attack1, Attack2, Dead
-        animations = new BufferedImage[6][10];
-        for (int i = 0; i < animations.length; ++i) {
-            System.out.println(animations.length);
-            for (int j = 0; j < getSprites(); ++j) {
-                System.out.println(j*getWidth());
-                animations[i][j] = images[i].getSubimage(j * getWidth(), 0, getWidth(), getHeight());
-            }
-        }
-    }
-
-    private void setAnimation() {
-        if (moving) {
-            playerAction = RUN;
-        } else {
-            playerAction = IDLE;
-        }
-    }
-    private void updateSpriteTick() {
-
-        spriteTick += 1;
-        if (spriteTick >= spriteSpeed) {
-            spriteTick = 0;
-            spriteIndex += 1;
-            if (spriteIndex >= GetSpriteAmount(playerAction)) {
-                spriteIndex = 0;
-                attacking = false;
-            }
-        }
-    }
-
-    private void resetSpriteTick() {
-        spriteIndex = 0;
-        spriteTick = 0;
-    }
-
-    public void setDirection(int direction) {
-        int startAnimation = playerAction;
-
-        if (moving) {
-            playerAction = RUN;
-        } else {
-            playerAction = IDLE;
-        }
-
-        if (attacking) {
-            playerAction = ATTACK_1;
-        }
-
-        if (startAnimation != playerAction) {
-            resetSpriteTick();
-        }
     }
 
     private void updatePosition() {
         moving = false;
+        float x = getX();
+        float y = getY();
         if (left && !right) {
-            setX(getX() - spriteSpeed);
+            x = getX();
+            setX(x - playerSpeed);
             moving = true;
         } else if (right && !left) {
-            setX(getX() + spriteSpeed);
+            setX(x + playerSpeed);
             moving = true;
         }
 
         if (up && !down) {
-            setY(getY() - spriteSpeed);
+            setY(y - playerSpeed);
             moving = true;
         } else if (down && !up) {
-            setY(getY() + spriteSpeed);
+            setY(y + playerSpeed);
             moving = true;
         }
     }
@@ -176,5 +94,91 @@ public class Player extends Entity {
 
     public void setDown(boolean down) {
         this.down = down;
+    }
+
+    public void render(Graphics obj) {
+        obj.drawImage(animations[playerAction][spriteIndex], (int)getX(), (int)getY(), getWidth(), getHeight(), null);
+    }
+
+     void loadImage() {
+        InputStream []input = new InputStream[6]; // 6 animatii
+        input[0] = getClass().getResourceAsStream("/Idle.png");
+        input[1] = getClass().getResourceAsStream("/Run.png");
+        input[2] = getClass().getResourceAsStream("/Jump.png");
+        input[3] = getClass().getResourceAsStream("/Dead.png");
+        input[4] = getClass().getResourceAsStream("/Attack_1.png");
+        input[5] = getClass().getResourceAsStream("/Attack_2.png");
+
+        try {
+            images = new BufferedImage[6];
+            for(int i=0;i<input.length;++i) {
+                images[i] = ImageIO.read(input[i]);
+            }
+            //loadAnimations();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                for(int i=0;i<input.length;++i) {
+                    input[i].close();  // trebuie sa si inchidem InputStream-ul, dar in cazul in care nu a fost
+                    // deschis cu succes vom utiliza un alt bloc de try-catch
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void loadAnimations() {
+        loadImage();
+        // 6 animations: Idle, Run, Jump, Attack1, Attack2, Dead
+        animations = new BufferedImage[6][10];
+        for (int i = 0; i < animations.length-2; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                animations[i][j] = images[i].getSubimage(j * getWidth(), 0, getWidth(), getHeight());
+            }
+        }
+        for(int i=4;i<animations.length;++i)
+        {
+            for(int j=0;j<10;++j)
+            {
+                animations[i][j] = images[i].getSubimage(j*getWidth(), 0, getWidth(), getHeight());
+            }
+        }
+    }
+
+    private void setAnimation() {
+        int startAnimation = playerAction;
+
+        if (moving) {
+            playerAction = RUN;
+        } else {
+            playerAction = IDLE;
+        }
+
+        if(attacking) {
+            playerAction = ATTACK_1;
+        }
+
+        if(startAnimation != playerAction)
+        {
+            resetSpriteTick();
+        }
+    }
+    private void updateSpriteTick() {
+
+        spriteTick += 1;
+        if (spriteTick >= spriteSpeed) {
+            spriteTick = 0;
+            spriteIndex += 1;
+            if (spriteIndex >= GetSpriteAmount(playerAction)) {
+                spriteIndex = 0;
+                attacking = false;
+            }
+        }
+    }
+
+    private void resetSpriteTick() {
+        spriteIndex = 0;
+        spriteTick = 0;
     }
 }
