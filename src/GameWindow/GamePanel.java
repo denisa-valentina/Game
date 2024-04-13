@@ -7,6 +7,9 @@ import Main.Game;
 import javax.swing.*;
 import java.awt.*;
 
+import static Main.Game.GAME_HEIGHT;
+import static Main.Game.GAME_WIDTH;
+
 /*
     Se va comporta precum un container (toate elementele
     grafice vor fi desenate aici).
@@ -31,7 +34,8 @@ public class GamePanel extends JPanel {
     }
 
     private void setPanelSize() {
-        Dimension size = new Dimension(1280, 800); // 40 tiles x 25 tiles
+        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
+        System.out.println(GAME_WIDTH + " " +GAME_HEIGHT);
         setPreferredSize(size);
     }
 

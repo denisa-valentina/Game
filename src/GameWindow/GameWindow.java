@@ -30,15 +30,13 @@ public class GameWindow {
         windowFrame.addWindowFocusListener(new WindowFocusListener() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                gamePanel.getGame().windowFocusLost();
+                System.out.println("Back");
             }
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-
+                gamePanel.getGame().windowFocusLost();
             }
         });
-
-        // public void BuildGameWindow()
     }
 }

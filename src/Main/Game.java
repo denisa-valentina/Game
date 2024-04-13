@@ -7,18 +7,27 @@ package Main;
 
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
+import Levels.LevelHandler;
 import Objects.Player;
 
 import java.awt.*;
 
 public class Game implements Runnable{
 
+    private final int UPS = 200; // updates/second
+    private final int FPS = 120; // frames/second
+    public final static int TILE_DEFAULT_SIZE = 32;
+    public final static float SCALE = 1.5f;
+    public final static int WIDTH_TILES = 26;
+    public final static int HEIGHT_TILES = 14;
+    public final static int TILE_SIZE = (int) (TILE_DEFAULT_SIZE * SCALE);
+    public final static int GAME_WIDTH = TILE_SIZE * WIDTH_TILES;
+    public final static int GAME_HEIGHT = TILE_SIZE * HEIGHT_TILES;
     private GameWindow gameWindow;  // Fereastra de joc
     private GamePanel gamePanel;
     private Thread gameThread; // referinta catre thread-ul de game loop
-    private final int UPS = 200; // updates/second
-    private final int FPS = 120; // frames/second
-    private Player player;
+    private LevelHandler levelHandler;
+    private static Player player;
 
 
     public Game() {
@@ -39,7 +48,9 @@ public class Game implements Runnable{
     private void initAll() {
 
         // x:200, y:200 - pozitia initiala
-        player = new Player(200, 200, 128, 128, 8);
+        player = Player.getInstance(200, 200, (int)SCALE*128, (int)SCALE*128);
+
+        levelHandler = new LevelHandler(this);
     }
 
     private void start()
@@ -50,12 +61,14 @@ public class Game implements Runnable{
 
     public void update()
     {
+        levelHandler.update();
         player.update();
     }
 
     public void render(Graphics obj)
     {
         player.render(obj);
+        levelHandler.draw(obj);
     }
 
     // game loop running
