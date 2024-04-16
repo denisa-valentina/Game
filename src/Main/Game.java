@@ -16,8 +16,8 @@ public class Game implements Runnable{
     private final int UPS = 200; // updates/second
     private final int FPS = 120; // frames/second
     public final static int TILE_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1.5f;
-    public final static int WIDTH_TILES = 30;
+    public final static float SCALE = 1f;
+    public final static int WIDTH_TILES = 60;
     public final static int HEIGHT_TILES = 20;
     public final static int TILE_SIZE = (int) (TILE_DEFAULT_SIZE * SCALE);
     public final static int GAME_WIDTH = TILE_SIZE * WIDTH_TILES;
@@ -47,7 +47,7 @@ public class Game implements Runnable{
     private void init() {
         levelHandler = new LevelHandler(this);
         // x:200, y:200 - pozitia initiala
-        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*98), (int)(SCALE*98)); // 98 = 128(cat are in realitate) - 30
+        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*128), (int)(SCALE*128));
         player.loadLevelData(levelHandler.getLevel().getLevelMatrix());
     }
 

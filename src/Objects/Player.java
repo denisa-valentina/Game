@@ -21,13 +21,13 @@ public class Player extends Character {
     private boolean left, up, right, down, jump;
     private float runSpeed = 1.0f * Game.SCALE, jumpSpeed = -2.0f * Game.SCALE, fallSpeed = 0.2f * Game.SCALE;
     private float gravity = 0.02f * Game.SCALE, airVelocity = 0.0f;
-    private float xOffset = 35 * Game.SCALE, yOffset = 48 * Game.SCALE;
+    private float xOffset = 50 * Game.SCALE, yOffset = 55 * Game.SCALE;
 
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimations();
-        initCollisionBox(x, y, (int)(21*Game.SCALE), (int)(50*Game.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
+        initCollisionBox(x, y, (int)(23*Game.SCALE), (int)(73*Game.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
     }
 
     public static Player getInstance(float x, float y, int width, int height)
@@ -115,6 +115,7 @@ public class Player extends Character {
             animationIndex += 1;
             if (animationIndex >= GetSpriteAmount(playerAction)) {
                 animationIndex = 0;
+                attacking = false;
             }
         }
     }

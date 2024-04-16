@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class Load {
 
-    public static final String mapTiles = "/level_map/outside_sprites.png";
+    public static final String mapTiles = "/level_map/TileMap.png";
     public static final String firstLevel = "/level_map/level_one_data.png";
 
     public static BufferedImage getImage(String sourceName) {
