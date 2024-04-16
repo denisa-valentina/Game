@@ -1,15 +1,20 @@
 package Levels;
 
 public class Level {
-    private int[][] levelData;
+    private int[][] levelMatrix;
 
-    public Level(int[][] levelData)
+    public Level(int[][] levelMatrix)
     {
-        this.levelData = levelData;
+        this.levelMatrix = levelMatrix;
+    }
+
+    public int[][] getLevelMatrix()
+    {
+        return levelMatrix;
     }
 
     public int getTileIndex(int x, int y)
     {
-        return levelData[y][x];
+        return levelMatrix[y][x];
     }
 }

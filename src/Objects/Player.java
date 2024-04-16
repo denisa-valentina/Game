@@ -1,26 +1,33 @@
 package Objects;
 
-import LoadSave.LoadSave;
+import LoadSave.Load;
+import Main.Game;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static Graphics.Constants.Player.*;
+import static Graphics.Check.*;
 
-public class Player extends Entity {
+public class Player extends Character {
 
+    private int[][] levelMatrix;
     private static Player playerInstance;
     private BufferedImage[][] animations;
     private int animationStick, animationIndex, animationSpeed = 25;
+    private int animationJumpSpeed = 15;
     private int playerAction = IDLE;
-    private boolean moving = false, attacking = false;
-    private boolean left, up, right, down;
-    private float playerSpeed = 1.0f;
+    private boolean moving = false, attacking = false, inAir = false;
+    private boolean left, up, right, down, jump;
+    private float runSpeed = 1.0f * Game.SCALE, jumpSpeed = -2.0f * Game.SCALE, fallSpeed = 0.2f * Game.SCALE;
+    private float gravity = 0.02f * Game.SCALE, airVelocity = 0.0f;
+    private float xOffset = 35 * Game.SCALE, yOffset = 48 * Game.SCALE;
+
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
-        //loadImage();
         loadAnimations();
+        initCollisionBox(x, y, (int)(21*Game.SCALE), (int)(50*Game.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
     }
 
     public static Player getInstance(float x, float y, int width, int height)
@@ -29,7 +36,7 @@ public class Player extends Entity {
         {
             playerInstance = new Player(x, y, width, height);
         }
-    return playerInstance;
+        return playerInstance;
     }
 
     public void update() {
@@ -39,59 +46,40 @@ public class Player extends Entity {
     }
 
     public void render(Graphics obj) {
-        obj.drawImage(animations[playerAction][animationIndex], (int)getX(), (int)getY(), getWidth(), getHeight(), null);
+        obj.drawImage(animations[playerAction][animationIndex], (int)(getCollisionBox().x - xOffset), (int)(getCollisionBox().y - yOffset), getWidth(), getHeight(), null);
+        drawCollisionBox(obj);
     }
 
-    /*void loadImage() {
-        InputStream []input = new InputStream[6]; // 6 animatii
-        input[0] = getClass().getResourceAsStream("/Idle.png");
-        input[1] = getClass().getResourceAsStream("/Run.png");
-        input[2] = getClass().getResourceAsStream("/Jump.png");
-        input[3] = getClass().getResourceAsStream("/Dead.png");
-        input[4] = getClass().getResourceAsStream("/Attack_1.png");
-        input[5] = getClass().getResourceAsStream("/Attack_2.png");
-
-        try {
-            images = new BufferedImage[6];
-            for(int i=0;i<input.length;++i) {
-                images[i] = ImageIO.read(input[i]);
-            }
-            //loadAnimations();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                for(int i=0;i<input.length;++i) {
-                    input[i].close();  // trebuie sa si inchidem InputStream-ul, dar in cazul in care nu a fost
-                    // deschis cu succes vom utiliza un alt bloc de try-catch
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
     private void loadAnimations() {
         BufferedImage []images = new BufferedImage[6];
         // 6 animations: Idle, Run, Jump, Attack1, Attack2, Dead
-        images[0] = LoadSave.getImage("/player/Idle.png");
-        images[1] = LoadSave.getImage("/player/Run.png");
-        images[2] = LoadSave.getImage("/player/Jump.png");
-        images[3] = LoadSave.getImage("/player/Dead.png");
-        images[4] = LoadSave.getImage("/player/Attack_1.png");
-        images[5] = LoadSave.getImage("/player/Attack_2.png");
+        images[0] = Load.getImage("/player/Idle.png");
+        images[1] = Load.getImage("/player/Run.png");
+        images[2] = Load.getImage("/player/Jump.png");
+        images[3] = Load.getImage("/player/Dead.png");
+        images[4] = Load.getImage("/player/Attack_1.png");
+        images[5] = Load.getImage("/player/Attack_2.png");
         animations = new BufferedImage[6][10];
-        for (int i = 0; i < animations.length-2; ++i) {
+
+        for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 8; ++j) {
-                animations[i][j] = images[i].getSubimage(j * getWidth(), 0, getWidth(), getHeight());
+                animations[i][j] = images[i].getSubimage(j * 128, 0, 128, 128);
             }
         }
-        for(int i=4;i<animations.length;++i)
+        for(int i=2;i<animations.length;++i)
         {
             for(int j=0;j<10;++j)
             {
-                animations[i][j] = images[i].getSubimage(j*getWidth(), 0, getWidth(), getHeight());
+                animations[i][j] = images[i].getSubimage(j*128, 0, 128, 128);
             }
         }
+    }
+
+    public void loadLevelData(int[][] levelMatrix)
+    {
+        this.levelMatrix = levelMatrix;
+        if(!isOnTheFloor(getCollisionBox(), levelMatrix))
+            inAir = true;
     }
 
     private void setAnimation() {
@@ -99,21 +87,27 @@ public class Player extends Entity {
 
         if (moving) {
             playerAction = RUN;
-            attacking = false;
-        } else {
+        }
+        else {
             playerAction = IDLE;
         }
 
-        if(attacking) {
+        if(inAir)
+        {
+            playerAction = JUMP;
+        }
+
+        if (attacking) {
             playerAction = ATTACK_1;
         }
 
-        if(startAnimation != playerAction)
-        {
+        if (startAnimation != playerAction) {
             resetAnimationTick();
         }
     }
     private void updateAnimationTick() {
+        if(jump) { animationSpeed = animationJumpSpeed; }
+        else { animationSpeed = 25; }
 
         animationStick += 1;
         if (animationStick >= animationSpeed) {
@@ -121,7 +115,6 @@ public class Player extends Entity {
             animationIndex += 1;
             if (animationIndex >= GetSpriteAmount(playerAction)) {
                 animationIndex = 0;
-                attacking = false;
             }
         }
     }
@@ -131,27 +124,69 @@ public class Player extends Entity {
         animationStick = 0;
     }
 
-
     private void updatePosition() {
+        float xSpeed = 0;
         moving = false;
-        float x = getX();
-        float y = getY();
+
+        if (jump) { jumping(); }
+
+        if (!left && !right && !inAir) {
+            //moving = false; // altfel, caracterul mi s-ar fi "miscat" incontinuu
+            return;
+        }
+
         if (left && !right) {
-            x = getX();
-            setX(x - playerSpeed);
+            xSpeed -= runSpeed;
             moving = true;
         } else if (right && !left) {
-            setX(x + playerSpeed);
+            xSpeed += runSpeed;
             moving = true;
         }
 
-        if (up && !down) {
-            setY(y - playerSpeed);
-            moving = true;
-        } else if (down && !up) {
-            setY(y + playerSpeed);
-            moving = true;
+        if (!inAir) {
+            if (!isOnTheFloor(getCollisionBox(), levelMatrix)) {
+                inAir = true;
+            }
         }
+
+        if (inAir) {
+            if (!isCollision(getCollisionBox().x, getCollisionBox().y + airVelocity, getCollisionBox().width, getCollisionBox().height, levelMatrix)) {
+                getCollisionBox().y += airVelocity;
+                airVelocity += gravity; // coordonatele "in sus" sunt negative, deci "gravitatia" va incetini viteza caracterului
+                // daca coboara, viteza va creste (practic il va trage gravitatia inapoi)
+                updateXPosition(xSpeed);
+            } else {
+                //getCollisionBox().y = getYPositionRoof_Floor(getCollisionBox(), airVelocity);
+                if (airVelocity > 0) // we jump and hit something
+                {
+                    resetJumping();
+                } else {
+                    airVelocity = fallSpeed;
+                }
+                updateXPosition(xSpeed);
+            }
+        } else {
+            updateXPosition(xSpeed);
+        }
+        moving = true;
+    }
+
+    private void jumping() {
+        if(inAir)
+            return; // we are already in the air
+        inAir = true;
+        airVelocity = jumpSpeed;
+    }
+
+
+    private void updateXPosition(float xSpeed) {
+        if(!isCollision(getCollisionBox().x+xSpeed, getCollisionBox().y, getCollisionBox().width, getCollisionBox().height, levelMatrix))
+        {
+            getCollisionBox().x += xSpeed;
+        }
+//        else {
+//            getCollisionBox().x = getXPositionNextToWall(getCollisionBox(), xSpeed);
+//        }
     }
 
     public void resetDirection() {
@@ -159,6 +194,12 @@ public class Player extends Entity {
         right = false;
         up = false;
         down = false;
+    }
+
+    public void resetJumping() // stopJumping()
+    {
+        inAir = false;
+        airVelocity = 0;
     }
 
     public void setAttacking(boolean attacking) {
@@ -195,5 +236,9 @@ public class Player extends Entity {
 
     public void setDown(boolean down) {
         this.down = down;
+    }
+
+    public void setJump(boolean jump) {
+        this.jump = jump;
     }
 }

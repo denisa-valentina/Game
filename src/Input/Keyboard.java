@@ -24,11 +24,8 @@ public class Keyboard implements KeyListener {
             case KeyEvent.VK_A:
                 gamePanel.getGame().getPlayer().setLeft(true);
                 break;
-            case KeyEvent.VK_S:
-                gamePanel.getGame().getPlayer().setDown(true);
-                break;
             case KeyEvent.VK_W:
-                gamePanel.getGame().getPlayer().setUp(true);
+                gamePanel.getGame().getPlayer().setJump(true);
                 break;
             case KeyEvent.VK_D:
                 gamePanel.getGame().getPlayer().setRight(true);
@@ -47,11 +44,8 @@ public class Keyboard implements KeyListener {
             case KeyEvent.VK_A:
                 gamePanel.getGame().getPlayer().setLeft(false);
                 break;
-            case KeyEvent.VK_S:
-                gamePanel.getGame().getPlayer().setDown(false);
-                break;
             case KeyEvent.VK_W:
-                gamePanel.getGame().getPlayer().setUp(false);
+                gamePanel.getGame().getPlayer().setJump(false);
                 break;
             case KeyEvent.VK_D:
                 gamePanel.getGame().getPlayer().setRight(false);

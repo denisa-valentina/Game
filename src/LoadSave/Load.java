@@ -8,18 +8,18 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LoadSave {
+public class Load {
 
-    public static final String firstMapImage = "/level_map/outside_sprites.png";
-    public static final String LEVEL_ONE_DATA = "/level_map/level_one_data.png";
+    public static final String mapTiles = "/level_map/outside_sprites.png";
+    public static final String firstLevel = "/level_map/level_one_data.png";
 
     public static BufferedImage getImage(String sourceName) {
 
         BufferedImage image = null;
-        InputStream input = LoadSave.class.getResourceAsStream(sourceName);
+        InputStream input = Load.class.getResourceAsStream(sourceName);
 
         try {
-                image = ImageIO.read(input);
+            image = ImageIO.read(input);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -32,10 +32,10 @@ public class LoadSave {
         return image;
     }
 
-    public static int[][] getLevelData()
+    public static int[][] getLevelMatrix()
     {
-        int [][] levelData = new int[Game.HEIGHT_TILES][Game.WIDTH_TILES];
-        BufferedImage image = getImage(LEVEL_ONE_DATA);
+        int [][] levelMatrix = new int[Game.HEIGHT_TILES][Game.WIDTH_TILES];
+        BufferedImage image = getImage(firstLevel);
 
         for(int j=0;j<image.getHeight();++j)
         {
@@ -45,9 +45,9 @@ public class LoadSave {
                 int value = color.getRed();
                 if(value >= 48)
                     value = 0;
-                levelData[j][i] = value;
+                levelMatrix[j][i] = value;
             }
         }
-        return levelData;
+        return levelMatrix;
     }
 }

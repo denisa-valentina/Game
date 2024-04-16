@@ -24,7 +24,7 @@ public class GameWindow {
         windowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // inchide consola cand inchidem fereastra
         windowFrame.add(gamePanel); // inseram ceea ce am desenat in "rama"
         windowFrame.setResizable(false);
-        windowFrame.setLocationRelativeTo(null); // fereastra se va deschide in mijlocul ecranului, nu in colt stanga sus
+        //windowFrame.setLocationRelativeTo(null); // fereastra se va deschide in mijlocul ecranului, nu in colt stanga sus
         windowFrame.pack(); // causes this widow to be sized to fit the preferred size and layouts of it subcomponents
         windowFrame.setVisible(true);
         windowFrame.addWindowFocusListener(new WindowFocusListener() {

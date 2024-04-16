@@ -1,6 +1,6 @@
 package Levels;
 
-import LoadSave.LoadSave;
+import LoadSave.Load;
 import Main.Game;
 
 import java.awt.Graphics;
@@ -14,16 +14,15 @@ public class LevelHandler {
     public LevelHandler(Game game)
     {
         this.game = game;
-        //levelMap = LoadSave.getMapSprites(LoadSave.firstMapSprites);
         importMapSprites();
-        FirstLevel = new Level(LoadSave.getLevelData());
+        FirstLevel = new Level(Load.getLevelMatrix());
     }
 
     private void importMapSprites() {
-        BufferedImage image = LoadSave.getImage(LoadSave.firstMapImage);
+        BufferedImage image = Load.getImage(Load.mapTiles);
         levelMap = new BufferedImage[48];
-        for(int j = 0; j < 4; ++j) // 9 sprites height
-            for(int i=0; i < 12; ++i) { // 10 sprites wide
+        for(int j = 0; j < 4; ++j)
+            for(int i=0; i < 12; ++i) {
                 int index = j*12 + i;
                 levelMap[index] = image.getSubimage(i*32, j*32, 32, 32);
             }
@@ -44,6 +43,11 @@ public class LevelHandler {
     public void update()
     {
 
+    }
+
+    public Level getLevel()
+    {
+        return FirstLevel;
     }
 
 }

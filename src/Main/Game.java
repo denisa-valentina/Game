@@ -1,6 +1,5 @@
 package Main;
 
-
 /*! \class Game
     \brief Clasa principala a intregului proiect. Implementeaza Game - Loop (Update -> Draw)
  */
@@ -18,8 +17,8 @@ public class Game implements Runnable{
     private final int FPS = 120; // frames/second
     public final static int TILE_DEFAULT_SIZE = 32;
     public final static float SCALE = 1.5f;
-    public final static int WIDTH_TILES = 26;
-    public final static int HEIGHT_TILES = 14;
+    public final static int WIDTH_TILES = 30;
+    public final static int HEIGHT_TILES = 20;
     public final static int TILE_SIZE = (int) (TILE_DEFAULT_SIZE * SCALE);
     public final static int GAME_WIDTH = TILE_SIZE * WIDTH_TILES;
     public final static int GAME_HEIGHT = TILE_SIZE * HEIGHT_TILES;
@@ -31,7 +30,7 @@ public class Game implements Runnable{
 
 
     public Game() {
-        initAll();
+        init();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
 
@@ -45,12 +44,11 @@ public class Game implements Runnable{
         return player;
     }
 
-    private void initAll() {
-
-        // x:200, y:200 - pozitia initiala
-        player = Player.getInstance(200, 200, (int)SCALE*128, (int)SCALE*128);
-
+    private void init() {
         levelHandler = new LevelHandler(this);
+        // x:200, y:200 - pozitia initiala
+        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*98), (int)(SCALE*98)); // 98 = 128(cat are in realitate) - 30
+        player.loadLevelData(levelHandler.getLevel().getLevelMatrix());
     }
 
     private void start()
@@ -63,12 +61,13 @@ public class Game implements Runnable{
     {
         levelHandler.update();
         player.update();
+
     }
 
     public void render(Graphics obj)
     {
-        player.render(obj);
         levelHandler.draw(obj);
+        player.render(obj);
     }
 
     // game loop running
