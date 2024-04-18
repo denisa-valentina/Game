@@ -34,49 +34,11 @@ public class LevelHandler {
         }
     }
 
-    public void draw(Graphics obj)
+    public void draw(Graphics obj, int xLevelOffset)
     {
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGroundLayer());
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGround2Layer());
-        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGroundLayer());
-
-//        for(int j=0;j<Game.HEIGHT_TILES;++j)
-//        {
-//            for(int i=0;i<Game.WIDTH_TILES;++i)
-//            {
-//                int index = BackGround.getTileIndex(i, j);
-//                if(index != 0) {
-//                    obj.drawImage(levelMap[index-1], i * Game.TILE_SIZE, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
-//                }
-//            }
-//        }
-//
-//        for(int j=0;j<Game.HEIGHT_TILES;++j)
-//        {
-//            for(int i=0;i<Game.WIDTH_TILES;++i)
-//            {
-//                int index = FirstLevel.getTileIndex(i, j);
-//                if(index != 0) {
-//                    obj.drawImage(levelMap[index-1], i * Game.TILE_SIZE, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
-//                }
-//            }
-//        }
-//
-//        for(int j=0;j<Game.HEIGHT_TILES;++j)
-//        {
-//            for(int i=0;i<Game.WIDTH_TILES;++i)
-//            {
-//                int index = FirstLevel2.getTileIndex(i, j);
-//                if(index != 0) {
-//                    obj.drawImage(levelMap[index-1], i * Game.TILE_SIZE, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
-//                }
-//            }
-//        }
-    }
-
-    public void update()
-    {
-
+        FirstLevel.draw(obj, levelMap, FirstLevel.getGroundLayer(), xLevelOffset);
+        FirstLevel.draw(obj, levelMap, FirstLevel.getGround2Layer(), xLevelOffset);
+        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGroundLayer(), xLevelOffset);
     }
 
     public Level getLevel()
@@ -84,4 +46,5 @@ public class LevelHandler {
         return FirstLevel;
     }
 
+    public void update() {}
 }

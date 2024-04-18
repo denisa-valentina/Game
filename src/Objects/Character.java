@@ -15,15 +15,15 @@ public abstract class Character {
         this.height = height;
     }
 
-    protected void initCollisionBox(float x, float y, float width, float height)
+    protected void initCollisionBox(float x, float y, int width, int height)
     {
         collisionBox = new Rectangle2D.Float(x, y, width, height);
     }
 
-    protected void drawCollisionBox(Graphics obj)
+    protected void drawCollisionBox(Graphics obj, int xLevelOffset)
     {   // debugging
         obj.setColor(Color.green);
-        obj.drawRect((int)collisionBox.x, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
+        obj.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
 
     }
 

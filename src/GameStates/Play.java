@@ -1,18 +1,20 @@
 package GameStates;
 
-import LevelMap.LevelHandler;
-import Main.Game;
-import Objects.Player;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import LevelMap.LevelHandler;
+import Main.Game;
+import Objects.Player;
+import Graphics.Constants.GameCONST;
 
 public class Play extends State implements StateMethods {
-
     private LevelHandler levelHandler;
     private static Player player;
+    private int xLevelOffset;
+    private int leftBorder = (int)(0.3 * Game.GAME_WIDTH);
+    private int rightBorder = (int)(0.7 * Game.GAME_WIDTH);
 
     public Play(Game game)
     {
@@ -21,8 +23,7 @@ public class Play extends State implements StateMethods {
     }
     private void init() {
         levelHandler = new LevelHandler(getGame());
-        // x:200, y:200 - pozitia initiala
-        player = Player.getInstance(200*Game.SCALE, 170*Game.SCALE, (int)(Game.SCALE*128), (int)(Game.SCALE*128));
+        player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128));
         player.loadLevelMatrix(levelHandler.getLevel().getGroundLayer().getLayerMatrix());
     }
 
@@ -35,33 +36,34 @@ public class Play extends State implements StateMethods {
     public void update() {
         levelHandler.update();
         player.update();
-
+        isCloseToBorder();
     }
 
     @Override
     public void draw(Graphics obj) {
-        levelHandler.draw(obj);
-        player.render(obj);
+        levelHandler.draw(obj, xLevelOffset);
+        player.render(obj, xLevelOffset);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
+    private void isCloseToBorder() {
+        int levelTileWide = levelHandler.getLevel().getGroundLayer().getLayerMatrix()[0].length;
+        int maxTilesOffset = levelTileWide - GameCONST.WIDTH_TILES;
+        int maxOffset = maxTilesOffset * Game.TILE_SIZE;
 
-    }
+        int playerX = (int) player.getCollisionBox().x;
+        int delta = playerX - xLevelOffset;
 
-    @Override
-    public void mousePressed(MouseEvent e) {
+        if (delta > rightBorder) {
+            xLevelOffset += delta - rightBorder;
+        } else if (delta < leftBorder) {
+            xLevelOffset += delta - leftBorder;
+        }
 
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
+        if (xLevelOffset > maxOffset) {
+            xLevelOffset = maxOffset;
+        } else if (xLevelOffset < 0) {
+            xLevelOffset = 0;
+        }
     }
 
     @Override
@@ -75,7 +77,6 @@ public class Play extends State implements StateMethods {
             case KeyEvent.VK_K, KeyEvent.VK_L -> player.setAttacking(true);
             case KeyEvent.VK_ESCAPE -> GameState.state = GameState.MENU;
         }
-
     }
 
     @Override
@@ -89,8 +90,17 @@ public class Play extends State implements StateMethods {
         }
     }
 
-    public void windowFocusLost()
-    {
-        player.resetDirection();
-    }
+    public void windowFocusLost() { player.resetDirection(); }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
 }

@@ -33,18 +33,14 @@ public class GamePanel extends JPanel {
         addMouseMotionListener(mouse);
     }
 
-    private void setPanelSize() {
-        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
-        System.out.println(GAME_WIDTH + " " +GAME_HEIGHT);
-        setPreferredSize(size);
+    public Game getGame() {
+        return game;
     }
 
-
-    public void updateGame() {
-
-        /*updateSpriteTick();
-        setAnimation();
-        //updatePosition();*/
+    private void setPanelSize() {
+        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
+        setPreferredSize(size);
+        System.out.println(size.getWidth() + " " + size.getHeight());
     }
 
     public void paintComponent(Graphics obj) {
@@ -54,9 +50,5 @@ public class GamePanel extends JPanel {
         super.paintComponent(obj);
 
         game.render(obj);
-    }
-
-    public Game getGame() {
-        return game;
     }
 }

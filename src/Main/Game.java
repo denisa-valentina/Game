@@ -9,26 +9,20 @@ import GameStates.Play;
 import GameStates.Menu;
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
+import Graphics.Constants.GameCONST;
 
 import java.awt.*;
 
-public class Game implements Runnable{
+public class Game implements Runnable {
 
-    private final int UPS = 200; // updates/second
-    private final int FPS = 120; // frames/second
-    public final static int TILE_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1f;
-    public final static int WIDTH_TILES = 60;
-    public final static int HEIGHT_TILES = 20;
-    public final static int TILE_SIZE = (int) (TILE_DEFAULT_SIZE * SCALE);
-    public final static int GAME_WIDTH = TILE_SIZE * WIDTH_TILES;
-    public final static int GAME_HEIGHT = TILE_SIZE * HEIGHT_TILES;
+    public final static int TILE_SIZE = (int) (GameCONST.TILE_DEFAULT_SIZE * GameCONST.SCALE);
+    public final static int GAME_WIDTH = TILE_SIZE * GameCONST.WIDTH_TILES;
+    public final static int GAME_HEIGHT = TILE_SIZE * GameCONST.HEIGHT_TILES;
     private GameWindow gameWindow;  // Fereastra de joc
     private GamePanel gamePanel;
     private Thread gameThread; // referinta catre thread-ul de game loop
     private Play play;
     private Menu menu;
-
 
 
     public Game() {
@@ -45,40 +39,25 @@ public class Game implements Runnable{
     private void init() {
         menu = new Menu(this);
         play = new Play(this);
-//        levelHandler = new LevelHandler(this);
-//        // x:200, y:200 - pozitia initiala
-//        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*128), (int)(SCALE*128));
-//        player.loadLevelMatrix(levelHandler.getLevel().getGroundLayer().getLayerMatrix());
     }
 
-    private void start()
-    {
-        gameThread= new Thread(this);
+    private void start() {
+        gameThread = new Thread(this);
         gameThread.start();
     }
 
-    public void update()
-    {
-        switch (GameState.state)
-        {
+    public void update() {
+        switch (GameState.state) {
             case MENU -> menu.update();
             case PLAY -> play.update();
-//                levelHandler.update();
-//                player.update();
-            //default -> { }
+            case OPTIONS, QUIT -> System.exit(0);
         }
-
     }
 
-    public void render(Graphics obj)
-    {
-        switch (GameState.state)
-        {
+    public void render(Graphics obj) {
+        switch (GameState.state) {
             case MENU -> menu.draw(obj);
             case PLAY -> play.draw(obj);
-//                levelHandler.draw(obj);
-//                player.render(obj); }
-            //default -> { }
         }
     }
 
@@ -86,8 +65,8 @@ public class Game implements Runnable{
     @Override
     public void run() {
 
-        double timePerFrame = 1000000000.0 / FPS; // nanosecunde
-        double timePerUpdate = 1000000000.0 / UPS; // intervalul de timp intre doua update-uri
+        double timePerFrame = 1000000000.0 / GameCONST.FPS; // nanosecunde
+        double timePerUpdate = 1000000000.0 / GameCONST.UPS; // intervalul de timp intre doua update-uri
 
         long lastTime = System.nanoTime();
 
@@ -99,7 +78,7 @@ public class Game implements Runnable{
         double dUpdates = 0; // delta updates
         double dFrames = 0; // delta frames
 
-        while(true) // infinite loop
+        while (true) // infinite loop
         {
             long currentTime = System.nanoTime();
 
@@ -126,24 +105,20 @@ public class Game implements Runnable{
                 frames = 0;
                 updates = 0;
             }
-
         }
     }
-        public void windowFocusLost()
-        {
-            if(GameState.state == GameState.PLAY)
-            {
-                play.getPlayer().resetDirection();
-            }
-        }
 
-        public Menu getMenu()
-        {
-            return menu;
+    public void windowFocusLost() {
+        if (GameState.state == GameState.PLAY) {
+            play.getPlayer().resetDirection();
         }
+    }
 
-        public Play getPlay()
-        {
-            return play;
-        }
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Play getPlay() {
+        return play;
+    }
 }

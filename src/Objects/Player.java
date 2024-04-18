@@ -1,12 +1,12 @@
 package Objects;
 
 import LoadSave.Load;
-import Main.Game;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static Graphics.Constants.Player.*;
+import static Graphics.Constants.GameCONST;
 import static Graphics.Check.*;
 
 public class Player extends Character {
@@ -18,21 +18,15 @@ public class Player extends Character {
     private int animationJumpSpeed = 15;
     private int playerAction = IDLE;
     private boolean moving = false, attacking = false, inAir = false;
-    private boolean left, up, right, down, jump;
-    private float runSpeed = 1.0f * Game.SCALE, jumpSpeed = -2.0f * Game.SCALE, fallSpeed = 0.5f * Game.SCALE;
-    private float gravity = 0.02f * Game.SCALE, airVelocity = 0.0f;
-    private float xOffset = 50 * Game.SCALE, yOffset = 55 * Game.SCALE;
-
-//    private int xLevelOffset;
-//    private int leftBorder = (int)(0.1 *Game.GAME_WIDTH);
-//    private int rightBorder = (int)(0.9*Game.GAME_WIDTH);
-//    private int levelTileWide = Layer.get
-
+    private boolean left, right, jump;
+    private float runSpeed = 1.1f * GameCONST.SCALE, jumpSpeed = -2.0f * GameCONST.SCALE, fallSpeed = 0.5f * GameCONST.SCALE;
+    private float gravity = 0.02f * GameCONST.SCALE, airVelocity = 0.0f;
+    private float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimations();
-        initCollisionBox(x, y, (int)(23*Game.SCALE), (int)(73*Game.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
+        initCollisionBox(x, y, (int)(23*GameCONST.SCALE), (int)(73*GameCONST.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
     }
 
     public static Player getInstance(float x, float y, int width, int height)
@@ -50,10 +44,9 @@ public class Player extends Character {
         setAnimation();
     }
 
-    public void render(Graphics obj) {
-        //xOffset = playerInstance.getX()
-        obj.drawImage(animations[playerAction][animationIndex], (int)(getCollisionBox().x - xOffset), (int)(getCollisionBox().y - yOffset), getWidth(), getHeight(), null);
-        drawCollisionBox(obj);
+    public void render(Graphics obj, int xLevelOffset) {
+        obj.drawImage(animations[playerAction][animationIndex], (int)(getCollisionBox().x - xOffset) - xLevelOffset, (int)(getCollisionBox().y - yOffset), getWidth(), getHeight(), null);
+        drawCollisionBox(obj, xLevelOffset);
     }
 
     private void loadAnimations() {
@@ -137,8 +130,10 @@ public class Player extends Character {
 
         if (jump) { jumping(); }
 
-        if (!left && !right && !inAir) {
-            return;
+        if(!inAir) {
+            if ((!left && !right) || (left && right)) {
+                return;
+            }
         }
 
         if (left && !right) {
@@ -162,7 +157,6 @@ public class Player extends Character {
                 // daca coboara, viteza va creste (practic il va trage gravitatia inapoi)
                 updateXPosition(xSpeed);
             } else {
-                //getCollisionBox().y = getYPositionRoof_Floor(getCollisionBox(), airVelocity);
                 if (airVelocity > 0) // we jump and hit something
                 {
                     resetJumping();
@@ -184,7 +178,6 @@ public class Player extends Character {
         airVelocity = jumpSpeed;
     }
 
-
     private void updateXPosition(float xSpeed) {
         if(!isCollision(getCollisionBox().x+xSpeed, getCollisionBox().y, getCollisionBox().width, getCollisionBox().height, levelMatrix))
         {
@@ -195,8 +188,6 @@ public class Player extends Character {
     public void resetDirection() {
         left = false;
         right = false;
-        up = false;
-        down = false;
     }
 
     public void resetJumping() // stopJumping()
@@ -209,36 +200,12 @@ public class Player extends Character {
         this.attacking = attacking;
     }
 
-    public boolean getLeft() {
-        return left;
-    }
-
-    public boolean getRight() {
-        return right;
-    }
-
-    public boolean getUp() {
-        return up;
-    }
-
-    public boolean getDown() {
-        return down;
-    }
-
     public void setLeft(boolean left) {
         this.left = left;
     }
 
     public void setRight(boolean right) {
         this.right = right;
-    }
-
-    public void setUp(boolean up) {
-        this.up = up;
-    }
-
-    public void setDown(boolean down) {
-        this.down = down;
     }
 
     public void setJump(boolean jump) {
