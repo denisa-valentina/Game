@@ -19,7 +19,7 @@ public class Player extends Character {
     private int playerAction = IDLE;
     private boolean moving = false, attacking = false, inAir = false;
     private boolean left, up, right, down, jump;
-    private float runSpeed = 1.0f * Game.SCALE, jumpSpeed = -2.0f * Game.SCALE, fallSpeed = 0.2f * Game.SCALE;
+    private float runSpeed = 1.0f * Game.SCALE, jumpSpeed = -2.0f * Game.SCALE, fallSpeed = 0.5f * Game.SCALE;
     private float gravity = 0.02f * Game.SCALE, airVelocity = 0.0f;
     private float xOffset = 50 * Game.SCALE, yOffset = 55 * Game.SCALE;
 
@@ -46,6 +46,7 @@ public class Player extends Character {
     }
 
     public void render(Graphics obj) {
+        //xOffset = playerInstance.getX()
         obj.drawImage(animations[playerAction][animationIndex], (int)(getCollisionBox().x - xOffset), (int)(getCollisionBox().y - yOffset), getWidth(), getHeight(), null);
         drawCollisionBox(obj);
     }
@@ -66,6 +67,7 @@ public class Player extends Character {
                 animations[i][j] = images[i].getSubimage(j * 128, 0, 128, 128);
             }
         }
+
         for(int i=2;i<animations.length;++i)
         {
             for(int j=0;j<10;++j)
@@ -75,7 +77,7 @@ public class Player extends Character {
         }
     }
 
-    public void loadLevelData(int[][] levelMatrix)
+    public void loadLevelMatrix(int[][] levelMatrix)
     {
         this.levelMatrix = levelMatrix;
         if(!isOnTheFloor(getCollisionBox(), levelMatrix))
@@ -92,8 +94,7 @@ public class Player extends Character {
             playerAction = IDLE;
         }
 
-        if(inAir)
-        {
+        if(inAir) {
             playerAction = JUMP;
         }
 
@@ -132,7 +133,6 @@ public class Player extends Character {
         if (jump) { jumping(); }
 
         if (!left && !right && !inAir) {
-            //moving = false; // altfel, caracterul mi s-ar fi "miscat" incontinuu
             return;
         }
 
@@ -185,9 +185,6 @@ public class Player extends Character {
         {
             getCollisionBox().x += xSpeed;
         }
-//        else {
-//            getCollisionBox().x = getXPositionNextToWall(getCollisionBox(), xSpeed);
-//        }
     }
 
     public void resetDirection() {

@@ -31,23 +31,4 @@ public class Load {
         }
         return image;
     }
-
-    public static int[][] getLevelMatrix()
-    {
-        int [][] levelMatrix = new int[Game.HEIGHT_TILES][Game.WIDTH_TILES];
-        BufferedImage image = getImage(firstLevel);
-
-        for(int j=0;j<image.getHeight();++j)
-        {
-            for(int i=0;i<image.getWidth();++i)
-            {
-                Color color = new Color(image.getRGB(i, j));
-                int value = color.getRed();
-                if(value >= 48)
-                    value = 0;
-                levelMatrix[j][i] = value;
-            }
-        }
-        return levelMatrix;
-    }
 }

@@ -6,7 +6,7 @@ package Main;
 
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
-import Levels.LevelHandler;
+import LevelMap.LevelHandler;
 import Objects.Player;
 
 import java.awt.*;
@@ -48,7 +48,7 @@ public class Game implements Runnable{
         levelHandler = new LevelHandler(this);
         // x:200, y:200 - pozitia initiala
         player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*128), (int)(SCALE*128));
-        player.loadLevelData(levelHandler.getLevel().getLevelMatrix());
+        player.loadLevelMatrix(levelHandler.getLevel().getGroundLayer().getLayerMatrix());
     }
 
     private void start()
