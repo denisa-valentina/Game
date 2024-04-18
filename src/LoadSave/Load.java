@@ -1,9 +1,6 @@
 package LoadSave;
 
-import Main.Game;
-
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +8,6 @@ import java.io.InputStream;
 public class Load {
 
     public static final String mapTiles = "/level_map/TileMap.png";
-    public static final String firstLevel = "/level_map/level_one_data.png";
 
     public static BufferedImage getImage(String sourceName) {
 

@@ -8,8 +8,8 @@ public class Check {
 
     // this class will contain some static methods that will check for us different things about our player, map etc.
     private static boolean isSolid(float x, float y, int[][] levelMatrix) {
-        //int maxWidth = levelMatrix[0].length * Game.TILE_SIZE;
-        if (x < 0 || x >= Game.GAME_WIDTH) // in afara mapei pe orizontala
+        int maxWidth = levelMatrix[0].length * Game.TILE_SIZE;
+        if (x < 0 || x >= maxWidth) // in afara mapei pe orizontala
         {
             return true;
         }
@@ -50,31 +50,31 @@ public class Check {
 //            return true;
     }
 
-    public static float getXPositionNextToWall(Rectangle2D.Float collisionBox, float xSpeed) {
-        int currentTile = (int) (collisionBox.x / Game.TILE_SIZE);
-        if (xSpeed < 0) {
-            return currentTile * Game.TILE_SIZE;
-        } else {
-
-            // coliziunea s-ar putea produce cu un tile aflat in stanga
-            int tileXPosition = currentTile * Game.TILE_SIZE; // current tile in pixels
-            int xOffset = (int) (Game.TILE_SIZE - collisionBox.width); // distanta de la player la perete
-            return tileXPosition + xOffset; // ca sa evitam overlapping-ul, pentru ca box collision-ul sa nu se suprapuna cu tile-ul mapei
-        }
-    }
-
-    public static float getYPositionRoof_Floor(Rectangle2D.Float collisionBox, float airVelocity) {
-        int currentTile = (int) (collisionBox.y / Game.TILE_SIZE);
-        if (airVelocity < 0) // up -> jumping
-        {
-            return currentTile * Game.TILE_SIZE;
-        } else // down -> falling
-        {
-            int tileYPosition = currentTile * Game.TILE_SIZE; // current tile in pixels
-            int yOffset = (int) (Game.TILE_SIZE - collisionBox.height); // distanta de la player la perete
-            return tileYPosition + yOffset; // ca sa evitam overlapping-ul, pentru ca box collision-ul sa nu se suprapuna cu tile-ul mapei
-        }
-    }
+//    public static float getXPositionNextToWall(Rectangle2D.Float collisionBox, float xSpeed) {
+//        int currentTile = (int) (collisionBox.x / Game.TILE_SIZE);
+//        if (xSpeed < 0) {
+//            return currentTile * Game.TILE_SIZE;
+//        } else {
+//
+//            // coliziunea s-ar putea produce cu un tile aflat in stanga
+//            int tileXPosition = currentTile * Game.TILE_SIZE; // current tile in pixels
+//            int xOffset = (int) (Game.TILE_SIZE - collisionBox.width); // distanta de la player la perete
+//            return tileXPosition + xOffset; // ca sa evitam overlapping-ul, pentru ca box collision-ul sa nu se suprapuna cu tile-ul mapei
+//        }
+//    }
+//
+//    public static float getYPositionRoof_Floor(Rectangle2D.Float collisionBox, float airVelocity) {
+//        int currentTile = (int) (collisionBox.y / Game.TILE_SIZE);
+//        if (airVelocity < 0) // up -> jumping
+//        {
+//            return currentTile * Game.TILE_SIZE;
+//        } else // down -> falling
+//        {
+//            int tileYPosition = currentTile * Game.TILE_SIZE; // current tile in pixels
+//            int yOffset = (int) (Game.TILE_SIZE - collisionBox.height); // distanta de la player la perete
+//            return tileYPosition + yOffset; // ca sa evitam overlapping-ul, pentru ca box collision-ul sa nu se suprapuna cu tile-ul mapei
+//        }
+//    }
 
     public static boolean isOnTheFloor(Rectangle2D.Float collisionBox, int[][] levelMatrix) {
         //bottom_left & bottom_right

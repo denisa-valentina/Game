@@ -8,7 +8,6 @@ public class Layer {
     private int[][] layerMatrix;
     public Layer(String sourceFile)
     {
-        Scanner keyboard = new Scanner(System.in);
 
         //open the file with the scanner
         File scoreFile = new File(sourceFile);

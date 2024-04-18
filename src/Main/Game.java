@@ -4,10 +4,11 @@ package Main;
     \brief Clasa principala a intregului proiect. Implementeaza Game - Loop (Update -> Draw)
  */
 
+import GameStates.GameState;
+import GameStates.Play;
+import GameStates.Menu;
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
-import LevelMap.LevelHandler;
-import Objects.Player;
 
 import java.awt.*;
 
@@ -25,8 +26,9 @@ public class Game implements Runnable{
     private GameWindow gameWindow;  // Fereastra de joc
     private GamePanel gamePanel;
     private Thread gameThread; // referinta catre thread-ul de game loop
-    private LevelHandler levelHandler;
-    private static Player player;
+    private Play play;
+    private Menu menu;
+
 
 
     public Game() {
@@ -39,16 +41,14 @@ public class Game implements Runnable{
         start();
 
     }
-    public Player getPlayer()
-    {
-        return player;
-    }
 
     private void init() {
-        levelHandler = new LevelHandler(this);
-        // x:200, y:200 - pozitia initiala
-        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*128), (int)(SCALE*128));
-        player.loadLevelMatrix(levelHandler.getLevel().getGroundLayer().getLayerMatrix());
+        menu = new Menu(this);
+        play = new Play(this);
+//        levelHandler = new LevelHandler(this);
+//        // x:200, y:200 - pozitia initiala
+//        player = Player.getInstance(200*SCALE, 170*SCALE, (int)(SCALE*128), (int)(SCALE*128));
+//        player.loadLevelMatrix(levelHandler.getLevel().getGroundLayer().getLayerMatrix());
     }
 
     private void start()
@@ -59,15 +59,27 @@ public class Game implements Runnable{
 
     public void update()
     {
-        levelHandler.update();
-        player.update();
+        switch (GameState.state)
+        {
+            case MENU -> menu.update();
+            case PLAY -> play.update();
+//                levelHandler.update();
+//                player.update();
+            //default -> { }
+        }
 
     }
 
     public void render(Graphics obj)
     {
-        levelHandler.draw(obj);
-        player.render(obj);
+        switch (GameState.state)
+        {
+            case MENU -> menu.draw(obj);
+            case PLAY -> play.draw(obj);
+//                levelHandler.draw(obj);
+//                player.render(obj); }
+            //default -> { }
+        }
     }
 
     // game loop running
@@ -87,7 +99,7 @@ public class Game implements Runnable{
         double dUpdates = 0; // delta updates
         double dFrames = 0; // delta frames
 
-        while (true) // infinite loop
+        while(true) // infinite loop
         {
             long currentTime = System.nanoTime();
 
@@ -117,8 +129,21 @@ public class Game implements Runnable{
 
         }
     }
-    public void windowFocusLost()
-    {
-        player.resetDirection();
-    }
+        public void windowFocusLost()
+        {
+            if(GameState.state == GameState.PLAY)
+            {
+                play.getPlayer().resetDirection();
+            }
+        }
+
+        public Menu getMenu()
+        {
+            return menu;
+        }
+
+        public Play getPlay()
+        {
+            return play;
+        }
 }

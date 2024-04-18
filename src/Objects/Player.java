@@ -23,6 +23,11 @@ public class Player extends Character {
     private float gravity = 0.02f * Game.SCALE, airVelocity = 0.0f;
     private float xOffset = 50 * Game.SCALE, yOffset = 55 * Game.SCALE;
 
+//    private int xLevelOffset;
+//    private int leftBorder = (int)(0.1 *Game.GAME_WIDTH);
+//    private int rightBorder = (int)(0.9*Game.GAME_WIDTH);
+//    private int levelTileWide = Layer.get
+
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
@@ -114,7 +119,7 @@ public class Player extends Character {
         if (animationStick >= animationSpeed) {
             animationStick = 0;
             animationIndex += 1;
-            if (animationIndex >= GetSpriteAmount(playerAction)) {
+            if (animationIndex >= getSpriteAmount(playerAction)) {
                 animationIndex = 0;
                 attacking = false;
             }
