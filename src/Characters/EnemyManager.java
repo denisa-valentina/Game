@@ -11,20 +11,24 @@ import java.util.ArrayList;
 
 import static Graphics.Constants.Enemy.greenWorm_WIDTH;
 import static Graphics.Constants.Enemy.greenWorm_HEIGHT;
+import static Graphics.Constants.misscellaneous;
 
 public class EnemyManager {
 
     private Play play;
     private java.util.List<java.util.List<BufferedImage>> animationsGreen;
     private java.util.List<BufferedImage> animationsYellow;
-    private ArrayList<Worm> worms = new ArrayList<>();
+    private ArrayList<Worm> worms;
 
     public EnemyManager(Play play) {
         this.play = play;
         loadAnimations();
 
-        ArrayList<Point2D> enemyCoordinates = play.getLevelHandler().getLevel().getEnemyCoordinates();
+        worms = new ArrayList<>();
 
+        misscellaneous.add(500);
+
+        ArrayList<Point2D> enemyCoordinates = play.getLevelHandler().getLevel().getCoordinates(500);
 
         for (int i=0;i<enemyCoordinates.size(); ++i)
         {
@@ -33,9 +37,9 @@ public class EnemyManager {
 
     }
 
-    public void update(int [][]levelMatrix) {
+    public void update(int [][]levelMatrix, Player player) {
         for (Worm worm : worms) {
-            worm.update(levelMatrix);
+            worm.update(levelMatrix, player);
         }
     }
 

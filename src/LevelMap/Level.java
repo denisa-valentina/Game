@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import Graphics.Constants.GameCONST;
 
+import static Graphics.Constants.misscellaneous;
+
 public class Level {
 
     private final Layer ground1Layer;
@@ -43,7 +45,7 @@ public class Level {
             for(int i=0;i<layer.getLayerMatrix()[0].length;++i)
             {
                 int index = layer.getTileIndex(i, j);
-                if(index != 0 && index != 500) {
+                if(index != 0 && !misscellaneous.contains(index)) {
                     obj.drawImage(levelMap[index-1], i * Game.TILE_SIZE - xLevelOffset, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
                 }
             }
@@ -54,17 +56,17 @@ public class Level {
     // aceasta metoda va parcurge matricea layer-ului principal si va extrage coordonatele
     // la care am decis eu (notand pe matrice) locatiile unde se vor afla inamicii la initializarea
     // nivelului
-    public ArrayList<Point2D> getEnemyCoordinates() {
-        ArrayList<Point2D> enemyCoordinates = new ArrayList<Point2D>();
+    public ArrayList<Point2D> getCoordinates(int value) {
+        ArrayList<Point2D> elementCoordinates = new ArrayList<Point2D>();
 
         for (int j = 0; j < GameCONST.HEIGHT_TILES; ++j) {
             for (int i = 0; i < ground1Layer.getLayerMatrix()[0].length; ++i) {
                 int index = ground1Layer.getTileIndex(i, j);
-                if (index == 500) {
-                    enemyCoordinates.add(new Point2D.Double(i, j));
+                if (index == value) {
+                    elementCoordinates.add(new Point2D.Double(i, j));
                 }
             }
         }
-        return enemyCoordinates;
+        return elementCoordinates;
     }
 }

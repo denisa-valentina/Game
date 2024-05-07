@@ -54,7 +54,7 @@ public class Play extends State implements StateMethods {
         levelHandler = new LevelHandler();
         player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128));
         enemyManager = new EnemyManager(this);
-        objectManager = new ObjectManager();//(this);
+        objectManager = new ObjectManager (this);
         player.loadLevelMatrix(levelHandler.getLevel().getGround1Layer().getLayerMatrix());
     }
 
@@ -73,7 +73,7 @@ public class Play extends State implements StateMethods {
         //levelHandler.update();
         objectManager.update();
         player.update();
-        enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix());
+        enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
         isCloseToBorder();
     }
 
@@ -129,7 +129,8 @@ public class Play extends State implements StateMethods {
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_W -> player.setJump(true);
             case KeyEvent.VK_D -> player.setRight(true);
-            case KeyEvent.VK_K, KeyEvent.VK_L -> player.setAttacking(true);
+            case KeyEvent.VK_K -> player.setAttacking1(true);
+            case KeyEvent.VK_L -> player.setAttacking2(true);
             case KeyEvent.VK_ESCAPE -> GameState.state = GameState.MENU;
         }
     }

@@ -1,8 +1,10 @@
 package Characters;
 
+import Graphics.Constants;
 import Load.Load;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class Player extends Character {
     private int animationTick, animationIndex, animationSpeed = 25;
 //    private final int animationJumpSpeed = 18;
     private int playerAction = IDLE;
-    private boolean moving = false, attacking = false, inAir = false;
+    private boolean moving = false, attacking1 = false, attacking2 = false, inAir = false;
     private boolean left, right, jump;
     private final float runSpeed = 1.1f * GameCONST.SCALE, jumpSpeed = -2.5f * GameCONST.SCALE, fallSpeed = 0.5f * GameCONST.SCALE;
     private final float gravity = 0.02f * GameCONST.SCALE;
@@ -28,6 +30,18 @@ public class Player extends Character {
 
     private int flipX = 0;
     private int flipW = 1;
+
+    // lifeStatus UI
+    private BufferedImage fullHeart;
+    private BufferedImage emptyHeart;
+    private int totalLife = 3; // 3 hearts, 3 chances
+    private int actualLife = 1;
+
+    private int hearts_xStart = (int) (70 * GameCONST.SCALE);
+    private int hearts_yStart = (int) (50 * GameCONST.SCALE);
+
+    // attackBox
+    private Rectangle2D.Float attackBox;
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
@@ -50,10 +64,34 @@ public class Player extends Character {
         setAnimation();
     }
 
+    private void updateHealth(int value) {
+        actualLife += value;
+
+        if(actualLife <= 0) {
+            actualLife = 0;
+            // game over
+        }
+        else if(actualLife >= totalLife) {
+            actualLife = totalLife;
+        }
+    }
+
     public void render(Graphics obj, int xLevelOffset) {
         BufferedImage image = animations.get(playerAction).get(animationIndex);
         obj.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), getWidth() * flipW, getHeight(), null);
         //drawCollisionBox(obj, xLevelOffset);
+        drawUI(obj);
+    }
+
+    private void drawUI(Graphics obj) {
+        for(int i=0;i<actualLife;++i)
+        {
+            obj.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+        }
+        for(int i=actualLife;i<totalLife;++i)
+        {
+            obj.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+        }
     }
 
     private void loadAnimations() {
@@ -82,6 +120,9 @@ public class Player extends Character {
             }
             animations.add(image);
         }
+
+        fullHeart = Load.getImage(Constants.LifeStatus.fullHeart);
+        emptyHeart = Load.getImage(Constants.LifeStatus.emptyHeart);
     }
 
     public void loadLevelMatrix(int[][] levelMatrix)
@@ -105,8 +146,11 @@ public class Player extends Character {
             playerAction = JUMP;
         }
 
-        if (attacking) {
+        if (attacking1) {
             playerAction = ATTACK_1;
+        }
+        if (attacking2) {
+            playerAction = ATTACK_2;
         }
 
         if (startAnimation != playerAction) {
@@ -123,7 +167,8 @@ public class Player extends Character {
             animationIndex += 1;
             if (animationIndex >= getSpriteAmount(playerAction)) {
                 animationIndex = 0;
-                attacking = false;
+                attacking1 = false;
+                attacking2 = false;
             }
         }
     }
@@ -209,9 +254,14 @@ public class Player extends Character {
         airVelocity = 0;
     }
 
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
+    public void setAttacking1(boolean attacking1) {
+        this.attacking1 = attacking1;
     }
+
+    public void setAttacking2(boolean attacking2) {
+        this.attacking2 = attacking2;
+    }
+
 
     public void setLeft(boolean left) {
         this.left = left;

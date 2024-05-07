@@ -1,8 +1,11 @@
 package Graphics;
 
+import GameStates.Play;
 import Main.Game;
 
 import java.awt.geom.Rectangle2D;
+
+import static Graphics.Constants.misscellaneous;
 
 public class Check {
 
@@ -17,10 +20,14 @@ public class Check {
         {
             return true;
         }
+        return isTileSolid((int)x, (int)y, levelMatrix);
+    }
+
+    public static boolean isTileSolid(int x, int y, int [][]levelMatrix) {
         float xIndex = x / Game.TILE_SIZE;
         float yIndex = y / Game.TILE_SIZE;
         int value = levelMatrix[(int) yIndex][(int) xIndex];
-        if (value != 0 && value != 500) {
+        if (value != 0 && !misscellaneous.contains(value)) {
             return true;
         }
         return false;
@@ -60,9 +67,41 @@ public class Check {
         return true;
     }
 
-    public static boolean isFloor(Rectangle2D.Float collisionBox, float xSpeed, int [][]levelMatrix)
+    public static boolean isEnemyOnTheFloor(Rectangle2D.Float collisionBox, float xSpeed, int [][]levelMatrix)
     {
         return isSolid(collisionBox.x + xSpeed, collisionBox.y + collisionBox.height + 1, levelMatrix);
+    }
+
+    // checks if there are obstacles between 2 objects
+    public static boolean ClearSight(int[][] levelMatrix, Rectangle2D.Float collisionBox1, Rectangle2D.Float collisionBox2, int yTile){
+        int xTile1 = (int)collisionBox1.x / Game.TILE_SIZE;
+        int xTile2 = (int)collisionBox2.x / Game.TILE_SIZE;
+
+        if(xTile1 > xTile2)
+        {
+            for(int i = xTile2; i < xTile1; ++i)
+            {
+                if(isTileSolid(i, yTile, levelMatrix)){
+                    return false;
+                }
+                if(levelMatrix[(int)yTile+1][i] == 0) // daca obstacolul dintre player si enemy este o prapastie/groapa
+                {
+                    return false;
+                }
+            }
+        }
+        else {
+            for(int i = xTile1; i < xTile2; ++i)
+            {
+                if(isTileSolid(i, yTile, levelMatrix)){
+                    return false;
+                }
+                if(levelMatrix[(int)yTile+1][i] == 0){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 

@@ -1,24 +1,44 @@
 package Graphics;
 
+import java.util.ArrayList;
+
 public class Constants {
-    public static final int ANIMATION_SPEED = 7;
+    public static final int ANIMATION_SPEED = 10;
+    public static final ArrayList misscellaneous = new ArrayList();
 
     public static class Fruits {
 
         public static class Images {
             public static final String apple = "/fruits/Apple.png";
+            public static final String banana = "/fruits/Bananas.png";
+            public static final String cherry = "/fruits/Cherries.png";
+            public static final String kiwi = "/fruits/Kiwi.png";
+            public static final String melon = "/fruits/Melon.png";
+            public static final String orange = "/fruits/Orange.png";
+            public static final String pineapple = "/fruits/Pineapple.png";
+            public static final String strawberry = "/fruits/Strawberry.png";
         }
 
         public static class FruitsConstants {
             public static final int APPLE = 0;
-//        public static final int BANANA = 1;
-//        public static final int CHERRY = 2;
-//        public static final int KIWI = 3;
-//        public static final int MELON = 4;
-//        public static final int ORANGE = 5;
-//        public static final int PINEAPPLE = 6;
-//        public static final int STRAWBERRY = 7;
+            public static final int BANANA = 1;
+            public static final int CHERRY = 2;
+            public static final int KIWI = 3;
+            public static final int MELON = 4;
+            public static final int ORANGE = 5;
+            public static final int PINEAPPLE = 6;
+            public static final int STRAWBERRY = 7;
         }
+    }
+
+    public static class LifeStatus {
+        public static final String fullHeart = "/status/heartFull.png";
+        public static final String emptyHeart = "/status/heartEmpty.png";
+
+        public static final int HEART_WIDTH_DEFAULT = 53; // deocamdata
+        public static final int HEART_HEIGHT_DEFAULT = 45;
+        public static final int HEART_WIDTH = (int) (HEART_WIDTH_DEFAULT * GameCONST.SCALE);
+        public static final int HEART_HEIGHT = (int) (HEART_HEIGHT_DEFAULT * GameCONST.SCALE);
     }
 
     public static class Surroundings {
@@ -72,7 +92,7 @@ public class Constants {
             public static final String player_idle = "/player/Idle.png";
             public static final String player_run = "/player/Run.png";
             public static final String player_jump = "/player/Jump.png";
-            public static final String player_dead = "/player/Jump.png";
+            public static final String player_dead = "/player/Dead.png";
             public static final String player_attack1 = "/player/Attack_1.png";
             public static final String player_attack2 = "/player/Attack_2.png";
         }
