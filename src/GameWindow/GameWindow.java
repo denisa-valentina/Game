@@ -13,23 +13,20 @@ import java.awt.event.WindowFocusListener;
  */
 public class GameWindow {
 
-    private JFrame windowFrame; // fereastra principala a jocului
-    private int width;  // latimea ferestrei
-    private int height; // inaltimea ferestrei
-    private int title;  // titlul ferestrei
+    //private final JFrame windowFrame; // fereastra principala a jocului
 
     public GameWindow(GamePanel gamePanel) {
-        windowFrame = new JFrame();
+        JFrame windowFrame = new JFrame();
 
         windowFrame.setTitle("Stuck in Adventure Time");
         windowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // inchide consola cand inchidem fereastra
 
         windowFrame.add(gamePanel); // inseram ceea ce am desenat in "rama"
         windowFrame.setResizable(false);
-        //windowFrame.setLocationRelativeTo(null); // fereastra se va deschide in mijlocul ecranului, nu in colt stanga sus
+
 
         windowFrame.pack(); // causes this window to be sized to fit the preferred size and layouts of it subcomponents
-
+        windowFrame.setLocationRelativeTo(null); // fereastra se va deschide in mijlocul ecranului, nu in colt stanga sus
         windowFrame.setVisible(true);
 
         windowFrame.addWindowFocusListener(new WindowFocusListener() {

@@ -18,17 +18,16 @@ public class Game implements Runnable {
     public final static int TILE_SIZE = (int) (GameCONST.TILE_DEFAULT_SIZE * GameCONST.SCALE);
     public final static int GAME_WIDTH = TILE_SIZE * GameCONST.WIDTH_TILES;
     public final static int GAME_HEIGHT = TILE_SIZE * GameCONST.HEIGHT_TILES;
-    private GameWindow gameWindow;  // Fereastra de joc
-    private GamePanel gamePanel;
-    private Thread gameThread; // referinta catre thread-ul de game loop
+    //private final GameWindow gameWindow;  // Fereastra de joc
+    private final GamePanel gamePanel;
+    //private Thread gameThread; // referinta catre thread-ul de game loop
     private Play play;
     private Menu menu;
-
 
     public Game() {
         init();
         gamePanel = new GamePanel(this);
-        gameWindow = new GameWindow(gamePanel);
+        new GameWindow(gamePanel);
 
         gamePanel.setFocusable(true);
         gamePanel.requestFocus(); // gets input focus
@@ -42,7 +41,7 @@ public class Game implements Runnable {
     }
 
     private void start() {
-        gameThread = new Thread(this);
+        Thread gameThread = new Thread(this);
         gameThread.start();
     }
 
@@ -110,7 +109,7 @@ public class Game implements Runnable {
 
     public void windowFocusLost() {
         if (GameState.state == GameState.PLAY) {
-            play.getPlayer().resetDirection();
+            Play.getPlayer().resetDirection();
         }
     }
 

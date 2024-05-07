@@ -1,29 +1,32 @@
 package LevelMap;
 
-import LoadSave.Load;
-import Main.Game;
+import Load.Load;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import static Graphics.Constants.UI.Images.*;
+
 public class LevelHandler {
 
-    private Game game;
+    //private final Game game;
     private BufferedImage []levelMap;
-    private Level FirstLevel;
+    private final Level FirstLevel;
 
-    public LevelHandler(Game game) {
-        this.game = game;
+    // public LevelHandler(Game game)
+    public LevelHandler() {
+        //this.game = game;
         importMapSprites();
-        Layer groundLayer = new Layer("resources/level_map/firstLevelGround.txt");
-        Layer ground2Layer = new Layer("resources/level_map/firstLevelGround2.txt");
-        Layer backGroundLayer = new Layer("resources/level_map/firstLevelBackground.txt");
+        Layer ground1Layer = new Layer("resources/level_map/ground1.txt");
+        Layer ground2Layer = new Layer("resources/level_map/ground2.txt");
+        Layer backGround1Layer = new Layer("resources/level_map/background1.txt");
+        Layer backGround2Layer = new Layer("resources/level_map/background2.txt");
 
-        FirstLevel = new Level(groundLayer, ground2Layer, backGroundLayer);
+        FirstLevel = new Level(ground1Layer, ground2Layer, backGround1Layer, backGround2Layer);
     }
 
     private void importMapSprites() {
-        BufferedImage image = Load.getImage(Load.mapTiles);
+        BufferedImage image = Load.getImage(mapTiles);
 
         levelMap = new BufferedImage[180];
         for (int i = 0; i < 9; ++i) {
@@ -36,9 +39,10 @@ public class LevelHandler {
 
     public void draw(Graphics obj, int xLevelOffset)
     {
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGroundLayer(), xLevelOffset);
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGround2Layer(), xLevelOffset);
-        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGroundLayer(), xLevelOffset);
+        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGround1Layer(), (int)(0.97*xLevelOffset));
+        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGround2Layer(), xLevelOffset);
+        FirstLevel.draw(obj, levelMap, FirstLevel.getGround1Layer(), xLevelOffset);
+        FirstLevel.draw(obj, levelMap, FirstLevel.getGround2Layer(), (int)(1.2*xLevelOffset));
     }
 
     public Level getLevel()
@@ -46,5 +50,5 @@ public class LevelHandler {
         return FirstLevel;
     }
 
-    public void update() {}
+    //public void update() {}
 }

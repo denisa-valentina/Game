@@ -1,9 +1,10 @@
 package GameStates;
 
-import LoadSave.Load;
+import Load.Load;
 import Main.Game;
 import UserInterface.MenuButtons;
 import Graphics.Constants.GameCONST;
+import Graphics.Constants.UI.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -11,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class Menu extends State implements StateMethods{
-    private MenuButtons[] menuButtons = new MenuButtons[3];
+    private final MenuButtons[] menuButtons = new MenuButtons[3];
     private BufferedImage menuImage, menuBackGround;
     private int menuX, menuY, menuWidth, menuHeight;
     public Menu(Game game)
@@ -24,11 +25,11 @@ public class Menu extends State implements StateMethods{
 
     private void loadMenuBackGround()
     {
-        menuBackGround = Load.getImage(Load.menuBackGround);
+        menuBackGround = Load.getImage(Images.menuBackGround);
     }
 
     private void loadMenuImage() {
-        menuImage = Load.getImage(Load.menuImage);
+        menuImage = Load.getImage(Images.menuImage);
 
         menuWidth = (int)(menuImage.getWidth() * GameCONST.SCALE);
         menuHeight = (int)(menuImage.getHeight() * GameCONST.SCALE);
@@ -53,7 +54,7 @@ public class Menu extends State implements StateMethods{
     @Override
     public void draw(Graphics obj) {
 
-        obj.drawImage(menuBackGround, 0, 0, (int)(GameCONST.SCALE*menuBackGround.getWidth()),(int)(GameCONST.SCALE*menuBackGround.getHeight()), null);
+        obj.drawImage(menuBackGround, 0, 0, (int)(GameCONST.SCALE*Game.GAME_WIDTH),(int)(GameCONST.SCALE*Game.GAME_HEIGHT), null);
         obj.drawImage(menuImage, menuX, menuY, menuWidth, menuHeight, null);
             for (MenuButtons i : menuButtons) {
                 i.draw(obj);

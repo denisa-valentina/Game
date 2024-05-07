@@ -20,7 +20,7 @@ public class Check {
         float xIndex = x / Game.TILE_SIZE;
         float yIndex = y / Game.TILE_SIZE;
         int value = levelMatrix[(int) yIndex][(int) xIndex];
-        if (value != 0) {
+        if (value != 0 && value != 500) {
             return true;
         }
         return false;
@@ -42,14 +42,13 @@ public class Check {
         // Iterăm prin fiecare tile care se intersectează cu rama entității
         for (int i = leftTile; i <= rightTile; i++) {
             for (int j = topTile; j <= bottomTile; j++) {
-                // Verificăm dacă acest tile este solid și dacă se ciocnește cu rama entității
+                // Verificăm dacă acest tile este solid și dacă se ciocnește cu rama caracterului
                 if (isSolid(i * Game.TILE_SIZE, j * Game.TILE_SIZE, levelMatrix)) {
                     return true; // Avem coliziune
                 }
             }
         }
         return false;
-
     }
 
     public static boolean isOnTheFloor(Rectangle2D.Float collisionBox, int[][] levelMatrix) {
@@ -57,9 +56,13 @@ public class Check {
         if (!isSolid(collisionBox.x, collisionBox.y + collisionBox.height + 1, levelMatrix))
             if (!isSolid(collisionBox.x + collisionBox.width, collisionBox.y + collisionBox.height + 1, levelMatrix)) {
                 return false;
-
             }
         return true;
+    }
+
+    public static boolean isFloor(Rectangle2D.Float collisionBox, float xSpeed, int [][]levelMatrix)
+    {
+        return isSolid(collisionBox.x + xSpeed, collisionBox.y + collisionBox.height + 1, levelMatrix);
     }
 }
 

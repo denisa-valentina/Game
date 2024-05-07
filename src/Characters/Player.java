@@ -1,9 +1,11 @@
-package Objects;
+package Characters;
 
-import LoadSave.Load;
+import Load.Load;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Graphics.Constants.Player.*;
 import static Graphics.Constants.GameCONST;
@@ -13,20 +15,24 @@ public class Player extends Character {
 
     private int[][] levelMatrix;
     private static Player playerInstance;
-    private BufferedImage[][] animations;
-    private int animationStick, animationIndex, animationSpeed = 25;
-    private int animationJumpSpeed = 15;
+    private List<List<BufferedImage>> animations;
+    private int animationTick, animationIndex, animationSpeed = 25;
+//    private final int animationJumpSpeed = 18;
     private int playerAction = IDLE;
     private boolean moving = false, attacking = false, inAir = false;
     private boolean left, right, jump;
-    private float runSpeed = 1.1f * GameCONST.SCALE, jumpSpeed = -2.0f * GameCONST.SCALE, fallSpeed = 0.5f * GameCONST.SCALE;
-    private float gravity = 0.02f * GameCONST.SCALE, airVelocity = 0.0f;
-    private float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
+    private final float runSpeed = 1.1f * GameCONST.SCALE, jumpSpeed = -2.5f * GameCONST.SCALE, fallSpeed = 0.5f * GameCONST.SCALE;
+    private final float gravity = 0.02f * GameCONST.SCALE;
+    private float airVelocity = 0.0f;
+    private final float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
+
+    private int flipX = 0;
+    private int flipW = 1;
 
     private Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimations();
-        initCollisionBox(x, y, (int)(23*GameCONST.SCALE), (int)(73*GameCONST.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
+        initCollisionBox(x, y, (int)(23*GameCONST.SCALE), (int)(70*GameCONST.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
     }
 
     public static Player getInstance(float x, float y, int width, int height)
@@ -45,40 +51,43 @@ public class Player extends Character {
     }
 
     public void render(Graphics obj, int xLevelOffset) {
-        obj.drawImage(animations[playerAction][animationIndex], (int)(getCollisionBox().x - xOffset) - xLevelOffset, (int)(getCollisionBox().y - yOffset), getWidth(), getHeight(), null);
-        drawCollisionBox(obj, xLevelOffset);
+        BufferedImage image = animations.get(playerAction).get(animationIndex);
+        obj.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), getWidth() * flipW, getHeight(), null);
+        //drawCollisionBox(obj, xLevelOffset);
     }
 
     private void loadAnimations() {
-        BufferedImage []images = new BufferedImage[6];
+        List<BufferedImage> images = new ArrayList<>();
         // 6 animations: Idle, Run, Jump, Attack1, Attack2, Dead
-        images[0] = Load.getImage("/player/Idle.png");
-        images[1] = Load.getImage("/player/Run.png");
-        images[2] = Load.getImage("/player/Jump.png");
-        images[3] = Load.getImage("/player/Dead.png");
-        images[4] = Load.getImage("/player/Attack_1.png");
-        images[5] = Load.getImage("/player/Attack_2.png");
-        animations = new BufferedImage[6][10];
+        images.add(Load.getImage(Images.player_idle));
+        images.add(Load.getImage(Images.player_run));
+        images.add(Load.getImage(Images.player_jump));
+        images.add(Load.getImage(Images.player_dead));
+        images.add(Load.getImage(Images.player_attack1));
+        images.add(Load.getImage(Images.player_attack2));
+        animations = new ArrayList<>();
 
         for (int i = 0; i < 2; ++i) {
+            List<BufferedImage> image = new ArrayList<>();
             for (int j = 0; j < 8; ++j) {
-                animations[i][j] = images[i].getSubimage(j * 128, 0, 128, 128);
+                image.add(images.get(i).getSubimage(j * 128, 0, 128, 128));
             }
+            animations.add(image);
         }
 
-        for(int i=2;i<animations.length;++i)
-        {
-            for(int j=0;j<10;++j)
-            {
-                animations[i][j] = images[i].getSubimage(j*128, 0, 128, 128);
+        for (int i = 2; i < images.size(); ++i) {
+            List<BufferedImage> image = new ArrayList<>();
+            for (int j = 0; j < 10; ++j) {
+                image.add(images.get(i).getSubimage(j * 128, 0, 128, 128));
             }
+            animations.add(image);
         }
     }
 
     public void loadLevelMatrix(int[][] levelMatrix)
     {
         this.levelMatrix = levelMatrix;
-        if(!isOnTheFloor(getCollisionBox(), levelMatrix))
+        if(!isOnTheFloor(collisionBox, levelMatrix))
             inAir = true;
     }
 
@@ -105,12 +114,12 @@ public class Player extends Character {
         }
     }
     private void updateAnimationTick() {
-        if(jump) { animationSpeed = animationJumpSpeed; }
+        if(jump) { animationSpeed = 18; }
         else { animationSpeed = 25; }
 
-        animationStick += 1;
-        if (animationStick >= animationSpeed) {
-            animationStick = 0;
+        animationTick += 1;
+        if (animationTick >= animationSpeed) {
+            animationTick = 0;
             animationIndex += 1;
             if (animationIndex >= getSpriteAmount(playerAction)) {
                 animationIndex = 0;
@@ -121,7 +130,7 @@ public class Player extends Character {
 
     private void resetAnimationTick() {
         animationIndex = 0;
-        animationStick = 0;
+        animationTick = 0;
     }
 
     private void updatePosition() {
@@ -139,20 +148,24 @@ public class Player extends Character {
         if (left && !right) {
             xSpeed -= runSpeed;
             moving = true;
+            flipX = getWidth();
+            flipW = -1;
         } else if (right && !left) {
             xSpeed += runSpeed;
             moving = true;
+            flipX = 0;
+            flipW = 1;
         }
 
         if (!inAir) {
-            if (!isOnTheFloor(getCollisionBox(), levelMatrix)) {
+            if (!isOnTheFloor(collisionBox, levelMatrix)) {
                 inAir = true;
             }
         }
 
         if (inAir) {
-            if (!isCollision(getCollisionBox().x, getCollisionBox().y + airVelocity, getCollisionBox().width, getCollisionBox().height, levelMatrix)) {
-                getCollisionBox().y += airVelocity;
+            if (!isCollision(collisionBox.x, collisionBox.y + airVelocity, collisionBox.width, collisionBox.height, levelMatrix)) {
+                collisionBox.y += airVelocity;
                 airVelocity += gravity; // coordonatele "in sus" sunt negative, deci "gravitatia" va incetini viteza caracterului
                 // daca coboara, viteza va creste (practic il va trage gravitatia inapoi)
                 updateXPosition(xSpeed);
@@ -179,9 +192,9 @@ public class Player extends Character {
     }
 
     private void updateXPosition(float xSpeed) {
-        if(!isCollision(getCollisionBox().x+xSpeed, getCollisionBox().y, getCollisionBox().width, getCollisionBox().height, levelMatrix))
+        if(!isCollision(collisionBox.x+xSpeed, collisionBox.y, collisionBox.width, collisionBox.height, levelMatrix))
         {
-            getCollisionBox().x += xSpeed;
+            collisionBox.x += xSpeed;
         }
     }
 

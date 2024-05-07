@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 
 public class State {
 
-    private Game game;
+    private final Game game;
 
     // super class for all our gameStates
     public State(Game game) {

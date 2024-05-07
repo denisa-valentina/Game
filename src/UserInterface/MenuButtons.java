@@ -1,21 +1,21 @@
 package UserInterface;
 
 import GameStates.GameState;
-import LoadSave.Load;
-import Main.Game;
+import Load.Load;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static Graphics.Constants.UI.Buttons.*;
-import static Graphics.Constants.GameCONST;
+import static Graphics.Constants.UI.Images.*;
 
 public class MenuButtons {
     private BufferedImage[] images;
-    private GameState gameState;
+    private final GameState gameState;
     private boolean mouseOver, mousePressed;
-    private int x, y, rowIndex, index;
-    private int xCenter = BUTTON_WIDTH / 2;
+    private final int x, y, rowIndex;
+    private int index;
+    private final int xCenter = BUTTON_WIDTH / 2;
     private Rectangle bounds;
 
     public MenuButtons(int x, int y, int rowIndex, GameState gameState) {
@@ -33,7 +33,7 @@ public class MenuButtons {
 
     private void loadImages() {
         images = new BufferedImage[3];
-        BufferedImage buttons = Load.getImage(Load.menuButtons);
+        BufferedImage buttons = Load.getImage(menuButtons);
         for (int i = 0; i < images.length; ++i) {
             images[i] = buttons.getSubimage(i * DEFAULT_BUTTON_WIDTH, rowIndex * DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT);
         }
@@ -69,9 +69,9 @@ public class MenuButtons {
         mousePressed = false;
     }
 
-    public boolean isMouseOver() {
-        return mouseOver;
-    }
+//    public boolean isMouseOver() {
+//        return mouseOver;
+//    }
 
     public boolean isMousePressed() {
         return mousePressed;

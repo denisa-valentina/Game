@@ -17,14 +17,13 @@ import static Main.Game.GAME_WIDTH;
     va fi continutul ferestrei de joc
 */
 public class GamePanel extends JPanel {
-
-    private Mouse mouse;
-    private Keyboard keyBoard;
-    private Game game;
+/*    private final Mouse mouse;
+    private final Keyboard keyBoard; */
+    private final Game game;
 
     public GamePanel(Game game) {
-        mouse = new Mouse(this);
-        keyBoard = new Keyboard(this);
+        Mouse mouse = new Mouse(this);
+        Keyboard keyBoard = new Keyboard(this);
         this.game = game;
 
         setPanelSize();
@@ -40,7 +39,7 @@ public class GamePanel extends JPanel {
     private void setPanelSize() {
         Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(size);
-        System.out.println(size.getWidth() + " " + size.getHeight());
+        ///System.out.println(size.getWidth() + " " + size.getHeight());
     }
 
     public void paintComponent(Graphics obj) {
