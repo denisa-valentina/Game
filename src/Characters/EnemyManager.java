@@ -6,6 +6,7 @@ import Graphics.Constants.Enemy.Images;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -39,7 +40,9 @@ public class EnemyManager {
 
     public void update(int [][]levelMatrix, Player player) {
         for (Worm worm : worms) {
-            worm.update(levelMatrix, player);
+            if (worm.isActive()) {
+                worm.update(levelMatrix, player);
+            }
         }
     }
 
@@ -50,9 +53,23 @@ public class EnemyManager {
     private void drawWorms(Graphics obj, int xLevelOffset) {
         for(Worm worm: worms)
         {
-            BufferedImage image = animationsGreen.get(worm.getEnemyAction()).get(worm.getAnimationIndex());
-            // obj.drawImage(image, (int)(getCollisionBox().x - xOffset) - xLevelOffset + flipX, (int)(getCollisionBox().y - yOffset), getWidth() * flipW, getHeight(), null);
-            obj.drawImage(image, (int)(worm.collisionBox.x - xLevelOffset), (int)worm.collisionBox.y, greenWorm_WIDTH, greenWorm_HEIGHT, null);
+            if(worm.isActive()) {
+                BufferedImage image = animationsGreen.get(worm.getEnemyAction()).get(worm.getAnimationIndex());
+                obj.drawImage(image, (int) (worm.collisionBox.x) - xLevelOffset + worm.flipX(), (int) worm.collisionBox.y, greenWorm_WIDTH * worm.walkDirection, greenWorm_HEIGHT, null);
+                worm.drawCollisionBox(obj, xLevelOffset);
+                worm.drawAttackBox(obj, xLevelOffset);
+            }
+        }
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox){
+        for(Worm worm: worms) {
+            if (worm.isActive()) {
+                if (attackBox.intersects(worm.getCollisionBox())) {
+                    worm.hurt(1);
+                    return;
+                }
+            }
         }
     }
 
@@ -63,7 +80,7 @@ public class EnemyManager {
         images.add(Load.getImage(Images.greenWorm_idle));
         images.add(Load.getImage(Images.greenWorm_run));
         images.add(Load.getImage(Images.greenWorm_attack));
-        images.add(Load.getImage(Images.greenWorm_hurt));
+        images.add(Load.getImage(Images.greenWorm_dead));
         animationsGreen = new java.util.ArrayList<>();
 
         for (BufferedImage image : images) {
@@ -76,6 +93,12 @@ public class EnemyManager {
                         imageRegion[3]));
             }
             animationsGreen.add(imagess);
+        }
+    }
+
+    public void resetAll() {
+        for(Worm worm: worms) {
+            worm.resetEnemy();
         }
     }
 }

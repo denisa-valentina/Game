@@ -6,8 +6,8 @@ import java.util.List;
 import java.awt.*;
 
 public abstract class Character {
-    private final float x, y;
-    private final int width, height;
+    protected final float x, y;
+    protected final int width, height;
     private List<int[]> imageRegions;
     protected Rectangle2D.Float collisionBox;
 
@@ -26,15 +26,6 @@ public abstract class Character {
     public Rectangle2D.Float getCollisionBox()
     {
         return collisionBox;
-    }
-
-    public int getWidth()
-    {
-        return width;
-    }
-    public int getHeight()
-    {
-        return height;
     }
 
 
@@ -58,14 +49,6 @@ public abstract class Character {
 //    public void setHeight(int height)
 //    {
 //        this.height = height;
-//    }
-    //    public float getX()
-//    {
-//        return x;
-//    }
-//    public float getY()
-//    {
-//        return y;
 //    }
 
 }

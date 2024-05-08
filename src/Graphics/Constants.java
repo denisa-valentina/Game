@@ -95,6 +95,7 @@ public class Constants {
             public static final String player_dead = "/player/Dead.png";
             public static final String player_attack1 = "/player/Attack_1.png";
             public static final String player_attack2 = "/player/Attack_2.png";
+            public static final String player_hurt = "/player/Hurt.png";
         }
 
         public static final int IDLE = 0;
@@ -103,6 +104,7 @@ public class Constants {
         public static final int DEAD = 3;
         public static final int ATTACK_1 = 4;
         public static final int ATTACK_2 = 5;
+        public static final int HURT = 6;
 
         public static int getSpriteAmount(int action) {
 
@@ -112,6 +114,9 @@ public class Constants {
                 }
                 case JUMP, DEAD, ATTACK_1, ATTACK_2 -> {
                     return 10;
+                }
+                case HURT -> {
+                    return 2;
                 }
                 default -> {
                     return 0;
@@ -125,7 +130,7 @@ public class Constants {
             public static final String greenWorm_idle = "/enemies/worm/Green-worm_Run.png";
             public static final String greenWorm_run = "/enemies/worm/Green-worm_Run.png";
             public static final String greenWorm_attack = "/enemies/worm/Green-worm_Attack.png";
-            public static final String greenWorm_hurt = "/enemies/worm/Green-worm_Hurt.png";
+            public static final String greenWorm_dead = "/enemies/worm/Green-worm_Hurt.png";
         }
 
         public static class Type {
@@ -136,8 +141,8 @@ public class Constants {
         public static final int IDLE = 0;
         public static final int RUN = 1;
         public static final int ATTACK = 2;
-        public static final int HURT = 3;
-        public static final int DEAD = 4;
+        public static final int HURT = 4;
+        public static final int DEAD = 3;
 
         public static final int Worm_WIDTH_DEFAULT = 47;
         public static final int Worm_HEIGHT_DEFAULT = 35;
@@ -147,8 +152,8 @@ public class Constants {
         public static final int worm_xOffset = (int)(10 * GameCONST.SCALE); // deocamdata lasam total
         public static final int worm_yOffset = (int)(1 * GameCONST.SCALE);
 
-        public static int getSpriteAmount(int enemy_type, int action) {
-            switch (enemy_type) {
+        public static int getSpriteAmount(int enemyType, int action) {
+            switch (enemyType) {
                 case Type.WORM -> {
                     switch (action) {
                         case IDLE -> {
@@ -170,6 +175,20 @@ public class Constants {
                 }
             }
             return 0;
+        }
+
+        public static int getMaxHealth(int enemyType){
+            switch (enemyType){
+                case Type.WORM -> { return 1; }
+                default -> { return 0; }
+            }
+        }
+
+        public static int getEnemyDamage(int enemyType){
+            switch (enemyType){
+                case Type.WORM -> { return 1; }
+                default -> { return 0; }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package Characters;
 
+import GameStates.Play;
 import Graphics.Constants;
 import Load.Load;
 
@@ -14,6 +15,8 @@ import static Graphics.Constants.GameCONST;
 import static Graphics.Check.*;
 
 public class Player extends Character {
+
+    private Play play;
 
     private int[][] levelMatrix;
     private static Player playerInstance;
@@ -34,53 +37,102 @@ public class Player extends Character {
     // lifeStatus UI
     private BufferedImage fullHeart;
     private BufferedImage emptyHeart;
-    private int totalLife = 3; // 3 hearts, 3 chances
-    private int actualLife = 1;
+    private int totalLife = 5; // 5 hearts, 5 chances
+    private int actualLife = 2;
 
     private int hearts_xStart = (int) (70 * GameCONST.SCALE);
     private int hearts_yStart = (int) (50 * GameCONST.SCALE);
 
+    private boolean attackChecked = false;
+
     // attackBox
     private Rectangle2D.Float attackBox;
 
-    private Player(float x, float y, int width, int height) {
+    private Player(float x, float y, int width, int height, Play play) {
         super(x, y, width, height);
+        this.play = play;
         loadAnimations();
         initCollisionBox(x, y, (int)(23*GameCONST.SCALE), (int)(70*GameCONST.SCALE)); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
+        initAttackBox();
     }
 
-    public static Player getInstance(float x, float y, int width, int height)
+    public static Player getInstance(float x, float y, int width, int height, Play play)
     {
         if(playerInstance == null)
         {
-            playerInstance = new Player(x, y, width, height);
+            playerInstance = new Player(x, y, width, height, play);
         }
         return playerInstance;
     }
 
+    private void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x + 7*collisionBox.width/8, y, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE));
+    }
+
     public void update() {
+        if(actualLife <= 0)
+        {
+            play.setGameOver(true);
+            return;
+        }
+
+        updateAttackBox();
         updatePosition();
+
+        if(attacking1 || attacking2)
+        {
+            checkAttack();
+        }
+
         updateAnimationTick();
         setAnimation();
     }
 
-    private void updateHealth(int value) {
-        actualLife += value;
+    private void checkAttack() {
+        if(attackChecked || animationIndex != 6)
+        {
+            return;
+        }
+        else{
+            attackChecked = true;
+            play.checkEnemyHit(attackBox);
+        }
+    }
 
-        if(actualLife <= 0) {
-            actualLife = 0;
-            // game over
+    private void updateAttackBox() {
+        if(right) {
+            attackBox.x = collisionBox.x + 7*collisionBox.width/8; // vezi daca ar fi necesar si un offset suplimentar
         }
-        else if(actualLife >= totalLife) {
-            actualLife = totalLife;
+        else if(left) {
+            attackBox.x = collisionBox.x - 2 * collisionBox.width;
         }
+        attackBox.y = collisionBox.y + collisionBox.height/2;
+    }
+
+    void updateHealth(int value) {
+        actualLife += value;
+        actualLife = Math.max(Math.min(actualLife, totalLife), 0);
+
+//        if(actualLife <= 0) {
+//            actualLife = 0;
+//            // game over
+//        }
+//        else if(actualLife >= totalLife) {
+//            actualLife = totalLife;
+//        }
     }
 
     public void render(Graphics obj, int xLevelOffset) {
         BufferedImage image = animations.get(playerAction).get(animationIndex);
-        obj.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), getWidth() * flipW, getHeight(), null);
-        //drawCollisionBox(obj, xLevelOffset);
+        obj.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), width * flipW, height, null);
+        drawCollisionBox(obj, xLevelOffset);
+        drawAttackBox(obj, xLevelOffset);
         drawUI(obj);
+    }
+
+    private void drawAttackBox(Graphics obj, int xLevelOffset) {
+        obj.setColor(Color.green);
+        obj.drawRect((int)attackBox.x - xLevelOffset, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
     private void drawUI(Graphics obj) {
@@ -103,6 +155,7 @@ public class Player extends Character {
         images.add(Load.getImage(Images.player_dead));
         images.add(Load.getImage(Images.player_attack1));
         images.add(Load.getImage(Images.player_attack2));
+        images.add(Load.getImage(Images.player_hurt));
         animations = new ArrayList<>();
 
         for (int i = 0; i < 2; ++i) {
@@ -113,13 +166,19 @@ public class Player extends Character {
             animations.add(image);
         }
 
-        for (int i = 2; i < images.size(); ++i) {
+        for (int i = 2; i < images.size() - 1; ++i) {
             List<BufferedImage> image = new ArrayList<>();
             for (int j = 0; j < 10; ++j) {
                 image.add(images.get(i).getSubimage(j * 128, 0, 128, 128));
             }
             animations.add(image);
         }
+
+        List<BufferedImage> image = new ArrayList<>();
+        image.add(images.get(images.size()-1).getSubimage(0, 0, 128, 128));
+        image.add(images.get(images.size()-1).getSubimage(128, 0, 128, 128));
+
+        animations.add(image);
 
         fullHeart = Load.getImage(Constants.LifeStatus.fullHeart);
         emptyHeart = Load.getImage(Constants.LifeStatus.emptyHeart);
@@ -148,6 +207,11 @@ public class Player extends Character {
 
         if (attacking1) {
             playerAction = ATTACK_1;
+//            if(startAnimation != ATTACK_1){ // so that the player's attack have effect sooner
+//                animationIndex = 3;
+//                animationTick = 0;
+//                return;
+//            }
         }
         if (attacking2) {
             playerAction = ATTACK_2;
@@ -169,6 +233,7 @@ public class Player extends Character {
                 animationIndex = 0;
                 attacking1 = false;
                 attacking2 = false;
+                attackChecked = false;
             }
         }
     }
@@ -193,7 +258,7 @@ public class Player extends Character {
         if (left && !right) {
             xSpeed -= runSpeed;
             moving = true;
-            flipX = getWidth();
+            flipX = width;
             flipW = -1;
         } else if (right && !left) {
             xSpeed += runSpeed;
@@ -254,6 +319,11 @@ public class Player extends Character {
         airVelocity = 0;
     }
 
+    public void changeAction(int playerAction)
+    {
+        this.playerAction = playerAction;
+    }
+
     public void setAttacking1(boolean attacking1) {
         this.attacking1 = attacking1;
     }
@@ -273,5 +343,20 @@ public class Player extends Character {
 
     public void setJump(boolean jump) {
         this.jump = jump;
+    }
+
+    public void resetAll() {
+        resetDirection();
+        inAir = false;
+        attacking1 = false; attacking2 = false;
+        moving = false;
+        playerAction = IDLE;
+        actualLife = totalLife;
+
+        collisionBox.x = x;
+        collisionBox.y = y;
+
+        if(!isOnTheFloor(collisionBox, levelMatrix))
+            inAir = true;
     }
 }

@@ -3,6 +3,7 @@ package GameStates;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -14,16 +15,20 @@ import Objects.ObjectManager;
 import Characters.Player;
 import Graphics.Constants.GameCONST;
 import Graphics.Constants.Surroundings;
+import UserInterface.GameOver;
 
 public class Play extends State implements StateMethods {
     private static Player player;
     private LevelHandler levelHandler;
     private EnemyManager enemyManager;
     private ObjectManager objectManager;
+    private GameOver gameOver;
     private BufferedImage backgroundImage, bigCloud, smallCloud;
 
     private int xLevelOffset;
     private int[] smallClouds;
+
+    private boolean isGameOver;
 
     public Play(Game game)
     {
@@ -46,16 +51,16 @@ public class Play extends State implements StateMethods {
         {
             smallClouds[i] = (int)(100 *GameCONST.SCALE) + random.nextInt((int)(150*GameCONST.SCALE));
         }
-
-
     }
 
     private void init() {
         levelHandler = new LevelHandler();
-        player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128));
+        player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128), this);
         enemyManager = new EnemyManager(this);
         objectManager = new ObjectManager (this);
         player.loadLevelMatrix(levelHandler.getLevel().getGround1Layer().getLayerMatrix());
+
+        gameOver = new GameOver(this);
     }
 
     public static Player getPlayer()
@@ -70,11 +75,14 @@ public class Play extends State implements StateMethods {
 
     @Override
     public void update() {
-        //levelHandler.update();
-        objectManager.update();
-        player.update();
-        enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
-        isCloseToBorder();
+
+        if(!isGameOver) {
+            //levelHandler.update();
+            objectManager.update();
+            player.update();
+            enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
+            isCloseToBorder();
+        }
     }
 
     @Override
@@ -85,7 +93,11 @@ public class Play extends State implements StateMethods {
         objectManager.draw(obj, xLevelOffset);
         levelHandler.draw(obj, xLevelOffset);
         player.render(obj, xLevelOffset);
-        enemyManager.draw(obj, xLevelOffset);
+        enemyManager.draw(obj, xLevelOffset - 15);
+
+        if(isGameOver) {
+            gameOver.draw(obj);
+        }
     }
 
     private void drawClouds(Graphics obj) {
@@ -121,34 +133,52 @@ public class Play extends State implements StateMethods {
         }
     }
 
+    // reseteaza tot in cazul in care jucatorul a pierdut. reset: player, enemy, lives
+    public void resetAll() {
+        isGameOver = false;
+        player.resetAll();
+        enemyManager.resetAll();
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHit(attackBox);
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
-
-        switch ((e.getKeyCode()))
-        {
-            case KeyEvent.VK_A -> player.setLeft(true);
-            case KeyEvent.VK_W -> player.setJump(true);
-            case KeyEvent.VK_D -> player.setRight(true);
-            case KeyEvent.VK_K -> player.setAttacking1(true);
-            case KeyEvent.VK_L -> player.setAttacking2(true);
-            case KeyEvent.VK_ESCAPE -> GameState.state = GameState.MENU;
+        if (isGameOver) {
+            gameOver.keyPressed(e);
+        } else {
+            switch ((e.getKeyCode())) {
+                case KeyEvent.VK_A -> player.setLeft(true);
+                case KeyEvent.VK_W -> player.setJump(true);
+                case KeyEvent.VK_D -> player.setRight(true);
+                case KeyEvent.VK_K -> player.setAttacking1(true);
+                case KeyEvent.VK_L -> player.setAttacking2(true);
+                case KeyEvent.VK_ESCAPE -> GameState.state = GameState.MENU;
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        if (!isGameOver) {
 
-        switch ((e.getKeyCode()))
-        {
-            case KeyEvent.VK_A -> player.setLeft(false);
-            case KeyEvent.VK_W -> player.setJump(false);
-            case KeyEvent.VK_D -> player.setRight(false);
+            switch ((e.getKeyCode())) {
+                case KeyEvent.VK_A -> player.setLeft(false);
+                case KeyEvent.VK_W -> player.setJump(false);
+                case KeyEvent.VK_D -> player.setRight(false);
+            }
         }
     }
 
     public LevelHandler getLevelHandler()
     {
         return levelHandler;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.isGameOver = gameOver;
     }
 
 //    public void windowFocusLost() { player.resetDirection(); }
@@ -164,4 +194,5 @@ public class Play extends State implements StateMethods {
 
     @Override
     public void mouseMoved(MouseEvent e) {}
+
 }

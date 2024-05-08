@@ -3,6 +3,8 @@ package Characters;
 import Graphics.Constants;
 import Main.Game;
 
+import java.awt.geom.Rectangle2D;
+
 import static Graphics.Constants.Enemy.*;
 import static Graphics.Constants.Enemy.getSpriteAmount;
 import static Graphics.Check.*;
@@ -14,15 +16,23 @@ public abstract class Enemy extends Character {
     protected float airVelocity, gravity = 0.03f * Constants.GameCONST.SCALE;
     protected boolean firstUpdate = true, inAir = false;
     protected float walkSpeed = 0.35f * Constants.GameCONST.SCALE;
-    protected int walkDirection = -1;
+    protected int walkDirection = 1;
     protected int yTile;
-    protected float attackDistance = 25;
+    protected float attackDistance = 15;
+
+    protected boolean active = true;
+    protected int maxHealth;
+    protected int currentHealth;
+
+    protected boolean attackChecked;
 
     public Enemy(float x, float y, int width, int height, int enemyType) {
         super(x, y, width, height);
         this.enemyType = enemyType;
 
         initCollisionBox(x, y, width, height);
+        maxHealth = getMaxHealth(enemyType);
+        currentHealth = maxHealth;
     }
 
     public void changeAction(int enemyAction)
@@ -30,6 +40,7 @@ public abstract class Enemy extends Character {
         this.enemyAction = enemyAction;
         animationTick = 0;
         animationIndex = 0;
+
     }
 
     protected void updateAnimationTick() {
@@ -39,8 +50,11 @@ public abstract class Enemy extends Character {
             animationIndex += 1;
             if (animationIndex >= getSpriteAmount(enemyType, enemyAction)) {
                 animationIndex = 0;
-                if(enemyAction == ATTACK){
-                    enemyAction = IDLE;}
+
+                switch(enemyAction) {
+                    case ATTACK, HURT -> enemyAction = IDLE;
+                    case DEAD -> active = false;
+                }
             }
         }
     }
@@ -103,6 +117,25 @@ public abstract class Enemy extends Character {
             walkDirection = -1; // is right, go left
     }
 
+    public void hurt(int value) {
+        currentHealth -= value;
+        if(currentHealth <= 0) {
+            changeAction(DEAD);
+            //active = false;
+        }
+        else
+            changeAction(HURT);
+    }
+
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
+        if(attackBox.intersects(player.collisionBox)) // enemy attackBox intersects player's collisionBox
+        {
+            player.updateHealth(-getEnemyDamage(enemyType));
+            //player.changeAction(HURT);
+        }
+        attackChecked = true;
+    }
+
     // checks if enemy sees the player
     protected boolean spotPlayer(int [][]levelMatrix, Player player) {
         int playerTileY = (int)(player.getCollisionBox().y + player.collisionBox.height) / Game.TILE_SIZE;
@@ -116,7 +149,7 @@ public abstract class Enemy extends Character {
 
     protected boolean isPlayerInRange(Player player) {
         int absoluteDistance = (int)Math.abs(player.collisionBox.x - collisionBox.x);
-        return absoluteDistance <= attackDistance * 5;
+        return absoluteDistance <= attackDistance * 7;
     }
 
     protected boolean isPlayerTooClose(Player player){
@@ -131,5 +164,19 @@ public abstract class Enemy extends Character {
 
     public int getEnemyAction () {
         return enemyAction;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void resetEnemy() {
+        collisionBox.x = x;
+        collisionBox.y = y;
+        firstUpdate = true;
+        currentHealth = maxHealth;
+        changeAction(IDLE);
+        active = true;
+        airVelocity = 0;
     }
 }
