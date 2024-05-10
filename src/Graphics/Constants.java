@@ -3,8 +3,8 @@ package Graphics;
 import java.util.ArrayList;
 
 public class Constants {
-    public static final int ANIMATION_SPEED = 10;
-    public static final ArrayList misscellaneous = new ArrayList();
+    public static final int ANIMATION_SPEED = 8;
+    public static final ArrayList<Integer> misscellaneous = new ArrayList<>();
 
     public static class Fruits {
 
@@ -32,6 +32,7 @@ public class Constants {
     }
 
     public static class LifeStatus {
+        public static final String staturBar = "/status/bar.png";
         public static final String fullHeart = "/status/heartFull.png";
         public static final String emptyHeart = "/status/heartEmpty.png";
 
@@ -57,7 +58,6 @@ public class Constants {
         public static final int BIG_CLOUD_HEIGHT = (int) (BIG_CLOUD_HEIGHT_DEFAULT * GameCONST.SCALE);
         public static final int SMALL_CLOUD_WIDTH = (int) (SMALL_CLOUD_WIDTH_DEFAULT * GameCONST.SCALE);
         public static final int SMALL_CLOUD_HEIGHT = (int) (SMALL_CLOUD_HEIGHT_DEFAULT * GameCONST.SCALE);
-
     }
 
     public static class GameCONST {
@@ -73,9 +73,18 @@ public class Constants {
 
         public static class Images {
             public static final String mapTiles = "/level_map/TileMap.png";
-            public static final String menuButtons = "/menu/MenuButtons.png";
-            public static final String menuImage = "/menu/meniu.png";
-            public static final String menuBackGround = "/menu/menuBackGround.png";
+            public static final String menuButtons = "/UI/Menu/MenuButtons.png";
+            public static final String menuImage = "/UI/Menu/image.png";
+            public static final String menuBackGround = "/UI/Menu/menuBackground.png";
+            public static final String pauseImage = "/UI/Pause/pause.png";
+            public static final String soundButton = "/UI/Pause/soundButton.png";
+            public static final String musicButton = "/UI/Pause/musicButton.png";
+            public static final String pauseButtons = "/UI/Pause/pauseButtons.png";
+        }
+
+        public static class PauseButtons {
+            public static final int SOUND_SIZE_DEFAULT = 32;
+            public static final int SOUND_SIZE = (int)(SOUND_SIZE_DEFAULT * GameCONST.SCALE);
         }
 
         public static class Buttons {
@@ -127,15 +136,14 @@ public class Constants {
 
     public static class Enemy {
         public static class Images {
-            public static final String greenWorm_idle = "/enemies/worm/Green-worm_Run.png";
-            public static final String greenWorm_run = "/enemies/worm/Green-worm_Run.png";
-            public static final String greenWorm_attack = "/enemies/worm/Green-worm_Attack.png";
-            public static final String greenWorm_dead = "/enemies/worm/Green-worm_Hurt.png";
+            public static final String worm_idle = "/enemies/worm/worm_idle.png";
+            public static final String worm_run = "/enemies/worm/worm_run.png";
+            public static final String worm_attack = "/enemies/worm/worm_attack.png";
+            public static final String worm_dead = "/enemies/worm/worm_hurt.png";
         }
 
         public static class Type {
             public static final int WORM = 0;
-            //public static final int YELLOW_WORM = 1;
         }
 
         public static final int IDLE = 0;
@@ -146,8 +154,8 @@ public class Constants {
 
         public static final int Worm_WIDTH_DEFAULT = 47;
         public static final int Worm_HEIGHT_DEFAULT = 35;
-        public static final int greenWorm_WIDTH = (int)(Worm_WIDTH_DEFAULT * GameCONST.SCALE);
-        public static final int greenWorm_HEIGHT = (int)(Worm_HEIGHT_DEFAULT * GameCONST.SCALE);
+        public static final int worm_WIDTH = (int)(Worm_WIDTH_DEFAULT * GameCONST.SCALE);
+        public static final int worm_HEIGHT = (int)(Worm_HEIGHT_DEFAULT * GameCONST.SCALE);
 
         public static final int worm_xOffset = (int)(10 * GameCONST.SCALE); // deocamdata lasam total
         public static final int worm_yOffset = (int)(1 * GameCONST.SCALE);

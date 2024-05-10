@@ -10,8 +10,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static Graphics.Constants.Enemy.greenWorm_WIDTH;
-import static Graphics.Constants.Enemy.greenWorm_HEIGHT;
 import static Graphics.Constants.misscellaneous;
 
 public class EnemyManager {
@@ -20,6 +18,7 @@ public class EnemyManager {
     private java.util.List<java.util.List<BufferedImage>> animationsGreen;
     private java.util.List<BufferedImage> animationsYellow;
     private ArrayList<Worm> worms;
+
 
     public EnemyManager(Play play) {
         this.play = play;
@@ -55,7 +54,7 @@ public class EnemyManager {
         {
             if(worm.isActive()) {
                 BufferedImage image = animationsGreen.get(worm.getEnemyAction()).get(worm.getAnimationIndex());
-                obj.drawImage(image, (int) (worm.collisionBox.x) - xLevelOffset + worm.flipX(), (int) worm.collisionBox.y, greenWorm_WIDTH * worm.walkDirection, greenWorm_HEIGHT, null);
+                obj.drawImage(image, (int) (worm.collisionBox.x) - xLevelOffset + worm.flipX(), (int) worm.collisionBox.y - worm.getAttacking() * (worm.getHeight()/2 - 3), worm.getWidth() * worm.walkDirection, worm.getHeight(), null);
                 worm.drawCollisionBox(obj, xLevelOffset);
                 worm.drawAttackBox(obj, xLevelOffset);
             }
@@ -77,10 +76,10 @@ public class EnemyManager {
     private void loadAnimations() {
         java.util.List<BufferedImage> images = new java.util.ArrayList<>();
         // 4 animations: Idle, Run, Attack, Dead (Hurt)
-        images.add(Load.getImage(Images.greenWorm_idle));
-        images.add(Load.getImage(Images.greenWorm_run));
-        images.add(Load.getImage(Images.greenWorm_attack));
-        images.add(Load.getImage(Images.greenWorm_dead));
+        images.add(Load.getImage(Images.worm_idle));
+        images.add(Load.getImage(Images.worm_run));
+        images.add(Load.getImage(Images.worm_attack));
+        images.add(Load.getImage(Images.worm_dead));
         animationsGreen = new java.util.ArrayList<>();
 
         for (BufferedImage image : images) {
@@ -99,6 +98,7 @@ public class EnemyManager {
     public void resetAll() {
         for(Worm worm: worms) {
             worm.resetEnemy();
+            worm.resetValues();
         }
     }
 }

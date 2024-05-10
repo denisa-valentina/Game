@@ -35,12 +35,14 @@ public class Player extends Character {
     private int flipW = 1;
 
     // lifeStatus UI
+    private BufferedImage statusBar;
+
     private BufferedImage fullHeart;
     private BufferedImage emptyHeart;
     private int totalLife = 5; // 5 hearts, 5 chances
     private int actualLife = 2;
 
-    private int hearts_xStart = (int) (70 * GameCONST.SCALE);
+    private int hearts_xStart = (int) (110 * GameCONST.SCALE);
     private int hearts_yStart = (int) (50 * GameCONST.SCALE);
 
     private boolean attackChecked = false;
@@ -136,6 +138,7 @@ public class Player extends Character {
     }
 
     private void drawUI(Graphics obj) {
+        obj.drawImage(statusBar, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE), 270, 150, null);
         for(int i=0;i<actualLife;++i)
         {
             obj.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
@@ -182,6 +185,7 @@ public class Player extends Character {
 
         fullHeart = Load.getImage(Constants.LifeStatus.fullHeart);
         emptyHeart = Load.getImage(Constants.LifeStatus.emptyHeart);
+        statusBar = Load.getImage(Constants.LifeStatus.staturBar);
     }
 
     public void loadLevelMatrix(int[][] levelMatrix)

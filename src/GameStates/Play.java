@@ -16,6 +16,7 @@ import Characters.Player;
 import Graphics.Constants.GameCONST;
 import Graphics.Constants.Surroundings;
 import UserInterface.GameOver;
+import UserInterface.Pause;
 
 public class Play extends State implements StateMethods {
     private static Player player;
@@ -23,12 +24,14 @@ public class Play extends State implements StateMethods {
     private EnemyManager enemyManager;
     private ObjectManager objectManager;
     private GameOver gameOver;
+    private Pause pause;
     private BufferedImage backgroundImage, bigCloud, smallCloud;
 
     private int xLevelOffset;
     private int[] smallClouds;
 
     private boolean isGameOver;
+    private boolean isPaused = false;
 
     public Play(Game game)
     {
@@ -61,6 +64,7 @@ public class Play extends State implements StateMethods {
         player.loadLevelMatrix(levelHandler.getLevel().getGround1Layer().getLayerMatrix());
 
         gameOver = new GameOver(this);
+        pause = new Pause(this);
     }
 
     public static Player getPlayer()
@@ -75,13 +79,16 @@ public class Play extends State implements StateMethods {
 
     @Override
     public void update() {
-
-        if(!isGameOver) {
-            //levelHandler.update();
-            objectManager.update();
-            player.update();
-            enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
-            isCloseToBorder();
+        if (!isPaused) {
+            if (!isGameOver) {
+                //levelHandler.update();
+                objectManager.update();
+                player.update();
+                enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
+                isCloseToBorder();
+            }
+        } else {
+            pause.update();
         }
     }
 
@@ -95,9 +102,8 @@ public class Play extends State implements StateMethods {
         player.render(obj, xLevelOffset);
         enemyManager.draw(obj, xLevelOffset - 15);
 
-        if(isGameOver) {
-            gameOver.draw(obj);
-        }
+        if (isGameOver) { gameOver.draw(obj); }
+        if(isPaused) { pause.draw(obj); }
     }
 
     private void drawClouds(Graphics obj) {
@@ -156,6 +162,7 @@ public class Play extends State implements StateMethods {
                 case KeyEvent.VK_K -> player.setAttacking1(true);
                 case KeyEvent.VK_L -> player.setAttacking2(true);
                 case KeyEvent.VK_ESCAPE -> GameState.state = GameState.MENU;
+                case KeyEvent.VK_P -> isPaused = !isPaused;
             }
         }
     }
@@ -177,6 +184,10 @@ public class Play extends State implements StateMethods {
         return levelHandler;
     }
 
+    public void unpauseGame(){
+        isPaused = false;
+    }
+
     public void setGameOver(boolean gameOver) {
         this.isGameOver = gameOver;
     }
@@ -187,12 +198,24 @@ public class Play extends State implements StateMethods {
     public void mouseClicked(MouseEvent e) {}
 
     @Override
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+        if(isPaused){
+            pause.mousePressed(e);
+        }
+    }
 
     @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+        if(isPaused){
+            pause.mouseReleased(e);
+        }
+    }
 
     @Override
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+        if(isPaused){
+            pause.mouseMoved(e);
+        }
+    }
 
 }

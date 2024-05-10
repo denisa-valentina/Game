@@ -6,6 +6,8 @@ import Graphics.Constants.GameCONST;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+import static Graphics.Constants.Enemy.worm_WIDTH;
+import static Graphics.Constants.Enemy.worm_HEIGHT;
 import static Graphics.Constants.Enemy.Type.WORM;
 import static Graphics.Constants.Enemy.*;
 
@@ -13,6 +15,8 @@ public class Worm extends Enemy {
 
     private Rectangle2D.Float attackBox;
     private int attackBoxOffsetX;
+    private int width = worm_WIDTH, height = worm_HEIGHT;
+    private int attacking = 0;
 
     public Worm(float x, float y) {
         super(x, y, Worm_WIDTH_DEFAULT, Worm_HEIGHT_DEFAULT, WORM);
@@ -52,9 +56,10 @@ public class Worm extends Enemy {
             setInAir(levelMatrix);
         } else {
             switch (enemyAction) {
-                case IDLE -> changeAction(RUN);
+                case IDLE -> {
+                    resetValues();
+                    changeAction(RUN); }
                 case RUN -> {
-
                     if (spotPlayer(levelMatrix, player)) {
                         turnTowardsPlayer(player);
                         if (isPlayerTooClose(player)) {
@@ -64,21 +69,18 @@ public class Worm extends Enemy {
                     setRunning(levelMatrix);
                 }
                 case ATTACK -> {
+                    width = 65; height = 60; attacking = 1;
                     if(animationIndex == 0)
                         attackChecked = false;
-                    if(animationIndex == 3 && !attackChecked){
+                    if(animationIndex == 3 && !attackChecked)
                         checkEnemyHit(attackBox, player);
                     }
-                }
                     case HURT -> {
 
                     }
             }
         }
     }
-
-
-
 
     int flipX()
     {
@@ -88,4 +90,24 @@ public class Worm extends Enemy {
         }
         else return width;
     }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public int getAttacking(){
+        return attacking;
+    }
+
+
+    public void resetValues(){
+        attacking = 0;
+        width = worm_WIDTH;
+        height = worm_HEIGHT;
+    }
+
 }

@@ -5,12 +5,14 @@ import Load.Load;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Graphics.Constants.UI.Buttons.*;
 import static Graphics.Constants.UI.Images.*;
 
-public class MenuButtons {
-    private BufferedImage[] images;
+public class MenuButtons{
+    private List<List<BufferedImage>> images;
     private final GameState gameState;
     private boolean mouseOver, mousePressed;
     private final int x, y, rowIndex;
@@ -32,25 +34,34 @@ public class MenuButtons {
     }
 
     private void loadImages() {
-        images = new BufferedImage[3];
         BufferedImage buttons = Load.getImage(menuButtons);
-        for (int i = 0; i < images.length; ++i) {
-            images[i] = buttons.getSubimage(i * DEFAULT_BUTTON_WIDTH, rowIndex * DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT);
-        }
-    }
+        images = new ArrayList<>();
 
-    public void draw(Graphics obj) {
-        obj.drawImage(images[index], (x - xCenter), y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
+        for (int i = 0; i < 3; ++i) {
+            List<BufferedImage> image = new ArrayList<>();
+            for (int j = 0; j < 3; ++j) {
+                image.add(buttons.getSubimage(j * DEFAULT_BUTTON_WIDTH, i * DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT));
+            }
+            images.add(image);
+        }
     }
 
     public void update() {
         index = 0;
-        if (mouseOver) {
+        if (mouseOver)
             index = 1;
-        }
-        if (mousePressed) {
+        if (mousePressed)
             index = 2;
-        }
+    }
+
+    public void draw(Graphics obj) {
+        obj.drawImage(images.get(rowIndex).get(index), (x - xCenter), y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
+    }
+
+    public void resetBooleans()
+    {
+        mouseOver = false;
+        mousePressed = false;
     }
 
     public Rectangle getBounds()
@@ -63,16 +74,6 @@ public class MenuButtons {
         GameState.state = gameState;
     }
 
-    public void resetBooleans()
-    {
-        mouseOver = false;
-        mousePressed = false;
-    }
-
-//    public boolean isMouseOver() {
-//        return mouseOver;
-//    }
-
     public boolean isMousePressed() {
         return mousePressed;
     }
@@ -84,7 +85,5 @@ public class MenuButtons {
     public void setMousePressed(boolean mousePressed) {
         this.mousePressed = mousePressed;
     }
-
-
 
 }

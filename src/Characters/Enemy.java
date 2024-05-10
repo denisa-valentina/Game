@@ -40,7 +40,6 @@ public abstract class Enemy extends Character {
         this.enemyAction = enemyAction;
         animationTick = 0;
         animationIndex = 0;
-
     }
 
     protected void updateAnimationTick() {
@@ -50,7 +49,6 @@ public abstract class Enemy extends Character {
             animationIndex += 1;
             if (animationIndex >= getSpriteAmount(enemyType, enemyAction)) {
                 animationIndex = 0;
-
                 switch(enemyAction) {
                     case ATTACK, HURT -> enemyAction = IDLE;
                     case DEAD -> active = false;

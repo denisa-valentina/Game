@@ -31,17 +31,17 @@ public class Menu extends State implements StateMethods{
     private void loadMenuImage() {
         menuImage = Load.getImage(Images.menuImage);
 
-        menuWidth = (int)(menuImage.getWidth() * GameCONST.SCALE);
-        menuHeight = (int)(menuImage.getHeight() * GameCONST.SCALE);
-        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-        menuY = (int)(95*GameCONST.SCALE);
+//        menuWidth = (int)(menuImage.getWidth() * GameCONST.SCALE);
+//        menuHeight = (int)(menuImage.getHeight() * GameCONST.SCALE);
+        menuX = Game.GAME_WIDTH / 2 - 300;
+        menuY = (int)(150*GameCONST.SCALE);
 
     }
 
     private void loadButtons() {
-        menuButtons[0] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(250*GameCONST.SCALE), 0, GameState.PLAY);
-        menuButtons[1] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(320*GameCONST.SCALE), 1, GameState.OPTIONS);
-        menuButtons[2] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(390*GameCONST.SCALE), 2, GameState.QUIT);
+        menuButtons[0] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(300*GameCONST.SCALE), 0, GameState.PLAY);
+        menuButtons[1] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(370*GameCONST.SCALE), 1, GameState.OPTIONS);
+        menuButtons[2] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(440*GameCONST.SCALE), 2, GameState.QUIT);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Menu extends State implements StateMethods{
     public void draw(Graphics obj) {
 
         obj.drawImage(menuBackGround, 0, 0, (int)(GameCONST.SCALE*Game.GAME_WIDTH),(int)(GameCONST.SCALE*Game.GAME_HEIGHT), null);
-        obj.drawImage(menuImage, menuX, menuY, menuWidth, menuHeight, null);
+        obj.drawImage(menuImage, menuX, menuY, 600, 470, null);
             for (MenuButtons i : menuButtons) {
                 i.draw(obj);
             }

@@ -9,7 +9,7 @@ import Main.Game;
 
 public class GameOver {
 
-    private Play play;
+    private final Play play;
     public GameOver(Play play){
         this.play = play;
     }
@@ -21,8 +21,6 @@ public class GameOver {
         obj.setColor(Color.white);
         obj.drawString("Game Over", Game.GAME_WIDTH/2, 150);
         obj.drawString("Press ESC to enter Main Menu", Game.GAME_WIDTH/2, 300);
-
-
     }
 
     public void keyPressed(KeyEvent e){
