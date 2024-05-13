@@ -2,12 +2,11 @@ package Load;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class Load {
-
-    public static final String firstLevelGameBackGround = "/level_map/firstLevelWallpaper.jpg";
 
     public static BufferedImage getImage(String sourceName) {
 

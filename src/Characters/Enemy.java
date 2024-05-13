@@ -3,6 +3,7 @@ package Characters;
 import Graphics.Constants;
 import Main.Game;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 import static Graphics.Constants.Enemy.*;
@@ -10,6 +11,7 @@ import static Graphics.Constants.Enemy.getSpriteAmount;
 import static Graphics.Check.*;
 
 public abstract class Enemy extends Character {
+
     protected int enemyAction = IDLE, enemyType;
     protected int animationTick, animationIndex;
     protected int animationSpeed = 25;
@@ -24,15 +26,33 @@ public abstract class Enemy extends Character {
     protected int maxHealth;
     protected int currentHealth;
 
+    protected int attacking = 0;
+    protected Rectangle2D.Float attackBox;
+    protected int attackBoxOffsetX;
     protected boolean attackChecked;
 
     public Enemy(float x, float y, int width, int height, int enemyType) {
         super(x, y, width, height);
         this.enemyType = enemyType;
 
-        initCollisionBox(x, y, width, height);
+        initCollisionBox(x, y, width - 10, height);
         maxHealth = getMaxHealth(enemyType);
         currentHealth = maxHealth;
+    }
+
+    protected void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x, y, (int)(65* Constants.GameCONST.SCALE), (int)(28* Constants.GameCONST.SCALE));
+        attackBoxOffsetX = (int)(10 * Constants.GameCONST.SCALE);
+    }
+
+    protected void updateAttackBox() {
+        attackBox.x = collisionBox.x - attackBoxOffsetX;
+        attackBox.y = collisionBox.y;
+    }
+
+    public void drawAttackBox(Graphics obj, int xLevelOffset) {
+        obj.setColor(Color.RED);
+        obj.drawRect((int)(attackBox.x - xLevelOffset), (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
     public void changeAction(int enemyAction)
@@ -90,7 +110,7 @@ public abstract class Enemy extends Character {
         }
         if(!isCollision(collisionBox.x + xSpeed, collisionBox.y, collisionBox.width, collisionBox.height, levelMatrix))
         {
-            if(isEnemyOnTheFloor(collisionBox, xSpeed,levelMatrix))
+            if(isEnemyOnTheFloor(collisionBox, xSpeed, levelMatrix))
             {
                 collisionBox.x += xSpeed;
                 return;
@@ -168,6 +188,27 @@ public abstract class Enemy extends Character {
         return active;
     }
 
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    protected int flipX()
+    {
+        if(walkDirection == 1)
+        {
+            return 0;
+        }
+        else return width;
+    }
+
+    protected int getAttacking(){
+        return attacking;
+    }
+
     public void resetEnemy() {
         collisionBox.x = x;
         collisionBox.y = y;
@@ -177,4 +218,8 @@ public abstract class Enemy extends Character {
         active = true;
         airVelocity = 0;
     }
+
+    public abstract void update(int [][]levelMatrix, Player player);
+    protected abstract void updateBehavior(int [][]levelMatrix, Player player);
+    public abstract void resetValues();
 }

@@ -1,53 +1,62 @@
 package LevelMap;
 
-import Load.Load;
+import GameStates.GameState;
+import Graphics.Constants.LevelLayers;
+import Main.Game;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
-import static Graphics.Constants.UI.Images.*;
+import java.util.ArrayList;
 
 public class LevelHandler {
 
-    //private final Game game;
-    private BufferedImage []levelMap;
-    private final Level FirstLevel;
+     private final Game game;
+    private ArrayList<Level> Levels;
+    private int levelIndex = 2;
 
     // public LevelHandler(Game game)
-    public LevelHandler() {
-        //this.game = game;
-        importMapSprites();
-        Layer ground1Layer = new Layer("resources/level_map/ground1.txt");
-        Layer ground2Layer = new Layer("resources/level_map/ground2.txt");
-        Layer backGround1Layer = new Layer("resources/level_map/background1.txt");
-        Layer backGround2Layer = new Layer("resources/level_map/background2.txt");
+    public LevelHandler(Game game) {
+        this.game = game;
+        Levels = new ArrayList<>();
 
-        FirstLevel = new Level(ground1Layer, ground2Layer, backGround1Layer, backGround2Layer);
+        initLevels();
     }
 
-    private void importMapSprites() {
-        BufferedImage image = Load.getImage(mapTiles);
+    private void initLevels() {
+        Levels.add(new Level(LevelLayers.firstLevelGameBackGround, LevelLayers.firstMapTiles, 9, 20, LevelLayers.lvl1Ground,
+                 LevelLayers.lvl1backGround));
+        // init enemies
+        Levels.add(new Level(LevelLayers.secondLevelGameBackGround, LevelLayers.secondMapTiles, 7, 16, LevelLayers.lvl2Ground,
+                 LevelLayers.lvl2backGround));
+        Levels.add(new Level(LevelLayers.thirdLevelGameBackGround, LevelLayers.thirdMapTiles, 9, 20, LevelLayers.lvl3Ground,
+                 LevelLayers.lvl3backGround));
+    }
 
-        levelMap = new BufferedImage[180];
-        for (int i = 0; i < 9; ++i) {
-            for (int j = 0; j < 20; ++j) {
-                int index = i * 20 + j;
-                levelMap[index] = image.getSubimage(j * 32, i * 32, 32, 32);
-            }
+    public void loadNextLevel(){
+        levelIndex++;
+        if(levelIndex >= Levels.size()){
+            // game completed
+            levelIndex = 0;
+            System.out.println("Congratulations! You have finished the game!");
+            GameState.state = GameState.MENU;
         }
+
+        Level nextLevel = Levels.get(levelIndex);
+        game.getPlay().getEnemyManager();
+        game.getPlay().getPlayer().loadLevelMatrix(nextLevel.getGroundLayer().getLayerMatrix());
     }
 
     public void draw(Graphics obj, int xLevelOffset)
     {
-        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGround1Layer(), (int)(0.97*xLevelOffset));
-        FirstLevel.draw(obj, levelMap, FirstLevel.getBackGround2Layer(), xLevelOffset);
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGround1Layer(), xLevelOffset);
-        FirstLevel.draw(obj, levelMap, FirstLevel.getGround2Layer(), (int)(1.2*xLevelOffset));
+            Levels.get(levelIndex).drawLevel(obj, xLevelOffset);
     }
 
-    public Level getLevel()
+    public Level getLevel(int index)
     {
-        return FirstLevel;
+        return Levels.get(index);
+    }
+
+    public int getLevelIndex(){
+        return levelIndex;
     }
 
     //public void update() {}

@@ -69,7 +69,10 @@ public class Check {
 
     public static boolean isEnemyOnTheFloor(Rectangle2D.Float collisionBox, float xSpeed, int [][]levelMatrix)
     {
-        return isSolid(collisionBox.x + xSpeed, collisionBox.y + collisionBox.height + 1, levelMatrix);
+        if(xSpeed > 0)
+            return isSolid(collisionBox.x + collisionBox.width + xSpeed, collisionBox.y + collisionBox.height + 1, levelMatrix);
+        else
+            return isSolid(collisionBox.x + xSpeed, collisionBox.y + collisionBox.height + 1, levelMatrix);
     }
 
     // checks if there are obstacles between 2 objects
@@ -84,7 +87,7 @@ public class Check {
                 if(isTileSolid(i, yTile, levelMatrix)){
                     return false;
                 }
-                if(levelMatrix[(int)yTile+1][i] == 0) // daca obstacolul dintre player si enemy este o prapastie/groapa
+                if(levelMatrix[yTile+1][i] == 0) // daca obstacolul dintre player si enemy este o prapastie/groapa
                 {
                     return false;
                 }
@@ -96,7 +99,7 @@ public class Check {
                 if(isTileSolid(i, yTile, levelMatrix)){
                     return false;
                 }
-                if(levelMatrix[(int)yTile+1][i] == 0){
+                if(levelMatrix[yTile+1][i] == 0){
                     return false;
                 }
             }
@@ -104,4 +107,3 @@ public class Check {
         return true;
     }
 }
-

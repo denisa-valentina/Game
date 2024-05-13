@@ -28,10 +28,10 @@ public class Pause {
         this.play = play;
         loadBackground();
         createSoundButtons();
-        createUrmButtons();
+        createButtons();
     }
 
-    private void createUrmButtons() {
+    private void createButtons() {
         int continueY = (int)(290 * SCALE);
         int replayY = (int)(360 * SCALE);
         int menuY = (int)(430 * SCALE);

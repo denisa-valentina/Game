@@ -1,6 +1,7 @@
 package Characters;
 
 import GameStates.Play;
+import Graphics.Constants;
 import Load.Load;
 import Graphics.Constants.Enemy.Images;
 
@@ -9,69 +10,39 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
+import static Graphics.Constants.Enemy.worm_xOffset;
 import static Graphics.Constants.misscellaneous;
 
 public class EnemyManager {
 
     private Play play;
-    private java.util.List<java.util.List<BufferedImage>> animationsGreen;
+    private List<List<BufferedImage>> animationsGreen;
     private java.util.List<BufferedImage> animationsYellow;
-    private ArrayList<Worm> worms;
-
 
     public EnemyManager(Play play) {
         this.play = play;
         loadAnimations();
 
-        worms = new ArrayList<>();
-
         misscellaneous.add(500);
 
-        ArrayList<Point2D> enemyCoordinates = play.getLevelHandler().getLevel().getCoordinates(500);
+        createEnemies();
 
-        for (int i=0;i<enemyCoordinates.size(); ++i)
+    }
+
+    private void createEnemies() {
+        ArrayList<Point2D> wormCoordinates = play.getLevelHandler().getLevel(0).getCoordinates(500); // lvl 1 worms
+        for (int i=0;i<wormCoordinates.size(); ++i)
         {
-            worms.add(new Worm(32*(int)enemyCoordinates.get(i).getX(), 32*(int)enemyCoordinates.get(i).getY()));
+            play.getLevelHandler().getLevel(0).addEnemy(new Worm(32*(int)wormCoordinates.get(i).getX(), 32*(int)wormCoordinates.get(i).getY()));
         }
-
-    }
-
-    public void update(int [][]levelMatrix, Player player) {
-        for (Worm worm : worms) {
-            if (worm.isActive()) {
-                worm.update(levelMatrix, player);
-            }
-        }
-    }
-
-    public void draw(Graphics obj, int xLevelOffset) {
-        drawWorms(obj, xLevelOffset);
-    }
-
-    private void drawWorms(Graphics obj, int xLevelOffset) {
-        for(Worm worm: worms)
+        wormCoordinates = play.getLevelHandler().getLevel(2).getCoordinates(500); // lvl 3 worms
+        for (int i=0;i<wormCoordinates.size(); ++i)
         {
-            if(worm.isActive()) {
-                BufferedImage image = animationsGreen.get(worm.getEnemyAction()).get(worm.getAnimationIndex());
-                obj.drawImage(image, (int) (worm.collisionBox.x) - xLevelOffset + worm.flipX(), (int) worm.collisionBox.y - worm.getAttacking() * (worm.getHeight()/2 - 3), worm.getWidth() * worm.walkDirection, worm.getHeight(), null);
-                worm.drawCollisionBox(obj, xLevelOffset);
-                worm.drawAttackBox(obj, xLevelOffset);
-            }
+            play.getLevelHandler().getLevel(2).addEnemy(new Worm(32*(int)wormCoordinates.get(i).getX(), 32*(int)wormCoordinates.get(i).getY()));
         }
     }
-
-    public void checkEnemyHit(Rectangle2D.Float attackBox){
-        for(Worm worm: worms) {
-            if (worm.isActive()) {
-                if (attackBox.intersects(worm.getCollisionBox())) {
-                    worm.hurt(1);
-                    return;
-                }
-            }
-        }
-    }
-
 
     private void loadAnimations() {
         java.util.List<BufferedImage> images = new java.util.ArrayList<>();
@@ -95,11 +66,46 @@ public class EnemyManager {
         }
     }
 
+    public void update(int [][]levelMatrix, Player player) {
+        for (Enemy e : play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getEnemies()) { // de modificat in functie de nivel
+            if (e.isActive()) {
+                e.update(levelMatrix, player);
+            }
+        }
+    }
+
+    private void drawWorms(Graphics obj, int xLevelOffset) { // de modificat in functie de nivel
+        for(Enemy e: play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getEnemies())
+        {
+            if(e.isActive()) {
+                BufferedImage image = animationsGreen.get(e.getEnemyAction()).get(e.getAnimationIndex());
+                obj.drawImage(image, (int)(e.collisionBox.x - worm_xOffset) - xLevelOffset + e.flipX(), (int) e.collisionBox.y - e.getAttacking() * (e.getHeight()/2 - 3), e.getWidth() * e.walkDirection, e.getHeight(), null);
+                e.drawCollisionBox(obj, xLevelOffset);
+                //e.drawAttackBox(obj, xLevelOffset);
+            }
+        }
+    }
+
+    public void draw(Graphics obj, int xLevelOffset) { // de modificat in functie de nivel
+        drawWorms(obj, xLevelOffset);
+        //draw idk
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox){
+        for(Enemy e: play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getEnemies()) {
+            if (e.isActive()) {
+                if (attackBox.intersects(e.getCollisionBox())) {
+                    e.hurt(1);
+                    return;
+                }
+            }
+        }
+    }
+
     public void resetAll() {
-        for(Worm worm: worms) {
-            worm.resetEnemy();
-            worm.resetValues();
+        for(Enemy e: play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getEnemies()) {
+            e.resetEnemy();
+            e.resetValues();
         }
     }
 }
-

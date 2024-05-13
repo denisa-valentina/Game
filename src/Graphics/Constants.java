@@ -72,14 +72,14 @@ public class Constants {
     public static class UI {
 
         public static class Images {
-            public static final String mapTiles = "/level_map/TileMap.png";
             public static final String menuButtons = "/UI/Menu/MenuButtons.png";
             public static final String menuImage = "/UI/Menu/image.png";
             public static final String menuBackGround = "/UI/Menu/menuBackground.png";
             public static final String pauseImage = "/UI/Pause/pause.png";
             public static final String soundButton = "/UI/Pause/soundButton.png";
             public static final String musicButton = "/UI/Pause/musicButton.png";
-            public static final String pauseButtons = "/UI/Pause/pauseButtons.png";
+            public static final String otherButtons = "/UI/otherButtons.png";
+            public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel1.png";
         }
 
         public static class PauseButtons {
@@ -93,6 +93,26 @@ public class Constants {
             public static final int BUTTON_WIDTH = (int) (DEFAULT_BUTTON_WIDTH * GameCONST.SCALE);
             public static final int BUTTON_HEIGHT = (int) (DEFAULT_BUTTON_HEIGHT * GameCONST.SCALE);
         }
+    }
+
+    public static class LevelLayers {
+
+        public static final String firstMapTiles = "/level_map/level/1/TileMap.png";
+        public static final String secondMapTiles = "/level_map/level/2/TiledMap.png";
+        public static final String thirdMapTiles = "/level_map/level/3/TileMap.png";
+
+        public static final String firstLevelGameBackGround = "/level_map/level/1/levelWallpaper.jpg";
+        public static final String secondLevelGameBackGround = "/level_map/level/2/levelWallpaper.jpg";
+        public static final String thirdLevelGameBackGround = "/level_map/level/3/levelWallpaper.jpg";
+
+        public static final String lvl1Ground = "resources/level_map/level/1/ground.txt";
+        public static final String lvl1backGround = "resources/level_map/level/1/background.txt";
+
+        public static final String lvl2Ground = "resources/level_map/level/2/ground.txt";
+        public static final String lvl2backGround = "resources/level_map/level/2/background.txt";
+
+        public static final String lvl3Ground = "resources/level_map/level/3/ground.txt";
+        public static final String lvl3backGround = "resources/level_map/level/3/background.txt";
     }
 
     public static class Player {
@@ -152,13 +172,12 @@ public class Constants {
         public static final int HURT = 4;
         public static final int DEAD = 3;
 
-        public static final int Worm_WIDTH_DEFAULT = 47;
-        public static final int Worm_HEIGHT_DEFAULT = 35;
+        public static final int Worm_WIDTH_DEFAULT = 40;
+        public static final int Worm_HEIGHT_DEFAULT = 33;
         public static final int worm_WIDTH = (int)(Worm_WIDTH_DEFAULT * GameCONST.SCALE);
         public static final int worm_HEIGHT = (int)(Worm_HEIGHT_DEFAULT * GameCONST.SCALE);
 
-        public static final int worm_xOffset = (int)(10 * GameCONST.SCALE); // deocamdata lasam total
-        public static final int worm_yOffset = (int)(1 * GameCONST.SCALE);
+        public static final int worm_xOffset = (int)(3 * GameCONST.SCALE); // deocamdata lasam total
 
         public static int getSpriteAmount(int enemyType, int action) {
             switch (enemyType) {

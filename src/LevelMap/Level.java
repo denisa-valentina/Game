@@ -1,11 +1,14 @@
 package LevelMap;
 
+import Characters.Enemy;
+import Load.Load;
 import Main.Game;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import Graphics.Constants.GameCONST;
 
@@ -13,29 +16,50 @@ import static Graphics.Constants.misscellaneous;
 
 public class Level {
 
-    private final Layer ground1Layer;
-    private final Layer ground2Layer;
-    private final Layer backGround1Layer;
-    private final Layer backGround2Layer;
+    private final BufferedImage backGround;
+    private BufferedImage[] levelTileMap;
+    private final Layer groundLayer;
+    private final Layer backGroundLayer;
 
-    public Level(Layer ground1Layer, Layer ground2Layer, Layer backGround1Layer, Layer backGround2Layer) {
-        this.ground1Layer = ground1Layer;
-        this.ground2Layer = ground2Layer;
-        this.backGround1Layer = backGround1Layer;
-        this.backGround2Layer = backGround2Layer;
+    private final ArrayList<Integer> enemyValues;
+    private final List<Enemy> enemies;
+
+    private int lvlTilesWide;
+    private int maxTileOffset;
+    private int maxLevelOffsetX;
+
+    public Level(String backGround, String tileMap, int rows, int cols, String groundLayer, String backGroundLayer) {
+        this.backGround = Load.getImage(backGround);
+        this.groundLayer = new Layer(groundLayer);
+        this.backGroundLayer = new Layer(backGroundLayer);
+
+        enemyValues = new ArrayList<>();
+        enemies = new ArrayList<>();
+
+        importMapSprites(tileMap, rows, cols);
+
+        addEnemyValues(500);
+
     }
 
-    public Layer getGround2Layer() {
-        return ground2Layer;
+    public void addEnemyValues(int value){
+        enemyValues.add(value);
     }
 
-    public Layer getGround1Layer() { return ground1Layer; }
+    public void addEnemy(Enemy enemy){
+        enemies.add(enemy);
+    }
 
-    public Layer getBackGround2Layer() { return backGround2Layer; }
+    private void importMapSprites(String tileMap, int rows, int cols) {
+        BufferedImage image = Load.getImage(tileMap);
 
-    public Layer getBackGround1Layer()
-    {
-        return backGround1Layer;
+        levelTileMap = new BufferedImage[rows*cols];
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                int index = i * cols + j;
+                levelTileMap[index] = image.getSubimage(j * 32, i * 32, 32, 32);
+            }
+        }
     }
 
     public void draw(Graphics obj, BufferedImage[]levelMap, Layer layer, int xLevelOffset)
@@ -52,21 +76,49 @@ public class Level {
         }
     }
 
+    public void drawLevel(Graphics obj, int xLevelOffset){
+        draw(obj, levelTileMap, groundLayer, xLevelOffset);
+        draw(obj, levelTileMap, backGroundLayer, xLevelOffset);
+    }
+
 
     // aceasta metoda va parcurge matricea layer-ului principal si va extrage coordonatele
-    // la care am decis eu (notand pe matrice) locatiile unde se vor afla inamicii la initializarea
-    // nivelului
+    // la care am decis eu (notand pe matrice) locatiile unde se vor afla inamicii (si nu numai)
+    // la initializarea nivelului
     public ArrayList<Point2D> getCoordinates(int value) {
         ArrayList<Point2D> elementCoordinates = new ArrayList<Point2D>();
 
         for (int j = 0; j < GameCONST.HEIGHT_TILES; ++j) {
-            for (int i = 0; i < ground1Layer.getLayerMatrix()[0].length; ++i) {
-                int index = ground1Layer.getTileIndex(i, j);
+            for (int i = 0; i <groundLayer.getLayerMatrix()[0].length; ++i) {
+                int index = groundLayer.getTileIndex(i, j);
                 if (index == value) {
                     elementCoordinates.add(new Point2D.Double(i, j));
                 }
             }
         }
         return elementCoordinates;
+    }
+
+    public Layer getGroundLayer() {
+        return groundLayer;
+    }
+
+    public Layer getBackGround2Layer() { return backGroundLayer; }
+
+
+    public BufferedImage getBackGround(){
+        return backGround;
+    }
+
+    public List<Integer> getEnemyValues(){
+        return enemyValues;
+    }
+
+    public BufferedImage[] getLevelTileMap(){
+        return levelTileMap;
+    }
+
+    public List<Enemy> getEnemies(){
+        return enemies;
     }
 }

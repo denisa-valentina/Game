@@ -5,9 +5,11 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.awt.*;
 
+import static Graphics.Check.isCollision;
+
 public abstract class Character {
     protected final float x, y;
-    protected final int width, height;
+    protected int width, height;
     private List<int[]> imageRegions;
     protected Rectangle2D.Float collisionBox;
 
@@ -29,12 +31,18 @@ public abstract class Character {
     }
 
 
+
     protected void drawCollisionBox(Graphics obj, int xLevelOffset)
     {   // debugging
         obj.setColor(Color.green);
         obj.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
     }
-//    public void setX(float x)
+
+
+    public abstract void drawAttackBox(Graphics obj, int xLevelOffset);
+
+
+    //    public void setX(float x)
 //    {
 //        this.x = x;
 //    }
@@ -42,13 +50,13 @@ public abstract class Character {
 //    {
 //        this.y = y;
 //    }
-//    public void setWidth(int width)
-//    {
-//        this.width = width;
-//    }
-//    public void setHeight(int height)
-//    {
-//        this.height = height;
-//    }
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 import static Graphics.Constants.UI.Buttons.*;
 import static Graphics.Constants.UI.Buttons.BUTTON_HEIGHT;
-import static Graphics.Constants.UI.Images.pauseButtons;
+import static Graphics.Constants.UI.Images.otherButtons;
 
 public class OtherButtons extends PauseButtons implements ButtonMethods {
 
@@ -23,10 +23,10 @@ public class OtherButtons extends PauseButtons implements ButtonMethods {
     }
 
     private void loadImages() {
-        BufferedImage buttons = Load.getImage(pauseButtons);
+        BufferedImage buttons = Load.getImage(otherButtons);
         images = new ArrayList<>();
 
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 4; ++i) {
             List<BufferedImage> image = new ArrayList<>();
             for(int j = 0; j < 3; ++j) {
                 image.add(buttons.getSubimage(j * DEFAULT_BUTTON_WIDTH, i * DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT));

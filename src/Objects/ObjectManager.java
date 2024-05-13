@@ -33,12 +33,15 @@ public class ObjectManager {
         misscellaneous.add(706);
         misscellaneous.add(707);
 
-        for (int i = 700; i < 707; ++i) {
-            ArrayList<Point2D> fruitCoordinates = play.getLevelHandler().getLevel().getCoordinates(i);
+        misscellaneous.add(600); // fullheart
+
+        for (int i = 700; i <= 707; ++i) {
+            ArrayList<Point2D> fruitCoordinates = play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getCoordinates(i);
             for (int j = 0; j < fruitCoordinates.size(); ++j) {
                 fruits.add(new Fruit(32 * (int) fruitCoordinates.get(j).getX(), 32 * (int) fruitCoordinates.get(j).getY(), i-700));
             }
         }
+
     }
 
     private void loadImages()

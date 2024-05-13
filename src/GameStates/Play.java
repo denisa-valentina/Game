@@ -14,7 +14,9 @@ import Main.Game;
 import Objects.ObjectManager;
 import Characters.Player;
 import Graphics.Constants.GameCONST;
+import Graphics.Constants.LevelLayers;
 import Graphics.Constants.Surroundings;
+import UserInterface.CompletedLevel;
 import UserInterface.GameOver;
 import UserInterface.Pause;
 
@@ -25,6 +27,7 @@ public class Play extends State implements StateMethods {
     private ObjectManager objectManager;
     private GameOver gameOver;
     private Pause pause;
+    private CompletedLevel completedLevel;
     private BufferedImage backgroundImage, bigCloud, smallCloud;
 
     private int xLevelOffset;
@@ -32,6 +35,7 @@ public class Play extends State implements StateMethods {
 
     private boolean isGameOver;
     private boolean isPaused = false;
+    private boolean islevelCompleted = false;
 
     public Play(Game game)
     {
@@ -45,11 +49,10 @@ public class Play extends State implements StateMethods {
     {
         Random random = new Random();
 
-        backgroundImage = Load.getImage(Load.firstLevelGameBackGround);
         bigCloud = Load.getImage(Surroundings.Images.bigClouds);
         smallCloud = Load.getImage(Surroundings.Images.smallClouds);
 
-        smallClouds = new int[10];
+        smallClouds = new int[15];
         for(int i=0;i<smallClouds.length;++i)
         {
             smallClouds[i] = (int)(100 *GameCONST.SCALE) + random.nextInt((int)(150*GameCONST.SCALE));
@@ -57,14 +60,19 @@ public class Play extends State implements StateMethods {
     }
 
     private void init() {
-        levelHandler = new LevelHandler();
+        levelHandler = new LevelHandler(game);
         player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128), this);
         enemyManager = new EnemyManager(this);
         objectManager = new ObjectManager (this);
-        player.loadLevelMatrix(levelHandler.getLevel().getGround1Layer().getLayerMatrix());
+        player.loadLevelMatrix(levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix());
 
         gameOver = new GameOver(this);
         pause = new Pause(this);
+        completedLevel = new CompletedLevel(this);
+    }
+
+    public EnemyManager getEnemyManager(){
+        return enemyManager;
     }
 
     public static Player getPlayer()
@@ -79,35 +87,43 @@ public class Play extends State implements StateMethods {
 
     @Override
     public void update() {
-        if (!isPaused) {
-            if (!isGameOver) {
-                //levelHandler.update();
-                objectManager.update();
-                player.update();
-                enemyManager.update(levelHandler.getLevel().getGround1Layer().getLayerMatrix(), player);
-                isCloseToBorder();
-            }
-        } else {
+
+        if (isPaused) {
             pause.update();
+        } else if (islevelCompleted) {
+            completedLevel.update();
+        } else if (!isGameOver) {
+            //levelHandler.update();
+            objectManager.update();
+            player.update();
+            enemyManager.update(levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix(), player);
+            isCloseToBorder();
         }
     }
 
     @Override
     public void draw(Graphics obj) {
-        obj.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        obj.drawImage(levelHandler.getLevel(levelHandler.getLevelIndex()).getBackGround(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         drawClouds(obj);
 
         objectManager.draw(obj, xLevelOffset);
         levelHandler.draw(obj, xLevelOffset);
-        player.render(obj, xLevelOffset);
+        player.draw(obj, xLevelOffset);
         enemyManager.draw(obj, xLevelOffset - 15);
 
         if (isGameOver) { gameOver.draw(obj); }
-        if(isPaused) { pause.draw(obj); }
+        if (isPaused) { pause.draw(obj); }
+        if (islevelCompleted) { completedLevel.draw(obj); }
+    }
+
+    public void loadNextLevel(){
+        resetAll();
+        levelHandler.loadNextLevel();
+
     }
 
     private void drawClouds(Graphics obj) {
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 7; ++i) {
             obj.drawImage(bigCloud, i * Surroundings.BIG_CLOUD_WIDTH - (int)(xLevelOffset * 0.3), (int) (70 * GameCONST.SCALE), Surroundings.BIG_CLOUD_WIDTH, Surroundings.BIG_CLOUD_HEIGHT, null);
         }
         for(int i=0;i<smallClouds.length;++i) {
@@ -119,7 +135,7 @@ public class Play extends State implements StateMethods {
         int leftBorder = (int)(0.3 * Game.GAME_WIDTH);
         int rightBorder = (int)(0.7 * Game.GAME_WIDTH);
 
-        int levelTileWide = levelHandler.getLevel().getGround1Layer().getLayerMatrix()[0].length;
+        int levelTileWide = levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix()[0].length;
         int maxTilesOffset = levelTileWide - GameCONST.WIDTH_TILES;
         int maxOffset = maxTilesOffset * Game.TILE_SIZE;
 
@@ -179,6 +195,8 @@ public class Play extends State implements StateMethods {
         }
     }
 
+
+
     public LevelHandler getLevelHandler()
     {
         return levelHandler;
@@ -202,6 +220,7 @@ public class Play extends State implements StateMethods {
         if(isPaused){
             pause.mousePressed(e);
         }
+        else if(islevelCompleted) { completedLevel.mousePressed(e); }
     }
 
     @Override
@@ -209,6 +228,8 @@ public class Play extends State implements StateMethods {
         if(isPaused){
             pause.mouseReleased(e);
         }
+        else if(islevelCompleted) { completedLevel.mouseReleased(e); }
+
     }
 
     @Override
@@ -216,6 +237,7 @@ public class Play extends State implements StateMethods {
         if(isPaused){
             pause.mouseMoved(e);
         }
+        else if(islevelCompleted) { completedLevel.mouseMoved(e); }
     }
 
 }

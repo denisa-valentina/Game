@@ -10,6 +10,7 @@ import GameStates.Menu;
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
 import Graphics.Constants.GameCONST;
+import Load.Load;
 
 import java.awt.*;
 
@@ -25,6 +26,7 @@ public class Game implements Runnable {
     private Menu menu;
 
     public Game() {
+
         init();
         gamePanel = new GamePanel(this);
         new GameWindow(gamePanel);
@@ -116,6 +118,7 @@ public class Game implements Runnable {
     public Menu getMenu() {
         return menu;
     }
+
 
     public Play getPlay() {
         return play;
