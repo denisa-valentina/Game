@@ -3,7 +3,9 @@ package Graphics;
 import java.util.ArrayList;
 
 public class Constants {
-    public static final int ANIMATION_SPEED = 8;
+    public static final int ANIMATION_SPEED_OBJECTS = 8;
+    public static final float GRAVITY = 0.02f * Constants.GameCONST.SCALE;
+
     public static final ArrayList<Integer> misscellaneous = new ArrayList<>();
 
     public static class Fruits {
@@ -160,10 +162,17 @@ public class Constants {
             public static final String worm_run = "/enemies/worm/worm_run.png";
             public static final String worm_attack = "/enemies/worm/worm_attack.png";
             public static final String worm_dead = "/enemies/worm/worm_hurt.png";
+
+            public static final String zombie_idle = "/enemies/candy_zombie/zombie_idle.png";
+            public static final String zombie_run = "/enemies/candy_zombie/zombie_run.png";
+            public static final String zombie_attack = "/enemies/candy_zombie/zombie_attack.png";
+            public static final String zombie_dead = "/enemies/candy_zombie/zombie_hurt.png";
+
         }
 
         public static class Type {
             public static final int WORM = 0;
+            public static final int CANDY_ZOMBIE = 1;
         }
 
         public static final int IDLE = 0;
@@ -177,7 +186,15 @@ public class Constants {
         public static final int worm_WIDTH = (int)(Worm_WIDTH_DEFAULT * GameCONST.SCALE);
         public static final int worm_HEIGHT = (int)(Worm_HEIGHT_DEFAULT * GameCONST.SCALE);
 
-        public static final int worm_xOffset = (int)(3 * GameCONST.SCALE); // deocamdata lasam total
+        public static final int worm_xOffset = (int)(3 * GameCONST.SCALE);
+
+        public static final int Zombie_WIDTH_DEFAULT = 55;
+        public static final int Zombie_HEIGHT_DEFAULT = 45;
+        public static final int zombie_WIDTH = (int)(Zombie_WIDTH_DEFAULT * GameCONST.SCALE);
+        public static final int zombie_HEIGHT = (int)(Zombie_HEIGHT_DEFAULT * GameCONST.SCALE);
+
+        public static final int zombie_xOffset = (int)(7 * GameCONST.SCALE);
+
 
         public static int getSpriteAmount(int enemyType, int action) {
             switch (enemyType) {
@@ -200,20 +217,36 @@ public class Constants {
                         }
                     }
                 }
+                case Type.CANDY_ZOMBIE -> {
+                    switch (action) {
+                        case IDLE -> {
+                            return 9;
+                        }
+                        case RUN -> {
+                            return 13;
+                        }
+                        case ATTACK -> {
+                            return 7;
+                        }
+                        case DEAD -> {
+                            return 4;
+                        }
+                    }
+                }
             }
             return 0;
         }
 
         public static int getMaxHealth(int enemyType){
             switch (enemyType){
-                case Type.WORM -> { return 1; }
+                case Type.WORM, Type.CANDY_ZOMBIE -> { return 1; }
                 default -> { return 0; }
             }
         }
 
         public static int getEnemyDamage(int enemyType){
             switch (enemyType){
-                case Type.WORM -> { return 1; }
+                case Type.WORM, Type.CANDY_ZOMBIE -> { return 1; }
                 default -> { return 0; }
             }
         }

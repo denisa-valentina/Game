@@ -1,17 +1,30 @@
 package Characters;
 
+import Graphics.Constants.GameCONST;
+
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.List;
 import java.awt.*;
 
-import static Graphics.Check.isCollision;
 
 public abstract class Character {
+
     protected final float x, y;
     protected int width, height;
-    private List<int[]> imageRegions;
+
     protected Rectangle2D.Float collisionBox;
+    protected Rectangle2D.Float attackBox;
+
+    protected int action;
+    protected int animationSpeed = 25;
+    protected int animationTick, animationIndex;
+
+    protected float runSpeed;
+    protected float airVelocity = 0.0f;
+    protected boolean inAir = false;
+
+    protected int maxHealth;
+    protected int currentHealth;
+
 
     public Character(float x, float y, int width, int height){
         this.x = x;
@@ -20,9 +33,9 @@ public abstract class Character {
         this.height = height;
     }
 
-    protected void initCollisionBox(float x, float y, int width, int height)
+    protected void initCollisionBox(int width, int height)
     {
-        collisionBox = new Rectangle2D.Float(x, y, width, height);
+        collisionBox = new Rectangle2D.Float(x, y, (int)(width * GameCONST.SCALE), (int)(height * GameCONST.SCALE));
     }
 
     public Rectangle2D.Float getCollisionBox()
@@ -30,12 +43,19 @@ public abstract class Character {
         return collisionBox;
     }
 
-
-
     protected void drawCollisionBox(Graphics obj, int xLevelOffset)
     {   // debugging
         obj.setColor(Color.green);
         obj.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
+    }
+
+    protected int getAction(){
+        return action;
+    }
+
+    public int getAnimationIndex()
+    {
+        return animationIndex;
     }
 
 

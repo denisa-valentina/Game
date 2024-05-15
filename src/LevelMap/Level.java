@@ -24,7 +24,7 @@ public class Level {
     private final ArrayList<Integer> enemyValues;
     private final List<Enemy> enemies;
 
-    private int lvlTilesWide;
+    private int levelTilesWide;
     private int maxTileOffset;
     private int maxLevelOffsetX;
 
@@ -41,6 +41,7 @@ public class Level {
         addEnemyValues(500);
 
     }
+
 
     public void addEnemyValues(int value){
         enemyValues.add(value);
@@ -103,8 +104,6 @@ public class Level {
         return groundLayer;
     }
 
-    public Layer getBackGround2Layer() { return backGroundLayer; }
-
 
     public BufferedImage getBackGround(){
         return backGround;
@@ -120,5 +119,9 @@ public class Level {
 
     public List<Enemy> getEnemies(){
         return enemies;
+    }
+
+    public int getMaxLevelOffsetX(){
+        return maxLevelOffsetX;
     }
 }

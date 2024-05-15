@@ -9,35 +9,34 @@ import java.awt.geom.Rectangle2D;
 import static Graphics.Constants.Enemy.*;
 import static Graphics.Constants.Enemy.getSpriteAmount;
 import static Graphics.Check.*;
+import static Graphics.Constants.GRAVITY;
 
 public abstract class Enemy extends Character {
 
-    protected int enemyAction = IDLE, enemyType;
-    protected int animationTick, animationIndex;
-    protected int animationSpeed = 25;
-    protected float airVelocity, gravity = 0.03f * Constants.GameCONST.SCALE;
-    protected boolean firstUpdate = true, inAir = false;
-    protected float walkSpeed = 0.35f * Constants.GameCONST.SCALE;
+    protected int enemyType;
+
+    protected boolean firstUpdate = true;
     protected int walkDirection = 1;
     protected int yTile;
     protected float attackDistance = 15;
 
     protected boolean active = true;
-    protected int maxHealth;
-    protected int currentHealth;
 
     protected int attacking = 0;
-    protected Rectangle2D.Float attackBox;
+
     protected int attackBoxOffsetX;
     protected boolean attackChecked;
 
     public Enemy(float x, float y, int width, int height, int enemyType) {
         super(x, y, width, height);
-        this.enemyType = enemyType;
 
-        initCollisionBox(x, y, width - 10, height);
+        this.enemyType = enemyType;
+        this.action = IDLE;
+        this.runSpeed = 0.35f * Constants.GameCONST.SCALE;
+
         maxHealth = getMaxHealth(enemyType);
         currentHealth = maxHealth;
+
     }
 
     protected void initAttackBox() {
@@ -57,7 +56,7 @@ public abstract class Enemy extends Character {
 
     public void changeAction(int enemyAction)
     {
-        this.enemyAction = enemyAction;
+        this.action = enemyAction;
         animationTick = 0;
         animationIndex = 0;
     }
@@ -67,10 +66,10 @@ public abstract class Enemy extends Character {
         if (animationTick >= animationSpeed) {
             animationTick = 0;
             animationIndex += 1;
-            if (animationIndex >= getSpriteAmount(enemyType, enemyAction)) {
+            if (animationIndex >= getSpriteAmount(enemyType, action)) {
                 animationIndex = 0;
-                switch(enemyAction) {
-                    case ATTACK, HURT -> enemyAction = IDLE;
+                switch(action) {
+                    case ATTACK, HURT -> action = IDLE;
                     case DEAD -> active = false;
                 }
             }
@@ -89,10 +88,11 @@ public abstract class Enemy extends Character {
     {
         if(!isCollision(collisionBox.x, collisionBox.y + airVelocity, collisionBox.width, collisionBox.height, levelMatrix)) {
             collisionBox.y += airVelocity;
-            airVelocity += gravity;
+            airVelocity += GRAVITY;
         }
         else {
             inAir = false;
+            collisionBox.y = GetEntityYPosUnderRoofOrAboveFloor(collisionBox, airVelocity);
             yTile = (int)(collisionBox.y / Game.TILE_SIZE);
         }
     }
@@ -103,10 +103,10 @@ public abstract class Enemy extends Character {
         float xSpeed = 0;
 
         if(walkDirection == LEFT) {
-            xSpeed = -walkSpeed;
+            xSpeed = -runSpeed;
         }
         else{
-            xSpeed = walkSpeed;
+            xSpeed = runSpeed;
         }
         if(!isCollision(collisionBox.x + xSpeed, collisionBox.y, collisionBox.width, collisionBox.height, levelMatrix))
         {
@@ -116,7 +116,7 @@ public abstract class Enemy extends Character {
                 return;
             }
         }
-        changeDirection();
+           changeDirection();
     }
 
     protected void turnTowardsPlayer(Player player)
@@ -175,14 +175,7 @@ public abstract class Enemy extends Character {
         return absoluteDistance <= attackDistance;
     }
 
-    public int getAnimationIndex()
-    {
-        return animationIndex;
-    }
 
-    public int getEnemyAction () {
-        return enemyAction;
-    }
 
     public boolean isActive() {
         return active;
@@ -208,6 +201,7 @@ public abstract class Enemy extends Character {
     protected int getAttacking(){
         return attacking;
     }
+
 
     public void resetEnemy() {
         collisionBox.x = x;

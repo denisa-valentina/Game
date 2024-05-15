@@ -28,9 +28,10 @@ public class Play extends State implements StateMethods {
     private GameOver gameOver;
     private Pause pause;
     private CompletedLevel completedLevel;
-    private BufferedImage backgroundImage, bigCloud, smallCloud;
+    private BufferedImage bigCloud, smallCloud;
 
     private int xLevelOffset;
+    private int maxLevelOffsetX;
     private int[] smallClouds;
 
     private boolean isGameOver;
@@ -40,11 +41,28 @@ public class Play extends State implements StateMethods {
     public Play(Game game)
     {
         super(game);
-        init();
 
+        init();
         addElements();
+
+        determineLevelOffset();
+        //loadStartLevel();
     }
 
+    private void determineLevelOffset() {
+        maxLevelOffsetX = levelHandler.getCurrentLevel().getMaxLevelOffsetX();
+    }
+
+    public void loadNextLevel(){
+        resetAll();
+        levelHandler.loadNextLevel();
+
+    }
+
+    public void setLevelOffset(int levelOffset){
+        this.maxLevelOffsetX = levelOffset;
+    }
+    
     private void addElements()
     {
         Random random = new Random();
@@ -71,19 +89,10 @@ public class Play extends State implements StateMethods {
         completedLevel = new CompletedLevel(this);
     }
 
-    public EnemyManager getEnemyManager(){
-        return enemyManager;
-    }
-
     public static Player getPlayer()
     {
         return player;
     }
-
-//    public ObjectManager getObjectManager()
-//    {
-//        return objectManager;
-//    }
 
     @Override
     public void update() {
@@ -94,7 +103,7 @@ public class Play extends State implements StateMethods {
             completedLevel.update();
         } else if (!isGameOver) {
             //levelHandler.update();
-            objectManager.update();
+            objectManager.update(levelHandler.getLevelIndex());
             player.update();
             enemyManager.update(levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix(), player);
             isCloseToBorder();
@@ -106,20 +115,14 @@ public class Play extends State implements StateMethods {
         obj.drawImage(levelHandler.getLevel(levelHandler.getLevelIndex()).getBackGround(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         drawClouds(obj);
 
-        objectManager.draw(obj, xLevelOffset);
+        objectManager.draw(obj, levelHandler.getLevelIndex(), xLevelOffset);
         levelHandler.draw(obj, xLevelOffset);
         player.draw(obj, xLevelOffset);
-        enemyManager.draw(obj, xLevelOffset - 15);
+        enemyManager.draw(obj, xLevelOffset);
 
         if (isGameOver) { gameOver.draw(obj); }
         if (isPaused) { pause.draw(obj); }
         if (islevelCompleted) { completedLevel.draw(obj); }
-    }
-
-    public void loadNextLevel(){
-        resetAll();
-        levelHandler.loadNextLevel();
-
     }
 
     private void drawClouds(Graphics obj) {
@@ -158,6 +161,8 @@ public class Play extends State implements StateMethods {
     // reseteaza tot in cazul in care jucatorul a pierdut. reset: player, enemy, lives
     public void resetAll() {
         isGameOver = false;
+        isPaused = false;
+        islevelCompleted = false;
         player.resetAll();
         enemyManager.resetAll();
     }
@@ -170,6 +175,8 @@ public class Play extends State implements StateMethods {
     public void keyPressed(KeyEvent e) {
         if (isGameOver) {
             gameOver.keyPressed(e);
+            Play.getPlayer().resetHeart();
+            resetAll();
         } else {
             switch ((e.getKeyCode())) {
                 case KeyEvent.VK_A -> player.setLeft(true);
@@ -240,4 +247,7 @@ public class Play extends State implements StateMethods {
         else if(islevelCompleted) { completedLevel.mouseMoved(e); }
     }
 
+    public void setLevelCompleted(boolean levelCompleted) {
+        this.islevelCompleted = levelCompleted;
+    }
 }

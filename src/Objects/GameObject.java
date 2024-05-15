@@ -1,8 +1,10 @@
 package Objects;
 
+import Graphics.Constants;
+
 import java.awt.geom.Rectangle2D;
 
-import static Graphics.Constants.ANIMATION_SPEED;
+import static Graphics.Constants.ANIMATION_SPEED_OBJECTS;
 
 public class GameObject {
 
@@ -21,7 +23,7 @@ public class GameObject {
 
     protected void initCollisionBox(int width, int height)
     {
-        collisionBox = new Rectangle2D.Float(x, y, width, height);
+        collisionBox = new Rectangle2D.Float(x, y, (int)(width * Constants.GameCONST.SCALE), (int)(height * Constants.GameCONST.SCALE));
     }
 
 //    public void drawCollisionBox(Graphics obj, int xLevelOffset)
@@ -33,7 +35,7 @@ public class GameObject {
     protected void updateAnimationTick()
     {
         animationTick++;
-        if(animationTick >= ANIMATION_SPEED)
+        if(animationTick >= ANIMATION_SPEED_OBJECTS)
         {
             animationTick = 0;
             animationIndex++;
@@ -81,6 +83,14 @@ public class GameObject {
     {
         return animationIndex;
     }
+
+    public void reset(){
+        animationTick = 0;
+        animationIndex = 0;
+        active = true;
+        doAnimation = true;
+    }
+
 
 
 }

@@ -120,6 +120,7 @@ public class Pause {
         } else if (isIn(e, replayButton)) {
             if (replayButton.isMousePressed()) {
                 play.resetAll();
+                Play.getPlayer().resetHeart();
                 play.unpauseGame();
             }
         } else if (isIn(e, continueButton)) {

@@ -1,6 +1,7 @@
 package LevelMap;
 
 import GameStates.GameState;
+import GameStates.Play;
 import Graphics.Constants.LevelLayers;
 import Main.Game;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public class LevelHandler {
 
-     private final Game game;
+    private final Game game;
     private ArrayList<Level> Levels;
     private int levelIndex = 2;
 
@@ -41,8 +42,8 @@ public class LevelHandler {
         }
 
         Level nextLevel = Levels.get(levelIndex);
-        game.getPlay().getEnemyManager();
-        game.getPlay().getPlayer().loadLevelMatrix(nextLevel.getGroundLayer().getLayerMatrix());
+        Play.getPlayer().loadLevelMatrix(nextLevel.getGroundLayer().getLayerMatrix());
+        game.getPlay().setLevelOffset(nextLevel.getMaxLevelOffsetX());
     }
 
     public void draw(Graphics obj, int xLevelOffset)
@@ -57,6 +58,14 @@ public class LevelHandler {
 
     public int getLevelIndex(){
         return levelIndex;
+    }
+
+    public int getLevelsNumber(){
+        return Levels.size();
+    }
+
+    public Level getCurrentLevel(){
+        return Levels.get(levelIndex);
     }
 
     //public void update() {}

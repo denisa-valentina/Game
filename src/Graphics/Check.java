@@ -20,13 +20,15 @@ public class Check {
         {
             return true;
         }
-        return isTileSolid((int)x, (int)y, levelMatrix);
-    }
 
-    public static boolean isTileSolid(int x, int y, int [][]levelMatrix) {
         float xIndex = x / Game.TILE_SIZE;
         float yIndex = y / Game.TILE_SIZE;
-        int value = levelMatrix[(int) yIndex][(int) xIndex];
+
+        return isTileSolid((int)xIndex, (int)yIndex, levelMatrix);
+    }
+
+    public static boolean isTileSolid(int xIndex, int yIndex, int [][]levelMatrix) {
+        int value = levelMatrix[yIndex][xIndex];
         if (value != 0 && !misscellaneous.contains(value)) {
             return true;
         }
@@ -76,34 +78,42 @@ public class Check {
     }
 
     // checks if there are obstacles between 2 objects
-    public static boolean ClearSight(int[][] levelMatrix, Rectangle2D.Float collisionBox1, Rectangle2D.Float collisionBox2, int yTile){
-        int xTile1 = (int)collisionBox1.x / Game.TILE_SIZE;
-        int xTile2 = (int)collisionBox2.x / Game.TILE_SIZE;
+    public static boolean ClearSight(int[][] levelMatrix, Rectangle2D.Float collisionBox1, Rectangle2D.Float collisionBox2, int yTile) {
+        int xTile1 = (int) collisionBox1.x / Game.TILE_SIZE;
+        int xTile2 = (int) collisionBox2.x / Game.TILE_SIZE;
 
-        if(xTile1 > xTile2)
-        {
-            for(int i = xTile2; i < xTile1; ++i)
-            {
-                if(isTileSolid(i, yTile, levelMatrix)){
+        if (xTile1 > xTile2) {
+            for (int i = xTile2; i < xTile1; ++i) {
+                if (isTileSolid(i, yTile, levelMatrix)) {
                     return false;
                 }
-                if(levelMatrix[yTile+1][i] == 0) // daca obstacolul dintre player si enemy este o prapastie/groapa
+                if (levelMatrix[yTile + 1][i] == 0) // daca obstacolul dintre player si enemy este o prapastie/groapa
                 {
                     return false;
                 }
             }
-        }
-        else {
-            for(int i = xTile1; i < xTile2; ++i)
-            {
-                if(isTileSolid(i, yTile, levelMatrix)){
+        } else {
+            for (int i = xTile1; i < xTile2; ++i) {
+                if (isTileSolid(i, yTile, levelMatrix)) {
                     return false;
                 }
-                if(levelMatrix[yTile+1][i] == 0){
+                if (levelMatrix[yTile + 1][i] == 0) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public static float GetEntityYPosUnderRoofOrAboveFloor(Rectangle2D.Float hitbox, float airSpeed) {
+        int currentTile = (int) (hitbox.y / Game.TILE_SIZE);
+        if (airSpeed > 0) {
+            // Falling - touching floor
+            int tileYPos = currentTile * Game.TILE_SIZE;
+            int yOffset = (int) (Game.TILE_SIZE - hitbox.height);
+            return tileYPos + yOffset - 1;
+        } else
+            // Jumping
+            return currentTile * Game.TILE_SIZE;
     }
 }

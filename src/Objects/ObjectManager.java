@@ -9,13 +9,14 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import Load.Load;
 
 public class ObjectManager {
     private final Play play;
     private ArrayList<ArrayList<BufferedImage>> fruitImages;
-    private final ArrayList<Fruit> fruits;
+    private final List<List<Fruit>> fruits;
 
     public ObjectManager(Play play)
     {
@@ -33,15 +34,20 @@ public class ObjectManager {
         misscellaneous.add(706);
         misscellaneous.add(707);
 
-        misscellaneous.add(600); // fullheart
+        createFruits(0);
+        createFruits(1);
+        createFruits(2);
+    }
 
+    private void createFruits(int lvlIndex){
+        List<Fruit> fruitsLevel = new ArrayList<>();
         for (int i = 700; i <= 707; ++i) {
-            ArrayList<Point2D> fruitCoordinates = play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getCoordinates(i);
+            ArrayList<Point2D> fruitCoordinates = play.getLevelHandler().getLevel(lvlIndex).getCoordinates(i);
             for (int j = 0; j < fruitCoordinates.size(); ++j) {
-                fruits.add(new Fruit(32 * (int) fruitCoordinates.get(j).getX(), 32 * (int) fruitCoordinates.get(j).getY(), i-700));
+                fruitsLevel.add(new Fruit(32 * (int) fruitCoordinates.get(j).getX(), 32 * (int) fruitCoordinates.get(j).getY(), i-700));
             }
         }
-
+        fruits.add(fruitsLevel);
     }
 
     private void loadImages()
@@ -55,7 +61,9 @@ public class ObjectManager {
         images.add(Load.getImage(orange));
         images.add(Load.getImage(pineapple));
         images.add(Load.getImage(strawberry));
+
         fruitImages = new ArrayList<>();
+
         for(int i = 0; i < images.size(); ++i) {
             ArrayList<BufferedImage> fruitImage = new ArrayList<>();
             for (int j = 0; j < 17; ++j) {
@@ -65,22 +73,22 @@ public class ObjectManager {
         }
     }
 
-    public void update()
+    public void update(int lvlIndex)
     {
-        for(Fruit f : fruits)
+        for(Fruit f : fruits.get(lvlIndex))
         {
             if(f.isActive())
                 f.update();
         }
     }
 
-    public void draw(Graphics obj, int xLevelOffset)
+    public void draw(Graphics obj, int lvlIndex, int xLevelOffset)
     {
-        drawFruit(obj, xLevelOffset);
+        drawFruit(obj, lvlIndex, xLevelOffset);
     }
 
-    private void drawFruit(Graphics obj, int xLevelOffset) {
-        for(Fruit f : fruits)
+    private void drawFruit(Graphics obj, int lvlIndex, int xLevelOffset) {
+        for(Fruit f : fruits.get(lvlIndex))
         {
             if(f.isActive())
             {

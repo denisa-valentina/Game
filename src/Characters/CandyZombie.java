@@ -5,29 +5,28 @@ import Load.Load;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import static Graphics.Constants.Enemy.worm_WIDTH;
-import static Graphics.Constants.Enemy.worm_HEIGHT;
-import static Graphics.Constants.Enemy.Type.WORM;
+import static Graphics.Constants.Enemy.Type.CANDY_ZOMBIE;
 import static Graphics.Constants.Enemy.*;
 
-public class Worm extends Enemy {
+public class CandyZombie extends Enemy {
 
-    private static List<List<BufferedImage>> wormAnimations;
+    private static List<List<BufferedImage>> zombieAnimations;
 
-    public Worm(float x, float y) {
-        super(x, y, worm_WIDTH, worm_HEIGHT, WORM);
-        initCollisionBox(42, 29); // width-ul si height-ul cutiei de coliziune
+    public CandyZombie(float x, float y) {
+        super(x, y, zombie_WIDTH, zombie_HEIGHT, CANDY_ZOMBIE);
+
+        initCollisionBox(40, 28); // width-ul si height-ul cutiei de coliziune
         initAttackBox();
     }
 
     public static void loadAnimations() {
         java.util.List<BufferedImage> images = new java.util.ArrayList<>();
         // 4 animations: Idle, Run, Attack, Dead (Hurt)
-        images.add(Load.getImage(Images.worm_idle));
-        images.add(Load.getImage(Images.worm_run));
-        images.add(Load.getImage(Images.worm_attack));
-        images.add(Load.getImage(Images.worm_dead));
-        wormAnimations = new java.util.ArrayList<>();
+        images.add(Load.getImage(Images.zombie_idle));
+        images.add(Load.getImage(Images.zombie_run));
+        images.add(Load.getImage(Images.zombie_attack));
+        images.add(Load.getImage(Images.zombie_dead));
+        zombieAnimations = new java.util.ArrayList<>();
 
         for (BufferedImage image : images) {
             java.util.List<int[]> imageRegions = Load.getImagesCoords(image);
@@ -38,12 +37,8 @@ public class Worm extends Enemy {
                         imageRegion[2],
                         imageRegion[3]));
             }
-            wormAnimations.add(imagess);
+            zombieAnimations.add(imagess);
         }
-    }
-
-    public static List<List<BufferedImage>> getEnemyAnimations() {
-        return wormAnimations;
     }
 
     @Override
@@ -64,10 +59,10 @@ public class Worm extends Enemy {
         } else {
             switch (action) {
                 case IDLE -> {
-                    resetValues();
                     changeAction(RUN); }
                 case RUN -> {
                     if (spotPlayer(levelMatrix, player)) {
+                        turnTowardsPlayer(player);
                         if (isPlayerTooClose(player)) {
                             changeAction(ATTACK);
                         }
@@ -75,24 +70,27 @@ public class Worm extends Enemy {
                     setRunning(levelMatrix);
                 }
                 case ATTACK -> {
-                    width = 65; height = 60; attacking = 1;
                     if(animationIndex == 0)
                         attackChecked = false;
                     if(animationIndex == 3 && !attackChecked)
                         checkEnemyHit(attackBox, player);
-                    }
-                    case HURT -> {
-                    }
-                    case DEAD -> { resetValues(); }
+                }
+                case HURT -> {
+                }
+                case DEAD -> { }
             }
         }
+    }
+
+    public static List<List<BufferedImage>> getEnemyAnimations() {
+        return zombieAnimations;
     }
 
     @Override
     public void resetValues(){
         attacking = 0;
-        width = worm_WIDTH;
-        height = worm_HEIGHT;
+        width = zombie_WIDTH;
+        height = zombie_HEIGHT;
     }
 
 }

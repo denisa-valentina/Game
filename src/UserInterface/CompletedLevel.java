@@ -1,5 +1,6 @@
 package UserInterface;
 
+import GameStates.GameState;
 import GameStates.Play;
 import Graphics.Constants;
 import Load.Load;
@@ -72,10 +73,13 @@ public class CompletedLevel {
     public void mouseReleased(MouseEvent e){
         if(isIn(e, menuButton))
             if(menuButton.isMousePressed)
-                System.out.println("Menu pressed.");
+            {
+                play.resetAll();
+                GameState.state = GameState.MENU;
+            }
         if(isIn(e, nextButton))
-            if(nextButton.isMousePressed)
-                System.out.println("Next button pressed.");
+            if(nextButton.isMousePressed){
+                play.loadNextLevel();}
 
         menuButton.resetBooleans();
         nextButton.resetBooleans();
