@@ -43,8 +43,8 @@ public class OtherButtons extends PauseButtons implements ButtonMethods {
             index = 2;
     }
 
-    public void draw(Graphics obj){
-        obj.drawImage(images.get(rowIndex).get(index), x, y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
+    public void draw(Graphics g){
+        g.drawImage(images.get(rowIndex).get(index), x, y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
     }
 
     public void resetBooleans(){

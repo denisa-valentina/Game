@@ -14,13 +14,13 @@ public class GameOver {
         this.play = play;
     }
 
-    public void draw(Graphics obj){
-        obj.setColor(new Color(0, 0, 0, 200));
-        obj.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+    public void draw(Graphics g){
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
-        obj.setColor(Color.white);
-        obj.drawString("Game Over", Game.GAME_WIDTH/2, 150);
-        obj.drawString("Press ESC to enter Main Menu", Game.GAME_WIDTH/2, 300);
+        g.setColor(Color.white);
+        g.drawString("Game Over", Game.GAME_WIDTH/2, 150);
+        g.drawString("Press ESC to enter Main Menu", Game.GAME_WIDTH/2, 300);
     }
 
     public void keyPressed(KeyEvent e){

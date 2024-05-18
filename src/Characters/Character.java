@@ -43,10 +43,10 @@ public abstract class Character {
         return collisionBox;
     }
 
-    protected void drawCollisionBox(Graphics obj, int xLevelOffset)
+    protected void drawCollisionBox(Graphics g, int xLevelOffset)
     {   // debugging
-        obj.setColor(Color.green);
-        obj.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
+        g.setColor(Color.green);
+        g.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
     }
 
     protected int getAction(){
@@ -59,7 +59,7 @@ public abstract class Character {
     }
 
 
-    public abstract void drawAttackBox(Graphics obj, int xLevelOffset);
+    public abstract void drawAttackBox(Graphics g, int xLevelOffset);
 
 
     //    public void setX(float x)

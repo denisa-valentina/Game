@@ -54,8 +54,8 @@ public class MenuButtons{
             index = 2;
     }
 
-    public void draw(Graphics obj) {
-        obj.drawImage(images.get(rowIndex).get(index), (x - xCenter), y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
+    public void draw(Graphics g) {
+        g.drawImage(images.get(rowIndex).get(index), (x - xCenter), y, BUTTON_WIDTH, BUTTON_HEIGHT, null);
     }
 
     public void resetBooleans()

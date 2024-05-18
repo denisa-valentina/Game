@@ -70,18 +70,18 @@ public class Pause {
         continueButton.update();
     }
 
-    public void draw(Graphics obj){
+    public void draw(Graphics g){
         // Background
-        obj.drawImage(pauseImage, pauseX, pauseY, pauseWidth, pauseHeight, null);
+        g.drawImage(pauseImage, pauseX, pauseY, pauseWidth, pauseHeight, null);
 
         // SoundButtons
-        musicButton.draw(obj);
-        soundButton.draw(obj);
+        musicButton.draw(g);
+        soundButton.draw(g);
 
         //OtherButtons
-        menuButton.draw(obj);
-        replayButton.draw(obj);
-        continueButton.draw(obj);
+        menuButton.draw(g);
+        replayButton.draw(g);
+        continueButton.draw(g);
     }
 
     public void resetBooleans() {
@@ -120,6 +120,7 @@ public class Pause {
         } else if (isIn(e, replayButton)) {
             if (replayButton.isMousePressed()) {
                 play.resetAll();
+                play.getLevelHandler().getCurrentLevel().resetScore();
                 Play.getPlayer().resetHeart();
                 play.unpauseGame();
             }

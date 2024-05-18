@@ -6,6 +6,8 @@ public class Constants {
     public static final int ANIMATION_SPEED_OBJECTS = 8;
     public static final float GRAVITY = 0.02f * Constants.GameCONST.SCALE;
 
+    public static final int METAL_SPIKE = 0;
+
     public static final ArrayList<Integer> misscellaneous = new ArrayList<>();
 
     public static class Fruits {
@@ -31,6 +33,7 @@ public class Constants {
             public static final int PINEAPPLE = 6;
             public static final int STRAWBERRY = 7;
         }
+
     }
 
     public static class LifeStatus {
@@ -49,6 +52,8 @@ public class Constants {
         public static class Images {
             public static final String bigClouds = "/level_map/big_clouds.png";
             public static final String smallClouds = "/level_map/small_clouds.png";
+            public static final String metalSpike = "/level_map/metal_spike.png";
+            public static final String woodSpike = "/level_map/wood_spike.png";
         }
 
         public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;

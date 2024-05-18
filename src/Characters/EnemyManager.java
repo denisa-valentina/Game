@@ -65,28 +65,28 @@ public class EnemyManager {
         }
     }
 
-    private void drawWorms(Graphics obj, int xLevelOffset) { // de modificat in functie de nivel
+    private void drawWorms(Graphics g, int xLevelOffset) { // de modificat in functie de nivel
         for(Enemy e: play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getEnemies())
         {
             if(e.isActive()) {
                 if(e instanceof Worm) {
                     BufferedImage image = Worm.getEnemyAnimations().get(e.getAction()).get(e.getAnimationIndex());
-                    obj.drawImage(image, (int) (e.collisionBox.x - worm_xOffset) - xLevelOffset + e.flipX(), (int) e.collisionBox.y - e.getAttacking() * (e.getHeight() / 2 - 3), e.getWidth() * e.walkDirection, e.getHeight(), null);
-                    e.drawCollisionBox(obj, xLevelOffset);
-                    e.drawAttackBox(obj, xLevelOffset);
+                    g.drawImage(image, (int) (e.collisionBox.x - worm_xOffset) - xLevelOffset + e.flipX(), (int) e.collisionBox.y - e.getAttacking() * (e.getHeight() / 2 - 3), e.getWidth() * e.walkDirection, e.getHeight(), null);
+                    e.drawCollisionBox(g, xLevelOffset);
+                    e.drawAttackBox(g, xLevelOffset);
                 }
                  if(e instanceof CandyZombie) {
                     BufferedImage image = CandyZombie.getEnemyAnimations().get(e.getAction()).get(e.getAnimationIndex());
-                    obj.drawImage(image, (int) (e.collisionBox.x - zombie_xOffset) - xLevelOffset + e.flipX(), (int) e.collisionBox.y - 10 - e.getAttacking() * (e.getHeight() / 2 - 3), e.getWidth() * e.walkDirection, e.getHeight(), null);
-                    e.drawCollisionBox(obj, xLevelOffset);
-                    e.drawAttackBox(obj, xLevelOffset);
+                    g.drawImage(image, (int) (e.collisionBox.x - zombie_xOffset) - xLevelOffset + e.flipX(), (int) e.collisionBox.y - 10 - e.getAttacking() * (e.getHeight() / 2 - 3), e.getWidth() * e.walkDirection, e.getHeight(), null);
+                    e.drawCollisionBox(g, xLevelOffset);
+                    e.drawAttackBox(g, xLevelOffset);
                 }
             }
         }
     }
 
-    public void draw(Graphics obj, int xLevelOffset) { // de modificat in functie de nivel
-        drawWorms(obj, xLevelOffset);
+    public void draw(Graphics g, int xLevelOffset) { // de modificat in functie de nivel
+        drawWorms(g, xLevelOffset);
         //draw idk
     }
 

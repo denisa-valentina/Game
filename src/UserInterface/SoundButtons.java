@@ -45,8 +45,8 @@ public class SoundButtons extends PauseButtons{
         }
     }
 
-    public void draw(Graphics obj){
-        obj.drawImage(images.get(rowIndex).get(colIndex), x, y, 64, 64,null);
+    public void draw(Graphics g){
+        g.drawImage(images.get(rowIndex).get(colIndex), x, y, 64, 64,null);
     }
 
     public void resetBooleans(){

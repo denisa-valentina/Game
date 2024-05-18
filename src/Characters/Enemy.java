@@ -49,9 +49,9 @@ public abstract class Enemy extends Character {
         attackBox.y = collisionBox.y;
     }
 
-    public void drawAttackBox(Graphics obj, int xLevelOffset) {
-        obj.setColor(Color.RED);
-        obj.drawRect((int)(attackBox.x - xLevelOffset), (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
+    public void drawAttackBox(Graphics g, int xLevelOffset) {
+        g.setColor(Color.RED);
+        g.drawRect((int)(attackBox.x - xLevelOffset), (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
     public void changeAction(int enemyAction)

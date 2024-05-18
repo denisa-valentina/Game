@@ -19,7 +19,6 @@
 //
 //    public void update()
 //    {
-//        if(doAnimation)
-//            updateAnimationTick();
+//        updateAnimationTick();
 //    }
 //}

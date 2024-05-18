@@ -2,6 +2,7 @@ package Objects;
 
 import Graphics.Constants;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 import static Graphics.Constants.ANIMATION_SPEED_OBJECTS;
@@ -10,7 +11,7 @@ public class GameObject {
 
     protected int x, y, objectType;
     protected Rectangle2D.Float collisionBox;
-    protected boolean doAnimation, active = true;
+    protected boolean active = true;
     protected int animationTick, animationIndex;
     protected int xOffset, yOffset;
 
@@ -26,11 +27,11 @@ public class GameObject {
         collisionBox = new Rectangle2D.Float(x, y, (int)(width * Constants.GameCONST.SCALE), (int)(height * Constants.GameCONST.SCALE));
     }
 
-//    public void drawCollisionBox(Graphics obj, int xLevelOffset)
-//    {   // debugging
-//        obj.setColor(Color.green);
-//        obj.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
-//    }
+    public void drawCollisionBox(Graphics g, int xLevelOffset)
+    {   // debugging
+        g.setColor(Color.green);
+        g.drawRect((int)collisionBox.x + xOffset - xLevelOffset, (int)collisionBox.y + yOffset, (int)collisionBox.width, (int)collisionBox.height);
+    }
 
     protected void updateAnimationTick()
     {
@@ -62,22 +63,11 @@ public class GameObject {
         return collisionBox;
     }
 
-//    public int getObjectType() {
-//        return objectType;
-//    }
 
     public int getxOffset() {
         return xOffset;
     }
 
-//    public int getyOffset()
-//    {
-//        return yOffset;
-//    }
-//    public void setActive(boolean active)
-//    {
-//        this.active = active;
-//    }
 
     public int getAnimationIndex()
     {
@@ -88,10 +78,10 @@ public class GameObject {
         animationTick = 0;
         animationIndex = 0;
         active = true;
-        doAnimation = true;
     }
 
-
-
+    public void setActive(boolean active){
+        this.active = active;
+    }
 }
 

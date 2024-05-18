@@ -1,6 +1,7 @@
 package LevelMap;
 
 import Characters.Enemy;
+import Characters.Player;
 import Load.Load;
 import Main.Game;
 
@@ -11,40 +12,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Graphics.Constants.GameCONST;
+import Objects.Spike;
 
-import static Graphics.Constants.misscellaneous;
+import static Graphics.Constants.*;
 
 public class Level {
 
+    private int levelScore;
+
     private final BufferedImage backGround;
+
     private BufferedImage[] levelTileMap;
     private final Layer groundLayer;
     private final Layer backGroundLayer;
 
-    private final ArrayList<Integer> enemyValues;
     private final List<Enemy> enemies;
-
-    private int levelTilesWide;
-    private int maxTileOffset;
-    private int maxLevelOffsetX;
+    private final List<Spike> spikes;
 
     public Level(String backGround, String tileMap, int rows, int cols, String groundLayer, String backGroundLayer) {
+        levelScore = 0;
+
         this.backGround = Load.getImage(backGround);
         this.groundLayer = new Layer(groundLayer);
         this.backGroundLayer = new Layer(backGroundLayer);
 
-        enemyValues = new ArrayList<>();
         enemies = new ArrayList<>();
+        spikes = new ArrayList<>();
 
         importMapSprites(tileMap, rows, cols);
 
-        addEnemyValues(500);
-
+        createSpikes();
     }
 
+    private void createSpikes(){
+        ArrayList<Point2D> spikeCoordinates = getCoordinates(600);
+        for (int j = 0; j < spikeCoordinates.size(); ++j) {
+            spikes.add(new Spike(32 * (int) spikeCoordinates.get(j).getX(), 32 * (int) spikeCoordinates.get(j).getY(), 32, METAL_SPIKE));
+        }
+    }
 
-    public void addEnemyValues(int value){
-        enemyValues.add(value);
+    public void checkSpikeTouched(Player player){
+        for(Spike s: spikes){
+            if(s.getCollisionBox().intersects(player.getCollisionBox())){
+                player.respawn();
+            }
+        }
     }
 
     public void addEnemy(Enemy enemy){
@@ -63,7 +75,7 @@ public class Level {
         }
     }
 
-    public void draw(Graphics obj, BufferedImage[]levelMap, Layer layer, int xLevelOffset)
+    public void draw(Graphics g, BufferedImage[]levelMap, Layer layer, int xLevelOffset)
     {
         for(int j = 0; j< GameCONST.HEIGHT_TILES; ++j)
         {
@@ -71,15 +83,15 @@ public class Level {
             {
                 int index = layer.getTileIndex(i, j);
                 if(index != 0 && !misscellaneous.contains(index)) {
-                    obj.drawImage(levelMap[index-1], i * Game.TILE_SIZE - xLevelOffset, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
+                    g.drawImage(levelMap[index-1], i * Game.TILE_SIZE - xLevelOffset, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
                 }
             }
         }
     }
 
-    public void drawLevel(Graphics obj, int xLevelOffset){
-        draw(obj, levelTileMap, groundLayer, xLevelOffset);
-        draw(obj, levelTileMap, backGroundLayer, xLevelOffset);
+    public void drawLevel(Graphics g, int xLevelOffset){
+        draw(g, levelTileMap, groundLayer, xLevelOffset);
+        draw(g, levelTileMap, backGroundLayer, xLevelOffset);
     }
 
 
@@ -109,10 +121,6 @@ public class Level {
         return backGround;
     }
 
-    public List<Integer> getEnemyValues(){
-        return enemyValues;
-    }
-
     public BufferedImage[] getLevelTileMap(){
         return levelTileMap;
     }
@@ -121,7 +129,20 @@ public class Level {
         return enemies;
     }
 
-    public int getMaxLevelOffsetX(){
-        return maxLevelOffsetX;
+    public int getLevelScore(){
+        return levelScore;
     }
+
+    public void setLevelScore(int levelScore){
+        this.levelScore += levelScore;
+    }
+
+    public void resetScore(){
+        this.levelScore = 0;
+    }
+
+    public List<Spike> getSpikes(){
+        return spikes;
+    }
+
 }

@@ -43,12 +43,13 @@ public class LevelHandler {
 
         Level nextLevel = Levels.get(levelIndex);
         Play.getPlayer().loadLevelMatrix(nextLevel.getGroundLayer().getLayerMatrix());
-        game.getPlay().setLevelOffset(nextLevel.getMaxLevelOffsetX());
+        Play.getPlayer().setScore(getCurrentLevel().getLevelScore()); // setarea noului scor
+        //game.getPlay().setLevelOffset(nextLevel.getMaxLevelOffsetX());
     }
 
-    public void draw(Graphics obj, int xLevelOffset)
+    public void draw(Graphics g, int xLevelOffset)
     {
-            Levels.get(levelIndex).drawLevel(obj, xLevelOffset);
+            Levels.get(levelIndex).drawLevel(g, xLevelOffset);
     }
 
     public Level getLevel(int index)

@@ -25,19 +25,17 @@ public class Player extends Character {
     private BufferedImage fullHeart;
     private BufferedImage emptyHeart;
 
+    // score
+    private int score = 0;
+
     private int[][] levelMatrix;
     private List<List<BufferedImage>> animations;
 
     private boolean moving = false, attacking1 = false, attacking2 = false;
     private boolean left, right, jump;
-    private final float jumpSpeed = -2.5f * GameCONST.SCALE, fallSpeed = 0.5f * GameCONST.SCALE;
-    private final float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
 
     private int flipX = 0;
     private int flipW = 1;
-
-    private int hearts_xStart = (int) (110 * GameCONST.SCALE);
-    private int hearts_yStart = (int) (50 * GameCONST.SCALE);
 
     private boolean attackChecked = false;
 
@@ -79,6 +77,12 @@ public class Player extends Character {
 
         updateAttackBox();
         updatePosition();
+        if(moving){
+
+            checkFruitTouched();
+            checkSpikeTouched();
+
+        }
 
         if((attacking1 || attacking2)) // && play.getLevelHandler().getLevelIndex() == 2) || (attacking2 && play.getLevelHandler().getLevelIndex() == 1))
         {
@@ -87,6 +91,14 @@ public class Player extends Character {
 
         updateAnimationTick();
         setAnimation();
+        System.out.println(score + play.getLevelHandler().getCurrentLevel().getLevelScore());
+    }
+
+    private void checkFruitTouched() {
+        play.checkObjectTouched(collisionBox);
+    }
+    private void checkSpikeTouched(){
+        play.getLevelHandler().getCurrentLevel().checkSpikeTouched(this);
     }
 
     private void checkAttack() {
@@ -113,39 +125,36 @@ public class Player extends Character {
     void updateHealth(int value) {
         currentHealth += value;
         currentHealth = Math.max(Math.min(currentHealth, currentHealth), 0);
-
-//        if(actualLife <= 0) {
-//            actualLife = 0;
-//            // game over
-//        }
-//        else if(actualLife >= totalLife) {
-//            actualLife = totalLife;
-//        }
     }
 
-    public void draw(Graphics obj, int xLevelOffset) {
+    public void draw(Graphics g, int xLevelOffset) {
+        final float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
+
         BufferedImage image = animations.get(action).get(animationIndex);
-        obj.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), width * flipW, height, null);
-        drawCollisionBox(obj, xLevelOffset);
-        drawAttackBox(obj, xLevelOffset);
-        drawUI(obj);
+        g.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), width * flipW, height, null);
+        drawCollisionBox(g, xLevelOffset);
+        drawAttackBox(g, xLevelOffset);
+        drawUI(g);
     }
 
     @Override
-    public void drawAttackBox(Graphics obj, int xLevelOffset) {
-        obj.setColor(Color.green);
-        obj.drawRect((int)attackBox.x - xLevelOffset, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
+    public void drawAttackBox(Graphics g, int xLevelOffset) {
+        g.setColor(Color.green);
+        g.drawRect((int)attackBox.x - xLevelOffset, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
-    private void drawUI(Graphics obj) {
-        obj.drawImage(statusBar, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE), 270, 150, null);
+    private void drawUI(Graphics g) {
+        int hearts_xStart = (int) (110 * GameCONST.SCALE);
+        int hearts_yStart = (int) (50 * GameCONST.SCALE);
+
+        g.drawImage(statusBar, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE), 270, 150, null);
         for(int i=0;i<currentHealth;++i)
         {
-            obj.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+            g.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
         }
         for(int i=currentHealth;i<maxHealth;++i)
         {
-            obj.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+            g.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
         }
     }
 
@@ -178,8 +187,8 @@ public class Player extends Character {
         }
 
         List<BufferedImage> image = new ArrayList<>();
-        image.add(images.get(images.size()-1).getSubimage(0, 0, 128, 128));
-        image.add(images.get(images.size()-1).getSubimage(128, 0, 128, 128));
+        image.add(images.getLast().getSubimage(0, 0, 128, 128));
+        image.add(images.getLast().getSubimage(128, 0, 128, 128));
 
         animations.add(image);
 
@@ -248,6 +257,7 @@ public class Player extends Character {
     }
 
     private void updatePosition() {
+        float fallSpeed = 0.5f * GameCONST.SCALE;
         float xSpeed = 0;
         moving = false;
 
@@ -305,7 +315,13 @@ public class Player extends Character {
         }
     }
 
+    public void respawn() {
+        updateHealth(-1);
+        resetAll();
+    }
+
     private void jumping() {
+        float jumpSpeed = -2.5f * GameCONST.SCALE;
         if(inAir)
             return; // we are already in the air
         inAir = true;
@@ -369,5 +385,13 @@ public class Player extends Character {
 
         if(!isOnTheFloor(collisionBox, levelMatrix))
             inAir = true;
+    }
+
+    public void setScore(int value){
+        score += value;
+    }
+
+    public int getScore(){
+        return score;
     }
 }

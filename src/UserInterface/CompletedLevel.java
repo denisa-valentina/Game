@@ -52,10 +52,10 @@ public class CompletedLevel {
 
     }
 
-    public void draw(Graphics obj){
-        obj.drawImage(completedLevelImage, x, y, width, height, null);
-        nextButton.draw(obj);
-        menuButton.draw(obj);
+    public void draw(Graphics g){
+        g.drawImage(completedLevelImage, x, y, width, height, null);
+        nextButton.draw(g);
+        menuButton.draw(g);
     }
 
     public void mouseMoved(MouseEvent e){

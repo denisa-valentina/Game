@@ -42,12 +42,12 @@ public class GamePanel extends JPanel {
         System.out.println(size.getWidth() + " " + size.getHeight());
     }
 
-    public void paintComponent(Graphics obj) {
+    public void paintComponent(Graphics g) {
         /* apeleaza metoda paintComponent a clasei JComponent (parinte al clasei JPanel, care
            a fost extinsa de clasa noastra. E foarte utila atunci cand dorim sa "curatam" zona de posibile
            glitch-uri si desene anterioare inainte de a desena noi insine. Actioneaza precum un burete pe tabla */
-        super.paintComponent(obj);
+        super.paintComponent(g);
 
-        game.render(obj);
+        game.draw(g);
     }
 }

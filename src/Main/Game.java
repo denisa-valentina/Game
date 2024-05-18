@@ -10,7 +10,6 @@ import GameStates.Menu;
 import GameWindow.GameWindow;
 import GameWindow.GamePanel;
 import Graphics.Constants.GameCONST;
-import Load.Load;
 
 import java.awt.*;
 
@@ -55,10 +54,10 @@ public class Game implements Runnable {
         }
     }
 
-    public void render(Graphics obj) {
+    public void draw(Graphics g) {
         switch (GameState.state) {
-            case MENU -> menu.draw(obj);
-            case PLAY -> play.draw(obj);
+            case MENU -> menu.draw(g);
+            case PLAY -> play.draw(g);
         }
     }
 
