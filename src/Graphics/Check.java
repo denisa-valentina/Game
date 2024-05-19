@@ -1,6 +1,5 @@
 package Graphics;
 
-import GameStates.Play;
 import Main.Game;
 
 import java.awt.geom.Rectangle2D;

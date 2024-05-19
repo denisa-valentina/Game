@@ -32,6 +32,7 @@ public class Constants {
             public static final int ORANGE = 5;
             public static final int PINEAPPLE = 6;
             public static final int STRAWBERRY = 7;
+            public static final int HEART = 8;
         }
 
     }
@@ -53,7 +54,7 @@ public class Constants {
             public static final String bigClouds = "/level_map/big_clouds.png";
             public static final String smallClouds = "/level_map/small_clouds.png";
             public static final String metalSpike = "/level_map/metal_spike.png";
-            public static final String woodSpike = "/level_map/wood_spike.png";
+            public static final String door = "/level_map/door.png";
         }
 
         public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
@@ -83,10 +84,11 @@ public class Constants {
             public static final String menuImage = "/UI/Menu/image.png";
             public static final String menuBackGround = "/UI/Menu/menuBackground.png";
             public static final String pauseImage = "/UI/Pause/pause.png";
+            public static final String gameOverImage = "/UI/GameOver/442561835_953027623491281_989466193974398357_n.png";
             public static final String soundButton = "/UI/Pause/soundButton.png";
             public static final String musicButton = "/UI/Pause/musicButton.png";
             public static final String otherButtons = "/UI/otherButtons.png";
-            public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel1.png";
+            public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel.png";
         }
 
         public static class PauseButtons {
@@ -131,7 +133,6 @@ public class Constants {
             public static final String player_dead = "/player/Dead.png";
             public static final String player_attack1 = "/player/Attack_1.png";
             public static final String player_attack2 = "/player/Attack_2.png";
-            public static final String player_hurt = "/player/Hurt.png";
         }
 
         public static final int IDLE = 0;
@@ -140,7 +141,6 @@ public class Constants {
         public static final int DEAD = 3;
         public static final int ATTACK_1 = 4;
         public static final int ATTACK_2 = 5;
-        public static final int HURT = 6;
 
         public static int getSpriteAmount(int action) {
 
@@ -150,9 +150,6 @@ public class Constants {
                 }
                 case JUMP, DEAD, ATTACK_1, ATTACK_2 -> {
                     return 10;
-                }
-                case HURT -> {
-                    return 2;
                 }
                 default -> {
                     return 0;
@@ -173,11 +170,24 @@ public class Constants {
             public static final String zombie_attack = "/enemies/candy_zombie/zombie_attack.png";
             public static final String zombie_dead = "/enemies/candy_zombie/zombie_hurt.png";
 
+            public static final String iceKing_idle = "/enemies/bosses/Ice King/IceKing_Idle.png";
+            public static final String iceKing_run = "/enemies/bosses/Ice King/IceKing_Run.png";
+            public static final String iceKing_attack = "/enemies/bosses/Ice King/IceKing_Attack.png";
+            public static final String iceKing_hurt = "/enemies/bosses/Ice King/IceKing_Hurt.png";
+            public static final String iceKing_dead = "/enemies/bosses/Ice King/IceKing_Dead.png";
+
+            public static final String marauderLeader_idle = "/enemies/bosses/Marauder Leader/marauderLeader_idle.png";
+            public static final String marauderLeader_run = "/enemies/bosses/Marauder Leader/marauderLeader_run.png";
+            public static final String marauderLeader_attack = "/enemies/bosses/Marauder Leader/marauderLeader_attack.png";
+            public static final String marauderLeader_hurt = "/enemies/bosses/Marauder Leader/marauderLeader_hurt.png";
+            public static final String marauderLeader_dead = "/enemies/bosses/Marauder Leader/marauderLeader_dead.png";
         }
 
         public static class Type {
             public static final int WORM = 0;
             public static final int CANDY_ZOMBIE = 1;
+            public static final int LEADER_MARAUDER = 2;
+            public static final int ICE_KING = 3;
         }
 
         public static final int IDLE = 0;
@@ -199,6 +209,22 @@ public class Constants {
         public static final int zombie_HEIGHT = (int)(Zombie_HEIGHT_DEFAULT * GameCONST.SCALE);
 
         public static final int zombie_xOffset = (int)(7 * GameCONST.SCALE);
+
+        public static final int IceKing_WIDTH_DEFAULT = 80;
+        public static final int IceKing_HEIGHT_DEFAULT = 72;
+        public static final int IceKing_WIDTH = (int)(IceKing_WIDTH_DEFAULT * GameCONST.SCALE);
+        public static final int IceKing_HEIGHT = (int)(IceKing_HEIGHT_DEFAULT * GameCONST.SCALE);
+
+        public static final int iceKing_xOffset = (int)(25*GameCONST.SCALE);
+        public static final int iceKing_yOffset = (int)(40*GameCONST.SCALE);
+
+        public static final int LeaderMarauder_WIDTH_DEFAULT = 80;
+        public static final int LeaderMarauder_HEIGHT_DEFAULT = 72;
+        public static final int LeaderMarauder_WIDTH = (int)(LeaderMarauder_WIDTH_DEFAULT * GameCONST.SCALE);
+        public static final int LeaderMarauder_HEIGHT = (int)(LeaderMarauder_HEIGHT_DEFAULT * GameCONST.SCALE);
+
+        public static final int leaderMarauder_xOffset = (int)(25*GameCONST.SCALE);
+        public static final int leaderMarauder_yOffset = (int)(40*GameCONST.SCALE);
 
 
         public static int getSpriteAmount(int enemyType, int action) {
@@ -238,6 +264,38 @@ public class Constants {
                         }
                     }
                 }
+                case Type.ICE_KING -> {
+                    switch (action) {
+                        case IDLE -> {
+                            return 10;
+                        }
+                        case RUN -> {
+                            return 6;
+                        }
+                        case DEAD -> {
+                            return 8;
+                        }
+                        case ATTACK -> {
+                            return 11;
+                        }
+                        case HURT -> {
+                            return 4;
+                        }
+                    }
+                }
+                case Type.LEADER_MARAUDER -> {
+                    switch (action) {
+                        case IDLE -> {
+                            return 13;
+                        }
+                        case RUN, ATTACK, HURT -> {
+                            return 6;
+                        }
+                        case DEAD -> {
+                            return 7;
+                        }
+                    }
+                }
             }
             return 0;
         }
@@ -245,6 +303,8 @@ public class Constants {
         public static int getMaxHealth(int enemyType){
             switch (enemyType){
                 case Type.WORM, Type.CANDY_ZOMBIE -> { return 1; }
+                case Type.LEADER_MARAUDER -> { return 2; }
+                case Type.ICE_KING -> { return 3; }
                 default -> { return 0; }
             }
         }
@@ -252,6 +312,7 @@ public class Constants {
         public static int getEnemyDamage(int enemyType){
             switch (enemyType){
                 case Type.WORM, Type.CANDY_ZOMBIE -> { return 1; }
+                case Type.LEADER_MARAUDER, Type.ICE_KING -> { return 2; }
                 default -> { return 0; }
             }
         }

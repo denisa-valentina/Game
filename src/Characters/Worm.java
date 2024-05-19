@@ -81,8 +81,6 @@ public class Worm extends Enemy {
                     if(animationIndex == 3 && !attackChecked)
                         checkEnemyHit(attackBox, player);
                     }
-                    case HURT -> {
-                    }
                     case DEAD -> { resetValues(); }
             }
         }

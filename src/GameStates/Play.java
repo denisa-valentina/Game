@@ -90,15 +90,18 @@ public class Play extends State implements StateMethods {
             pause.update();
         } else if (islevelCompleted) {
             completedLevel.update();
-        } else if (!isGameOver) {
+        } else if(isGameOver){
+            gameOver.update();
+        } else if (player.getIsDead()) {
+            player.update();
+        }
+            else {
             //levelHandler.update();
             objectManager.update();
             player.update();
-            enemyManager.update(levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix(), player);
+            enemyManager.update(levelHandler.getCurrentLevel().getGroundLayer().getLayerMatrix(), player);
             isCloseToBorder();
         }
-
-        //System.out.println((player.getScore() + levelHandler.getCurrentLevel().getLevelScore()));
     }
 
     @Override
@@ -154,6 +157,7 @@ public class Play extends State implements StateMethods {
         isGameOver = false;
         isPaused = false;
         islevelCompleted = false;
+        player.setIsDead(false);
         player.resetAll();
         enemyManager.resetAll();
 
@@ -200,6 +204,10 @@ public class Play extends State implements StateMethods {
         return levelHandler;
     }
 
+    public EnemyManager getEnemyManager(){
+        return enemyManager;
+    }
+
     public void unpauseGame(){
         isPaused = false;
     }
@@ -215,27 +223,45 @@ public class Play extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(isPaused){
-            pause.mousePressed(e);
+        if (!isGameOver) {
+            if (isPaused) {
+                pause.mousePressed(e);
+            } else if (islevelCompleted) {
+                completedLevel.mousePressed(e);
+            }
         }
-        else if(islevelCompleted) { completedLevel.mousePressed(e); }
+        else {
+            gameOver.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(isPaused){
-            pause.mouseReleased(e);
+        if(!isGameOver) {
+            if (isPaused) {
+                pause.mouseReleased(e);
+            } else if (islevelCompleted) {
+                completedLevel.mouseReleased(e);
+            }
         }
-        else if(islevelCompleted) { completedLevel.mouseReleased(e); }
-
+        else {
+            gameOver.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if(isPaused){
-            pause.mouseMoved(e);
+        if (!isGameOver) {
+
+            if (isPaused) {
+                pause.mouseMoved(e);
+            } else if (islevelCompleted) {
+                completedLevel.mouseMoved(e);
+            }
         }
-        else if(islevelCompleted) { completedLevel.mouseMoved(e); }
+        else{
+            gameOver.mouseMoved(e);
+        }
     }
 
     public void setLevelCompleted(boolean levelCompleted) {

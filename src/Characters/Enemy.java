@@ -149,14 +149,14 @@ public abstract class Enemy extends Character {
         if(attackBox.intersects(player.collisionBox)) // enemy attackBox intersects player's collisionBox
         {
             player.updateHealth(-getEnemyDamage(enemyType));
-            //player.changeAction(HURT);
+            player.changeAction(HURT);
         }
         attackChecked = true;
     }
 
     // checks if enemy sees the player
     protected boolean spotPlayer(int [][]levelMatrix, Player player) {
-        int playerTileY = (int)(player.getCollisionBox().y + player.collisionBox.height) / Game.TILE_SIZE;
+        int playerTileY = (int)(player.collisionBox.y + player.collisionBox.height) / Game.TILE_SIZE;
         if(playerTileY == yTile) { // player and enemy are on the same Y position (they are not at different heights)
             if(isPlayerInRange(player)) {
                 return ClearSight(levelMatrix, collisionBox, player.collisionBox, yTile);

@@ -9,7 +9,7 @@ import java.util.List;
 
 import static Graphics.Constants.UI.PauseButtons.SOUND_SIZE;
 
-public class SoundButtons extends PauseButtons{
+public class SoundButtons extends PauseButtons implements ButtonMethods{
 
     private List<List<BufferedImage>> images;
     private boolean isMuted;
@@ -69,6 +69,4 @@ public class SoundButtons extends PauseButtons{
     public void setMousePressed(boolean isMousePressed) {
         this.isMousePressed = isMousePressed;
     }
-
-    public boolean isMouseOver() { return isMouseOver; }
 }

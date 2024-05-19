@@ -62,8 +62,4 @@ public class OtherButtons extends PauseButtons implements ButtonMethods {
     public void setMousePressed(boolean isMousePressed) {
         this.isMousePressed = isMousePressed;
     }
-
-    public boolean isMouseOver() {
-        return isMouseOver;
-    }
 }

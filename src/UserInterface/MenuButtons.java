@@ -11,7 +11,7 @@ import java.util.List;
 import static Graphics.Constants.UI.Buttons.*;
 import static Graphics.Constants.UI.Images.*;
 
-public class MenuButtons{
+public class MenuButtons implements ButtonMethods{
     private List<List<BufferedImage>> images;
     private final GameState gameState;
     private boolean mouseOver, mousePressed;

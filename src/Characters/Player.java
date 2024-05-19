@@ -10,6 +10,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Graphics.Constants.Player.ATTACK_1;
+import static Graphics.Constants.Player.ATTACK_2;
+import static Graphics.Constants.Player.DEAD;
+import static Graphics.Constants.Player.IDLE;
+import static Graphics.Constants.Player.RUN;
 import static Graphics.Constants.GRAVITY;
 import static Graphics.Constants.Player.*;
 import static Graphics.Constants.GameCONST;
@@ -31,7 +36,7 @@ public class Player extends Character {
     private int[][] levelMatrix;
     private List<List<BufferedImage>> animations;
 
-    private boolean moving = false, attacking1 = false, attacking2 = false;
+    private boolean moving = false, attacking1 = false, attacking2 = false, isDead = false;
     private boolean left, right, jump;
 
     private int flipX = 0;
@@ -69,10 +74,16 @@ public class Player extends Character {
     }
 
     public void update() {
-        if(currentHealth <= 0)
-        {
-            play.setGameOver(true);
-            return;
+        if(currentHealth <= 0) {
+            if(action != DEAD){
+                action = DEAD;
+                resetAnimationTick();
+                setIsDead(true);
+            } else if(animationIndex == getSpriteAmount(DEAD) - 1 && animationTick >= animationSpeed - 1){
+                play.setGameOver(true);
+            } else
+                updateAnimationTick();
+            return; // we want the update() method to stop here
         }
 
         updateAttackBox();
@@ -81,17 +92,15 @@ public class Player extends Character {
 
             checkFruitTouched();
             checkSpikeTouched();
-
         }
 
-        if((attacking1 || attacking2)) // && play.getLevelHandler().getLevelIndex() == 2) || (attacking2 && play.getLevelHandler().getLevelIndex() == 1))
+        if((attacking1 && play.getLevelHandler().getLevelIndex() > 0) || (attacking2 && play.getLevelHandler().getLevelIndex() == 2))
         {
             checkAttack();
         }
 
-        updateAnimationTick();
         setAnimation();
-        System.out.println(score + play.getLevelHandler().getCurrentLevel().getLevelScore());
+        updateAnimationTick();
     }
 
     private void checkFruitTouched() {
@@ -122,9 +131,9 @@ public class Player extends Character {
         attackBox.y = collisionBox.y + collisionBox.height/2;
     }
 
-    void updateHealth(int value) {
+    public void updateHealth(int value) {
         currentHealth += value;
-        currentHealth = Math.max(Math.min(currentHealth, currentHealth), 0);
+        currentHealth = Math.max(Math.min(currentHealth, maxHealth), 0);
     }
 
     public void draw(Graphics g, int xLevelOffset) {
@@ -156,6 +165,9 @@ public class Player extends Character {
         {
             g.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
         }
+        g.setColor(Color.black);
+        g.setFont(new Font("SERIF", Font.PLAIN, 40));
+        g.drawString("Score: " + (getScore() + play.getLevelHandler().getCurrentLevel().getLevelScore()), 100, 170);
     }
 
     private void loadAnimations() {
@@ -167,7 +179,6 @@ public class Player extends Character {
         images.add(Load.getImage(Images.player_dead));
         images.add(Load.getImage(Images.player_attack1));
         images.add(Load.getImage(Images.player_attack2));
-        images.add(Load.getImage(Images.player_hurt));
         animations = new ArrayList<>();
 
         for (int i = 0; i < 2; ++i) {
@@ -178,19 +189,13 @@ public class Player extends Character {
             animations.add(image);
         }
 
-        for (int i = 2; i < images.size() - 1; ++i) {
+        for (int i = 2; i < images.size(); ++i) {
             List<BufferedImage> image = new ArrayList<>();
             for (int j = 0; j < 10; ++j) {
                 image.add(images.get(i).getSubimage(j * 128, 0, 128, 128));
             }
             animations.add(image);
         }
-
-        List<BufferedImage> image = new ArrayList<>();
-        image.add(images.getLast().getSubimage(0, 0, 128, 128));
-        image.add(images.getLast().getSubimage(128, 0, 128, 128));
-
-        animations.add(image);
 
         fullHeart = Load.getImage(Constants.LifeStatus.fullHeart);
         emptyHeart = Load.getImage(Constants.LifeStatus.emptyHeart);
@@ -209,14 +214,12 @@ public class Player extends Character {
 
         if (moving) {
             action = RUN;
-        } else {
-            action = IDLE;
-        }
+        } else action = IDLE;
         if (inAir) {
             action = JUMP;
         }
 
-        if (attacking1){ //&& play.getLevelHandler().getLevelIndex() == 1) {
+        if (attacking1 && play.getLevelHandler().getLevelIndex() > 0) {
             action = ATTACK_1;
 //            if(startAnimation != ATTACK_1){ // so that the player's attack have effect sooner
 //                animationIndex = 3;
@@ -224,7 +227,7 @@ public class Player extends Character {
 //                return;
 //            }
         }
-        if (attacking2)// && play.getLevelHandler().getLevelIndex() == 2)
+        if (attacking2 && play.getLevelHandler().getLevelIndex() == 2)
             {
             action = ATTACK_2;
         }
@@ -317,7 +320,8 @@ public class Player extends Character {
 
     public void respawn() {
         updateHealth(-1);
-        resetAll();
+        if(currentHealth > 0)
+        { resetAll();}
     }
 
     private void jumping() {
@@ -393,5 +397,13 @@ public class Player extends Character {
 
     public int getScore(){
         return score;
+    }
+
+    public void setIsDead(boolean dead){
+        this.isDead = dead;
+    }
+
+    public boolean getIsDead(){
+        return isDead;
     }
 }

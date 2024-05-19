@@ -12,7 +12,7 @@ public class LevelHandler {
 
     private final Game game;
     private ArrayList<Level> Levels;
-    private int levelIndex = 2;
+    private int levelIndex = 0;
 
     // public LevelHandler(Game game)
     public LevelHandler(Game game) {
@@ -61,13 +61,7 @@ public class LevelHandler {
         return levelIndex;
     }
 
-    public int getLevelsNumber(){
-        return Levels.size();
-    }
-
     public Level getCurrentLevel(){
         return Levels.get(levelIndex);
     }
-
-    //public void update() {}
 }
