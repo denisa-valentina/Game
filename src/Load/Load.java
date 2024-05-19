@@ -2,9 +2,10 @@ package Load;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Load {
 
@@ -12,8 +13,8 @@ public class Load {
 
         BufferedImage image = null;
         InputStream input = Load.class.getResourceAsStream(sourceName);
-
         try {
+
             image = ImageIO.read(input);
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +38,7 @@ public class Load {
 
         // Inițializări pentru coordonatele imaginii
         int startX = 0;
-        int endX = 0;
+        int endX;
         int minHeight = h;  // Înălțimea minimă
         int maxHeight = 0;  // Înălțimea maximă
         int upperLeftX = 0;
@@ -47,8 +48,8 @@ public class Load {
         // Iterează pe lățimea imaginii
         for (int i = 0; i < w; i++) {
             boolean isTransparent = true;
-            int startY = -1;
-            int endY = -1;
+//            int startY = -1;
+//            int endY = -1;
 
             // Verifică transparența pe toată înălțimea imaginii și reține startY și endY
             for (int j = 0; j < h; j++) {
@@ -77,14 +78,15 @@ public class Load {
                 endX = i;
                 imageLenght = endX - startX;
                 imageHeight = maxHeight - minHeight;
-                if (upperLeftY < 0) upperLeftY = 0;
-                if (upperLeftX < 0) upperLeftX = 0;
+                // if (upperLeftY < 0) upperLeftY = 0;
+                // if (upperLeftX < 0) upperLeftX = 0;
                 if (imageLenght < 0) imageLenght = 0;
                 if (imageHeight < 0) imageHeight = 0;
                 imageRegions.add(new int[]{upperLeftX, upperLeftY, imageLenght, imageHeight});
                 inImage = false;
             }
         }
+
         // Dacă nu a fost un spațiu transparent la sfârșit
         if (inImage) {
 
@@ -92,5 +94,21 @@ public class Load {
         }
 
         return imageRegions;
+    }
+
+    public static List<List<BufferedImage>> getAnimations(List<BufferedImage> images) {
+        List<List<BufferedImage>> animations = new ArrayList<>();
+        for (BufferedImage image : images) {
+            java.util.List<int[]> imageRegions = Load.getImagesCoords(image);
+            java.util.List<BufferedImage> imagess = new java.util.ArrayList<>();
+            for (int[] imageRegion : imageRegions) {
+                imagess.add(image.getSubimage(imageRegion[0],
+                        imageRegion[1],
+                        imageRegion[2],
+                        imageRegion[3]));
+            }
+           animations.add(imagess);
+        }
+        return animations;
     }
 }

@@ -41,11 +41,6 @@ public class Constants {
         public static final String staturBar = "/status/bar.png";
         public static final String fullHeart = "/status/heartFull.png";
         public static final String emptyHeart = "/status/heartEmpty.png";
-
-        public static final int HEART_WIDTH_DEFAULT = 53; // deocamdata
-        public static final int HEART_HEIGHT_DEFAULT = 45;
-        public static final int HEART_WIDTH = (int) (HEART_WIDTH_DEFAULT * GameCONST.SCALE);
-        public static final int HEART_HEIGHT = (int) (HEART_HEIGHT_DEFAULT * GameCONST.SCALE);
     }
 
     public static class Surroundings {
@@ -81,13 +76,13 @@ public class Constants {
 
         public static class Images {
             public static final String menuButtons = "/UI/Menu/MenuButtons.png";
-            public static final String menuImage = "/UI/Menu/image.png";
+            public static final String menuImage = "/UI/Menu/menu.png";
             public static final String menuBackGround = "/UI/Menu/menuBackground.png";
             public static final String pauseImage = "/UI/Pause/pause.png";
-            public static final String gameOverImage = "/UI/GameOver/442561835_953027623491281_989466193974398357_n.png";
+            public static final String gameOverImage = "/UI/GameOver/gameOver.png";
             public static final String soundButton = "/UI/Pause/soundButton.png";
             public static final String musicButton = "/UI/Pause/musicButton.png";
-            public static final String otherButtons = "/UI/otherButtons.png";
+            public static final String otherButtons = "/UI/MergedImages(2).png";
             public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel.png";
         }
 
@@ -218,13 +213,13 @@ public class Constants {
         public static final int iceKing_xOffset = (int)(25*GameCONST.SCALE);
         public static final int iceKing_yOffset = (int)(40*GameCONST.SCALE);
 
-        public static final int LeaderMarauder_WIDTH_DEFAULT = 80;
-        public static final int LeaderMarauder_HEIGHT_DEFAULT = 72;
+        public static final int LeaderMarauder_WIDTH_DEFAULT = 90;
+        public static final int LeaderMarauder_HEIGHT_DEFAULT = 82;
         public static final int LeaderMarauder_WIDTH = (int)(LeaderMarauder_WIDTH_DEFAULT * GameCONST.SCALE);
         public static final int LeaderMarauder_HEIGHT = (int)(LeaderMarauder_HEIGHT_DEFAULT * GameCONST.SCALE);
 
-        public static final int leaderMarauder_xOffset = (int)(25*GameCONST.SCALE);
-        public static final int leaderMarauder_yOffset = (int)(40*GameCONST.SCALE);
+        public static final int leaderMarauder_xOffset = (int)(35*GameCONST.SCALE);
+        public static final int leaderMarauder_yOffset = (int)(50*GameCONST.SCALE);
 
 
         public static int getSpriteAmount(int enemyType, int action) {

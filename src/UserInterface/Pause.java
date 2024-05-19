@@ -11,14 +11,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import static Graphics.Constants.GameCONST.SCALE;
-import static Graphics.Constants.UI.Buttons.DEFAULT_BUTTON_HEIGHT;
-import static Graphics.Constants.UI.Buttons.DEFAULT_BUTTON_WIDTH;
+import static Graphics.Constants.UI.Buttons.*;
 
 public class Pause {
 
     private final Play play;
     private SoundButtons soundButton, musicButton;
-    private OtherButtons menuButton, replayButton, continueButton;
+    private OtherButtons menuButton, replayButton, continueButton, saveButton;
 
     private BufferedImage pauseImage;
 
@@ -32,13 +31,15 @@ public class Pause {
     }
 
     private void createButtons() {
-        int continueY = (int)(290 * SCALE);
-        int replayY = (int)(360 * SCALE);
-        int menuY = (int)(430 * SCALE);
-        int buttonX = (int)( 720 * SCALE);
-        menuButton = new OtherButtons(buttonX, menuY, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, 2);
-        replayButton = new OtherButtons(buttonX, replayY, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, 1);
-        continueButton = new OtherButtons(buttonX, continueY, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, 0);
+        int continueY = (int)(270 * SCALE);
+        int replayY = (int)(330 * SCALE);
+        int saveY = (int)(390 * SCALE);
+        int menuY = (int)(450 * SCALE);
+        int buttonX = (int)(720 * SCALE);
+        saveButton = new OtherButtons(buttonX, saveY, BUTTON_WIDTH, BUTTON_HEIGHT, 4);
+        menuButton = new OtherButtons(buttonX, menuY, BUTTON_WIDTH, BUTTON_HEIGHT, 2);
+        replayButton = new OtherButtons(buttonX, replayY, BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+        continueButton = new OtherButtons(buttonX, continueY, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
     private void createSoundButtons() {
@@ -64,6 +65,7 @@ public class Pause {
     public void update(){
         musicButton.update();
         soundButton.update();
+        saveButton.update();
 
         menuButton.update();
         replayButton.update();
@@ -78,11 +80,14 @@ public class Pause {
         musicButton.draw(g);
         soundButton.draw(g);
 
+
         //OtherButtons
         menuButton.draw(g);
         replayButton.draw(g);
         continueButton.draw(g);
+        saveButton.draw(g);
     }
+
 
     public void resetBooleans() {
         musicButton.resetBooleans();
@@ -90,6 +95,7 @@ public class Pause {
         menuButton.resetBooleans();
         replayButton.resetBooleans();
         continueButton.resetBooleans();
+        saveButton.resetBooleans();
     }
 
     public void mousePressed(MouseEvent e) {
@@ -103,6 +109,8 @@ public class Pause {
             replayButton.setMousePressed(true);
         else if(isIn(e, continueButton))
             continueButton.setMousePressed(true);
+        else if(isIn(e, saveButton))
+            saveButton.setMousePressed(true);
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -121,13 +129,20 @@ public class Pause {
             if (replayButton.isMousePressed()) {
                 play.resetAll();
                 play.getLevelHandler().getCurrentLevel().resetScore();
-                Play.getPlayer().resetHeart();
+                Play.getPlayer().resetHealth();
                 play.unpauseGame();
             }
         } else if (isIn(e, continueButton)) {
             if (continueButton.isMousePressed()) {
                 play.unpauseGame();
             }
+        }
+        else if(isIn(e, saveButton)){
+            Play.getDataBase().saveGame(play.getLevelHandler().getLevelIndex(),
+                    Play.getPlayer().getHealth(),
+                    play.getLevelHandler().getCurrentLevel().getLevelScore(),
+                    (int)Play.getPlayer().getCollisionBox().x,
+                    (int)Play.getPlayer().getCollisionBox().y);
         }
         resetBooleans();
     }
@@ -145,6 +160,8 @@ public class Pause {
             replayButton.setMouseOver(true);
         else if(isIn(e, continueButton))
             continueButton.setMouseOver(true);
+        else if(isIn(e, saveButton))
+            saveButton.setMouseOver(true);
     }
 
     public void setMouseOver() {
@@ -153,9 +170,11 @@ public class Pause {
         menuButton.setMouseOver(false);
         replayButton.setMouseOver(false);
         continueButton.setMouseOver(false);
+        saveButton.setMouseOver(false);
     }
 
     private boolean isIn(MouseEvent e, PauseButtons button) {
         return button.getBounds().contains(e.getX(), e.getY());
     }
+
 }

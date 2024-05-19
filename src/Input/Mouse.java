@@ -18,7 +18,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
     public void mouseClicked(MouseEvent e) {
         switch (GameState.state) {
             case MENU -> gamePanel.getGame().getMenu().mouseClicked(e);
-            case PLAY -> gamePanel.getGame().getPlay().mouseClicked(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().mouseClicked(e);
         }
     }
 
@@ -26,7 +26,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         switch (GameState.state) {
             case MENU -> gamePanel.getGame().getMenu().mousePressed(e);
-            case PLAY -> gamePanel.getGame().getPlay().mousePressed(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().mousePressed(e);
         }
     }
 
@@ -34,7 +34,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
         switch (GameState.state) {
             case MENU -> gamePanel.getGame().getMenu().mouseReleased(e);
-            case PLAY -> gamePanel.getGame().getPlay().mouseReleased(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().mouseReleased(e);
         }
     }
 
@@ -42,7 +42,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         switch (GameState.state) {
             case MENU -> gamePanel.getGame().getMenu().mouseMoved(e);
-            case PLAY -> gamePanel.getGame().getPlay().mouseMoved(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().mouseMoved(e);
         }
     }
 

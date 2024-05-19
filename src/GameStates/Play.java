@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import java.util.Random;
 
 import Characters.EnemyManager;
@@ -18,9 +19,11 @@ import Graphics.Constants.Surroundings;
 import UserInterface.CompletedLevel;
 import UserInterface.GameOver;
 import UserInterface.Pause;
+import UserInterface.DataBase;
 
 public class Play extends State implements StateMethods {
     private static Player player;
+    private static DataBase dataBase;
     private LevelHandler levelHandler;
     private EnemyManager enemyManager;
     private ObjectManager objectManager;
@@ -35,51 +38,58 @@ public class Play extends State implements StateMethods {
     private boolean isGameOver;
     private boolean isPaused = false;
     private boolean islevelCompleted = false;
+    private boolean load = false;
 
-    public Play(Game game)
-    {
+    public Play(Game game) {
         super(game);
 
         init();
         addElements();
     }
 
+    public void initGame(){
+        getPlayer().setScore(0);
+        getPlayer().resetHealth();
+        loadGame(0, 5, 0, 200, 200);
+    }
 
-    public void loadNextLevel(){
-        getPlayer().setScore(getLevelHandler().getCurrentLevel().getLevelScore());
+    public void loadNextLevel() {
+        getPlayer().increaseScore(getLevelHandler().getCurrentLevel().getLevelScore());
         resetAll();
         levelHandler.loadNextLevel();
-
     }
-    
-    private void addElements()
-    {
+
+    public void loadGame(int levelIndex, int hearts, int score, int xPos, int yPos){
+        resetAll();
+        levelHandler.loadGame(levelIndex, hearts, score, xPos, yPos);
+    }
+
+    private void addElements() {
         Random random = new Random();
 
         bigCloud = Load.getImage(Surroundings.Images.bigClouds);
         smallCloud = Load.getImage(Surroundings.Images.smallClouds);
 
         smallClouds = new int[15];
-        for(int i=0;i<smallClouds.length;++i)
-        {
-            smallClouds[i] = (int)(100 *GameCONST.SCALE) + random.nextInt((int)(150*GameCONST.SCALE));
+        for (int i = 0; i < smallClouds.length; ++i) {
+            smallClouds[i] = (int) (100 * GameCONST.SCALE) + random.nextInt((int) (150 * GameCONST.SCALE));
         }
     }
 
     private void init() {
-        levelHandler = new LevelHandler(game);
-        player = Player.getInstance(200*GameCONST.SCALE, 170*GameCONST.SCALE, (int)(GameCONST.SCALE*128), (int)(GameCONST.SCALE*128), this);
+        levelHandler = new LevelHandler();
+        player = Player.getInstance(200 * GameCONST.SCALE, 170 * GameCONST.SCALE, (int) (GameCONST.SCALE * 128), (int) (GameCONST.SCALE * 128), this);
         enemyManager = new EnemyManager(this);
-        objectManager = new ObjectManager (this);
+        objectManager = new ObjectManager(this);
         player.loadLevelMatrix(levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix());
 
+        dataBase = DataBase.getInstance();
         gameOver = new GameOver(this);
         pause = new Pause(this);
         completedLevel = new CompletedLevel(this);
     }
 
-    public static Player getPlayer()
-    {
+    public static Player getPlayer() {
         return player;
     }
 
@@ -89,14 +99,19 @@ public class Play extends State implements StateMethods {
         if (isPaused) {
             pause.update();
         } else if (islevelCompleted) {
+            System.out.println("Congratulations! You finished the game!");
             completedLevel.update();
-        } else if(isGameOver){
+        } else if (isGameOver) {
             gameOver.update();
         } else if (player.getIsDead()) {
             player.update();
-        }
-            else {
-            //levelHandler.update();
+        } else {
+            if(load) {
+                List<Integer> values = dataBase.loadGame();
+                loadGame(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                load = false;
+            }
+
             objectManager.update();
             player.update();
             enemyManager.update(levelHandler.getCurrentLevel().getGroundLayer().getLayerMatrix(), player);
@@ -114,23 +129,29 @@ public class Play extends State implements StateMethods {
         player.draw(g, xLevelOffset);
         enemyManager.draw(g, xLevelOffset);
 
-        if (isGameOver) { gameOver.draw(g); }
-        if (isPaused) { pause.draw(g); }
-        if (islevelCompleted) { completedLevel.draw(g); }
+        if (isGameOver) {
+            gameOver.draw(g);
+        }
+        if (isPaused) {
+            pause.draw(g);
+        }
+        if (islevelCompleted) {
+            completedLevel.draw(g);
+        }
     }
 
     private void drawClouds(Graphics g) {
         for (int i = 0; i < 7; ++i) {
-            g.drawImage(bigCloud, i * Surroundings.BIG_CLOUD_WIDTH - (int)(xLevelOffset * 0.3), (int) (70 * GameCONST.SCALE), Surroundings.BIG_CLOUD_WIDTH, Surroundings.BIG_CLOUD_HEIGHT, null);
+            g.drawImage(bigCloud, i * Surroundings.BIG_CLOUD_WIDTH - (int) (xLevelOffset * 0.3), (int) (70 * GameCONST.SCALE), Surroundings.BIG_CLOUD_WIDTH, Surroundings.BIG_CLOUD_HEIGHT, null);
         }
-        for(int i=0;i<smallClouds.length;++i) {
-            g.drawImage(smallCloud, 4 * i * Surroundings.SMALL_CLOUD_WIDTH - (int)(xLevelOffset * 0.6), (int) (smallClouds[i] * GameCONST.SCALE), Surroundings.SMALL_CLOUD_WIDTH, Surroundings.SMALL_CLOUD_HEIGHT, null);
+        for (int i = 0; i < smallClouds.length; ++i) {
+            g.drawImage(smallCloud, 4 * i * Surroundings.SMALL_CLOUD_WIDTH - (int) (xLevelOffset * 0.6), (int) (smallClouds[i] * GameCONST.SCALE), Surroundings.SMALL_CLOUD_WIDTH, Surroundings.SMALL_CLOUD_HEIGHT, null);
         }
     }
 
     private void isCloseToBorder() {
-        int leftBorder = (int)(0.3 * Game.GAME_WIDTH);
-        int rightBorder = (int)(0.7 * Game.GAME_WIDTH);
+        int leftBorder = (int) (0.3 * Game.GAME_WIDTH);
+        int rightBorder = (int) (0.7 * Game.GAME_WIDTH);
 
         int levelTileWide = levelHandler.getLevel(levelHandler.getLevelIndex()).getGroundLayer().getLayerMatrix()[0].length;
         int maxTilesOffset = levelTileWide - GameCONST.WIDTH_TILES;
@@ -152,7 +173,7 @@ public class Play extends State implements StateMethods {
         }
     }
 
-    // reseteaza tot in cazul in care jucatorul a pierdut. reset: player, enemy, lives
+    // reseteaza tot in cazul in care jucatorul a pierdut. reset: player, enemy etc.
     public void resetAll() {
         isGameOver = false;
         isPaused = false;
@@ -168,11 +189,35 @@ public class Play extends State implements StateMethods {
         enemyManager.checkEnemyHit(attackBox);
     }
 
+    public void checkObjectTouched(Rectangle2D.Float collisionBox) {
+        objectManager.checkObjectTouched(collisionBox);
+    }
+
+    public LevelHandler getLevelHandler() {
+        return levelHandler;
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
+    public EnemyManager getEnemyManager() { return enemyManager; }
+
+    public static DataBase getDataBase() { return dataBase; }
+
+    public void setLoad(boolean load) { this.load = load; }
+
+    public void unpauseGame() { isPaused = false; }
+
+    public void setGameOver(boolean gameOver) { this.isGameOver = gameOver; }
+
+    public void setLevelCompleted(boolean levelCompleted) { this.islevelCompleted = levelCompleted; }
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (isGameOver) {
             gameOver.keyPressed(e);
-            Play.getPlayer().resetHeart();
+            Play.getPlayer().resetHealth();
             resetAll();
         } else {
             switch ((e.getKeyCode())) {
@@ -199,27 +244,9 @@ public class Play extends State implements StateMethods {
         }
     }
 
-    public LevelHandler getLevelHandler()
-    {
-        return levelHandler;
-    }
-
-    public EnemyManager getEnemyManager(){
-        return enemyManager;
-    }
-
-    public void unpauseGame(){
-        isPaused = false;
-    }
-
-    public void setGameOver(boolean gameOver) {
-        this.isGameOver = gameOver;
-    }
-
-//    public void windowFocusLost() { player.resetDirection(); }
-
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -229,22 +256,20 @@ public class Play extends State implements StateMethods {
             } else if (islevelCompleted) {
                 completedLevel.mousePressed(e);
             }
-        }
-        else {
+        } else {
             gameOver.mousePressed(e);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(!isGameOver) {
+        if (!isGameOver) {
             if (isPaused) {
                 pause.mouseReleased(e);
             } else if (islevelCompleted) {
                 completedLevel.mouseReleased(e);
             }
-        }
-        else {
+        } else {
             gameOver.mouseReleased(e);
         }
     }
@@ -258,17 +283,9 @@ public class Play extends State implements StateMethods {
             } else if (islevelCompleted) {
                 completedLevel.mouseMoved(e);
             }
-        }
-        else{
+        } else {
             gameOver.mouseMoved(e);
         }
     }
 
-    public void setLevelCompleted(boolean levelCompleted) {
-        this.islevelCompleted = levelCompleted;
-    }
-
-    public void checkObjectTouched(Rectangle2D.Float collisionBox) {
-        objectManager.checkObjectTouched(collisionBox);
-    }
 }

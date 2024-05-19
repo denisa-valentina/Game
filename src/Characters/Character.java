@@ -49,27 +49,9 @@ public abstract class Character {
         g.drawRect((int)collisionBox.x - xLevelOffset, (int)collisionBox.y, (int)collisionBox.width, (int)collisionBox.height);
     }
 
-    protected int getAction(){
-        return action;
-    }
+    protected int getAction(){ return action; }
+    public int getAnimationIndex() { return animationIndex; }
 
-    public int getAnimationIndex()
-    {
-        return animationIndex;
-    }
-
-
-    public abstract void drawAttackBox(Graphics g, int xLevelOffset);
-
-
-    //    public void setX(float x)
-//    {
-//        this.x = x;
-//    }
-//    public void setY(float y)
-//    {
-//        this.y = y;
-//    }
     public void setWidth(int width)
     {
         this.width = width;
@@ -79,4 +61,5 @@ public abstract class Character {
         this.height = height;
     }
 
+    public abstract void drawAttackBox(Graphics g, int xLevelOffset);
 }

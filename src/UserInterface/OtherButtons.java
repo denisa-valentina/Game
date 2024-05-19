@@ -26,7 +26,7 @@ public class OtherButtons extends PauseButtons implements ButtonMethods {
         BufferedImage buttons = Load.getImage(otherButtons);
         images = new ArrayList<>();
 
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 5; ++i) {
             List<BufferedImage> image = new ArrayList<>();
             for(int j = 0; j < 3; ++j) {
                 image.add(buttons.getSubimage(j * DEFAULT_BUTTON_WIDTH, i * DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT));

@@ -11,4 +11,9 @@ public class Spike extends GameObject {
         xOffset = (int)(Constants.GameCONST.SCALE * 11);
         yOffset = (int)(Constants.GameCONST.SCALE * 5);
     }
+
+    public void update()
+    {
+        updateAnimationTick();
+    }
 }

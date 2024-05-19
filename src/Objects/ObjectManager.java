@@ -1,5 +1,6 @@
 package Objects;
 
+import Characters.Player;
 import GameStates.Play;
 
 import static Graphics.Constants.*;
@@ -23,9 +24,10 @@ public class ObjectManager {
     private ArrayList<ArrayList<BufferedImage>> fruitImages;
     private BufferedImage heartImage;
 
-    private final List<List<Fruit>> fruits;
     private final List<Door> doors;
+    private final List<List<Fruit>> fruits;
     private final List<List<Heart>> hearts;
+    private final List<List<Spike>> spikes;
 
     public ObjectManager(Play play) {
         this.play = play;
@@ -34,6 +36,7 @@ public class ObjectManager {
         fruits = new ArrayList<>();
         doors = new ArrayList<>();
         hearts = new ArrayList<>();
+        spikes = new ArrayList<>();
 
         misscellaneous.add(400); // door
 
@@ -60,6 +63,10 @@ public class ObjectManager {
         initFruits(0);
         initFruits(1);
         initFruits(2);
+
+        initSpikes(0);
+        initSpikes(1);
+        initSpikes(2);
     }
 
     private void initHeart(int lvlIndex) {
@@ -71,6 +78,14 @@ public class ObjectManager {
         hearts.add(heartsLevel);
     }
 
+    private void initSpikes(int lvlIndex) {
+        List<Spike> spikesLevel = new ArrayList<>();
+        ArrayList<Point2D> spikeCoordinates = play.getLevelHandler().getLevel(lvlIndex).getCoordinates(600);
+        for (Point2D spikeCoordinate : spikeCoordinates) {
+            spikesLevel.add(new Spike(32 * (int) spikeCoordinate.getX(), 32 * (int) spikeCoordinate.getY(), 32, METAL_SPIKE));
+        }
+        spikes.add(spikesLevel);
+    }
 
     private void initFruits(int lvlIndex) {
         List<Fruit> fruitsLevel = new ArrayList<>();
@@ -103,10 +118,10 @@ public class ObjectManager {
         fruitImages = new ArrayList<>();
         doorImages = new ArrayList<>();
 
-        for (int i = 0; i < images.size(); ++i) {
+        for (BufferedImage bufferedImage : images) {
             ArrayList<BufferedImage> fruitImage = new ArrayList<>();
             for (int j = 0; j < 17; ++j) {
-                fruitImage.add(images.get(i).getSubimage(32 * j, 0, 32, 32));
+                fruitImage.add(bufferedImage.getSubimage(32 * j, 0, 32, 32));
             }
             fruitImages.add(fruitImage);
         }
@@ -128,7 +143,7 @@ public class ObjectManager {
             if (f.isActive())
                 f.update();
         }
-        if (doors.get(play.getLevelHandler().getLevelIndex()).isActive()){
+        if (doors.get(play.getLevelHandler().getLevelIndex()).isActive()) {
             doors.get(play.getLevelHandler().getLevelIndex()).update(play.getLevelHandler().getLevelIndex(), play.getEnemyManager());
         } else {
             play.setLevelCompleted(true);
@@ -141,10 +156,12 @@ public class ObjectManager {
                 }
             }
         }
+        for (Spike s : spikes.get(play.getLevelHandler().getLevelIndex())) {
+            s.update();
+        }
     }
 
-    public void draw(Graphics g, int xLevelOffset)
-    {
+    public void draw(Graphics g, int xLevelOffset) {
         drawFruit(g, xLevelOffset);
         drawSpikes(g, xLevelOffset);
         drawDoor(g, xLevelOffset);
@@ -152,7 +169,7 @@ public class ObjectManager {
     }
 
     private void drawHearts(Graphics g, int xLevelOffset) {
-        if(play.getLevelHandler().getLevelIndex() > 0) {
+        if (play.getLevelHandler().getLevelIndex() > 0) {
             for (Heart h : hearts.get(play.getLevelHandler().getLevelIndex())) {
                 if (h.isActive()) {
                     g.drawImage(heartImage, (int) (h.getCollisionBox().x - h.getxOffset() - xLevelOffset),
@@ -164,8 +181,8 @@ public class ObjectManager {
     }
 
     private void drawSpikes(Graphics g, int xLevelOffset) {
-        for(Spike s : play.getLevelHandler().getLevel(play.getLevelHandler().getLevelIndex()).getSpikes()) {
-            if(s.objectType == METAL_SPIKE) {
+        for (Spike s : spikes.get(play.getLevelHandler().getLevelIndex())) {
+            if (s.objectType == METAL_SPIKE) {
                 g.drawImage(Load.getImage(metalSpike), (int) (s.getCollisionBox().x - xLevelOffset),
                         (int) (s.getCollisionBox().y), 32, 32, null);
                 s.drawCollisionBox(g, xLevelOffset);
@@ -174,12 +191,10 @@ public class ObjectManager {
     }
 
     private void drawFruit(Graphics g, int xLevelOffset) {
-        for(Fruit f : fruits.get(play.getLevelHandler().getLevelIndex()))
-        {
-            if(f.isActive())
-            {
-                g.drawImage(fruitImages.get(f.objectType).get(f.getAnimationIndex()), (int)(f.getCollisionBox().x - f.getxOffset() - xLevelOffset),
-                        (int)(f.getCollisionBox().y - f.getxOffset()), 55, 55, null);
+        for (Fruit f : fruits.get(play.getLevelHandler().getLevelIndex())) {
+            if (f.isActive()) {
+                g.drawImage(fruitImages.get(f.objectType).get(f.getAnimationIndex()), (int) (f.getCollisionBox().x - f.getxOffset() - xLevelOffset),
+                        (int) (f.getCollisionBox().y - f.getxOffset()), 55, 55, null);
                 f.drawCollisionBox(g, xLevelOffset);
             }
         }
@@ -195,21 +210,29 @@ public class ObjectManager {
         }
     }
 
-    public void checkObjectTouched(Rectangle.Float collisionBox){
-        for(Fruit f: fruits.get(play.getLevelHandler().getLevelIndex())){
-            if(f.isActive()){
-                if(collisionBox.intersects(f.collisionBox)){
+    public void checkObjectTouched(Rectangle.Float collisionBox) {
+        for (Fruit f : fruits.get(play.getLevelHandler().getLevelIndex())) {
+            if (f.isActive()) {
+                if (collisionBox.intersects(f.collisionBox)) {
                     f.setActive(false);
                     applyEffect(f);
                 }
             }
         }
-        for(Heart h: hearts.get(play.getLevelHandler().getLevelIndex())){
-            if(h.isActive()){
-                if(collisionBox.intersects(h.collisionBox)){
+        for (Heart h : hearts.get(play.getLevelHandler().getLevelIndex())) {
+            if (h.isActive()) {
+                if (collisionBox.intersects(h.collisionBox)) {
                     h.setActive(false);
                     applyEffect(h);
                 }
+            }
+        }
+    }
+
+    public void checkSpikeTouched(Player player) {
+        for (Spike s : spikes.get(play.getLevelHandler().getLevelIndex())) {
+            if (s.getCollisionBox().intersects(player.getCollisionBox())) {
+                player.respawn();
             }
         }
     }
@@ -227,7 +250,7 @@ public class ObjectManager {
     }
 
     public void resetAll(int lvlIndex) {
-        for(Fruit f: fruits.get(lvlIndex)){
+        for (Fruit f : fruits.get(lvlIndex)) {
             f.reset();
         }
 
@@ -236,6 +259,4 @@ public class ObjectManager {
         play.getLevelHandler().getCurrentLevel().resetScore();
 
     }
-
-
 }

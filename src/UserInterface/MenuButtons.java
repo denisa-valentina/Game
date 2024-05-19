@@ -69,6 +69,10 @@ public class MenuButtons implements ButtonMethods{
         return bounds;
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
     public void setGameState()
     {
         GameState.state = gameState;

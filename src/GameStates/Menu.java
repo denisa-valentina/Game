@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 public class Menu extends State implements StateMethods{
     private final MenuButtons[] menuButtons = new MenuButtons[3];
     private BufferedImage menuImage, menuBackGround;
-    private int menuX, menuY, menuWidth, menuHeight;
+    private int menuX, menuY;
     public Menu(Game game)
     {
         super(game);
@@ -30,9 +30,7 @@ public class Menu extends State implements StateMethods{
 
     private void loadMenuImage() {
         menuImage = Load.getImage(Images.menuImage);
-
-//        menuWidth = (int)(menuImage.getWidth() * GameCONST.SCALE);
-//        menuHeight = (int)(menuImage.getHeight() * GameCONST.SCALE);
+        
         menuX = Game.GAME_WIDTH / 2 - 300;
         menuY = (int)(150*GameCONST.SCALE);
 
@@ -40,7 +38,7 @@ public class Menu extends State implements StateMethods{
 
     private void loadButtons() {
         menuButtons[0] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(300*GameCONST.SCALE), 0, GameState.PLAY);
-        menuButtons[1] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(370*GameCONST.SCALE), 1, GameState.OPTIONS);
+        menuButtons[1] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(370*GameCONST.SCALE), 1, GameState.LOAD);
         menuButtons[2] = new MenuButtons(Game.GAME_WIDTH / 2, (int)(440*GameCONST.SCALE), 2, GameState.QUIT);
     }
 
@@ -77,6 +75,10 @@ public class Menu extends State implements StateMethods{
         for (MenuButtons i : menuButtons) {
             if (isIn(e, i)) {
                 if (i.isMousePressed()) {
+                    if(i.getGameState() == GameState.LOAD)
+                        game.getPlay().setLoad(true);
+                    else if(i.getGameState() == GameState.PLAY)
+                        game.getPlay().initGame();
                     i.setGameState();
                     break;
                 }

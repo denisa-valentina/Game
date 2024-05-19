@@ -17,8 +17,6 @@ import static Main.Game.GAME_WIDTH;
     va fi continutul ferestrei de joc
 */
 public class GamePanel extends JPanel {
-/*    private final Mouse mouse;
-    private final Keyboard keyBoard; */
     private final Game game;
 
     public GamePanel(Game game) {

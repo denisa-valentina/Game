@@ -15,51 +15,44 @@ public class GameObject {
     protected int animationTick, animationIndex;
     protected int xOffset, yOffset;
 
-    public GameObject(int x, int y, int objectType)
-    {
+    public GameObject(int x, int y, int objectType) {
         this.x = x;
         this.y = y;
         this.objectType = objectType;
     }
 
-    protected void initCollisionBox(int width, int height)
-    {
-        collisionBox = new Rectangle2D.Float(x, y, (int)(width * Constants.GameCONST.SCALE), (int)(height * Constants.GameCONST.SCALE));
+    protected void initCollisionBox(int width, int height) {
+        collisionBox = new Rectangle2D.Float(x, y, (int) (width * Constants.GameCONST.SCALE), (int) (height * Constants.GameCONST.SCALE));
     }
 
-    public void drawCollisionBox(Graphics g, int xLevelOffset)
-    {   // debugging
+    public void drawCollisionBox(Graphics g, int xLevelOffset) {   // debugging
         g.setColor(Color.green);
-        g.drawRect((int)collisionBox.x + xOffset - xLevelOffset, (int)collisionBox.y + yOffset, (int)collisionBox.width, (int)collisionBox.height);
+        g.drawRect((int) collisionBox.x + xOffset - xLevelOffset, (int) collisionBox.y + yOffset, (int) collisionBox.width, (int) collisionBox.height);
     }
 
-    protected void updateAnimationTick()
-    {
+    protected void updateAnimationTick() {
         animationTick++;
-        if(animationTick >= ANIMATION_SPEED_OBJECTS)
-        {
+        if (animationTick >= ANIMATION_SPEED_OBJECTS) {
             animationTick = 0;
             animationIndex++;
-            if(animationIndex >= 17) // all fruits have 17 sprites
+            if (animationIndex >= 17) // all fruits have 17 sprites
             {
                 animationIndex = 0;
             }
         }
     }
-//    public void reset() {
-//        animationIndex = 0;
-//        animationTick = 0;
-//        active = true;
-//
-//        doAnimation = true;
-//    }
+
+    public void reset() {
+        animationTick = 0;
+        animationIndex = 0;
+        active = true;
+    }
 
     public boolean isActive() {
         return active;
     }
 
-    public Rectangle2D.Float getCollisionBox()
-    {
+    public Rectangle2D.Float getCollisionBox() {
         return collisionBox;
     }
 
@@ -69,18 +62,11 @@ public class GameObject {
     }
 
 
-    public int getAnimationIndex()
-    {
+    public int getAnimationIndex() {
         return animationIndex;
     }
 
-    public void reset(){
-        animationTick = 0;
-        animationIndex = 0;
-        active = true;
-    }
-
-    public void setActive(boolean active){
+    public void setActive(boolean active) {
         this.active = active;
     }
 }

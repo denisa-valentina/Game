@@ -18,9 +18,8 @@ public class Game implements Runnable {
     public final static int TILE_SIZE = (int) (GameCONST.TILE_DEFAULT_SIZE * GameCONST.SCALE);
     public final static int GAME_WIDTH = TILE_SIZE * GameCONST.WIDTH_TILES;
     public final static int GAME_HEIGHT = TILE_SIZE * GameCONST.HEIGHT_TILES;
-    //private final GameWindow gameWindow;  // Fereastra de joc
+
     private final GamePanel gamePanel;
-    //private Thread gameThread; // referinta catre thread-ul de game loop
     private Play play;
     private Menu menu;
 
@@ -49,15 +48,15 @@ public class Game implements Runnable {
     public void update() {
         switch (GameState.state) {
             case MENU -> menu.update();
-            case PLAY -> play.update();
-            case OPTIONS, QUIT -> System.exit(0);
+            case PLAY, LOAD -> play.update();
+            case QUIT -> System.exit(0);
         }
     }
 
     public void draw(Graphics g) {
         switch (GameState.state) {
             case MENU -> menu.draw(g);
-            case PLAY -> play.draw(g);
+            case PLAY, LOAD -> play.draw(g);
         }
     }
 
@@ -101,7 +100,7 @@ public class Game implements Runnable {
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("fps = " + frames + " ups = " + updates);
+                System.out.println(STR."fps = \{frames} ups = \{updates}");
                 frames = 0;
                 updates = 0;
             }
@@ -117,7 +116,6 @@ public class Game implements Runnable {
     public Menu getMenu() {
         return menu;
     }
-
 
     public Play getPlay() {
         return play;

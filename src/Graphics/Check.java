@@ -28,10 +28,7 @@ public class Check {
 
     public static boolean isTileSolid(int xIndex, int yIndex, int [][]levelMatrix) {
         int value = levelMatrix[yIndex][xIndex];
-        if (value != 0 && !misscellaneous.contains(value)) {
-            return true;
-        }
-        return false;
+        return value != 0 && !misscellaneous.contains(value);
     }
 
     public static boolean isCollision(float x, float y, float width, float height, int[][] levelMatrix) {
@@ -62,9 +59,7 @@ public class Check {
     public static boolean isOnTheFloor(Rectangle2D.Float collisionBox, int[][] levelMatrix) {
         //bottom_left & bottom_right
         if (!isSolid(collisionBox.x, collisionBox.y + collisionBox.height + 1, levelMatrix))
-            if (!isSolid(collisionBox.x + collisionBox.width, collisionBox.y + collisionBox.height + 1, levelMatrix)) {
-                return false;
-            }
+            return isSolid(collisionBox.x + collisionBox.width, collisionBox.y + collisionBox.height + 1, levelMatrix);
         return true;
     }
 

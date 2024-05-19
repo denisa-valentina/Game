@@ -16,7 +16,7 @@ import static Graphics.Constants.UI.Buttons.DEFAULT_BUTTON_WIDTH;
 
 public class CompletedLevel {
 
-    private Play play;
+    private final Play play;
     private OtherButtons menuButton, nextButton;
 
     private BufferedImage completedLevelImage;

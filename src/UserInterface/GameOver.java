@@ -60,10 +60,6 @@ public class GameOver {
         g.drawImage(gameOverImage, x, y, width, height, null);
         menuButton.draw(g);
         replayButton.draw(g);
-
-        //        g.setColor(Color.white);
-//        g.drawString("Game Over", Game.GAME_WIDTH/2, 150);
-//        g.drawString("Press ESC to enter Main Menu", Game.GAME_WIDTH/2, 300);
     }
 
 
@@ -94,7 +90,7 @@ public class GameOver {
         if(isIn(e, replayButton))
             if(replayButton.isMousePressed){
                 play.resetAll();
-                Play.getPlayer().resetHeart();
+                Play.getPlayer().resetHealth();
             }
 
         menuButton.resetBooleans();

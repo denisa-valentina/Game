@@ -23,7 +23,7 @@ public class Keyboard implements KeyListener {
         switch (GameState.state)
         {
             case MENU -> gamePanel.getGame().getMenu().keyPressed(e);
-            case PLAY -> gamePanel.getGame().getPlay().keyPressed(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().keyPressed(e);
         }
     }
 
@@ -33,7 +33,7 @@ public class Keyboard implements KeyListener {
         switch (GameState.state)
         {
             case MENU -> gamePanel.getGame().getMenu().keyReleased(e);
-            case PLAY -> gamePanel.getGame().getPlay().keyReleased(e);
+            case PLAY, LOAD -> gamePanel.getGame().getPlay().keyReleased(e);
         }
     }
 }

@@ -10,13 +10,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Graphics.Constants.Player.ATTACK_1;
-import static Graphics.Constants.Player.ATTACK_2;
-import static Graphics.Constants.Player.DEAD;
-import static Graphics.Constants.Player.IDLE;
-import static Graphics.Constants.Player.RUN;
-import static Graphics.Constants.GRAVITY;
 import static Graphics.Constants.Player.*;
+import static Graphics.Constants.GRAVITY;
 import static Graphics.Constants.GameCONST;
 import static Graphics.Check.*;
 
@@ -24,17 +19,9 @@ public class Player extends Character {
 
     private final Play play;
     private static Player playerInstance;
-
-    // lifeStatus UI
-    private BufferedImage statusBar;
-    private BufferedImage fullHeart;
-    private BufferedImage emptyHeart;
-
-    // score
-    private int score = 0;
+    private List<List<BufferedImage>> animations;
 
     private int[][] levelMatrix;
-    private List<List<BufferedImage>> animations;
 
     private boolean moving = false, attacking1 = false, attacking2 = false, isDead = false;
     private boolean left, right, jump;
@@ -44,6 +31,13 @@ public class Player extends Character {
 
     private boolean attackChecked = false;
 
+    // lifeStatus UI
+    private BufferedImage statusBar;
+    private BufferedImage fullHeart;
+    private BufferedImage emptyHeart;
+
+    // score
+    private int score = 0;
 
     private Player(float x, float y, int width, int height, Play play) {
         super(x, y, width, height);
@@ -53,121 +47,18 @@ public class Player extends Character {
         this.runSpeed = 1.1f * GameCONST.SCALE;
 
         this.maxHealth = 5; // 5 hearts, 5 chances
-        this.currentHealth = 3; // currentHealth = maxHealth
+        this.currentHealth = maxHealth; // currentHealth = maxHealth
 
         loadAnimations();
         initCollisionBox(23, 70); // prin incercari am calculat width-ul si height-ul aproximativ al imaginii caracterului
         initAttackBox();
     }
 
-    public static Player getInstance(float x, float y, int width, int height, Play play)
-    {
-        if(playerInstance == null)
-        {
+    public static Player getInstance(float x, float y, int width, int height, Play play) {
+        if (playerInstance == null) {
             playerInstance = new Player(x, y, width, height, play);
         }
         return playerInstance;
-    }
-
-    private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x + 7*collisionBox.width/8, y, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE));
-    }
-
-    public void update() {
-        if(currentHealth <= 0) {
-            if(action != DEAD){
-                action = DEAD;
-                resetAnimationTick();
-                setIsDead(true);
-            } else if(animationIndex == getSpriteAmount(DEAD) - 1 && animationTick >= animationSpeed - 1){
-                play.setGameOver(true);
-            } else
-                updateAnimationTick();
-            return; // we want the update() method to stop here
-        }
-
-        updateAttackBox();
-        updatePosition();
-        if(moving){
-
-            checkFruitTouched();
-            checkSpikeTouched();
-        }
-
-        if((attacking1 && play.getLevelHandler().getLevelIndex() > 0) || (attacking2 && play.getLevelHandler().getLevelIndex() == 2))
-        {
-            checkAttack();
-        }
-
-        setAnimation();
-        updateAnimationTick();
-    }
-
-    private void checkFruitTouched() {
-        play.checkObjectTouched(collisionBox);
-    }
-    private void checkSpikeTouched(){
-        play.getLevelHandler().getCurrentLevel().checkSpikeTouched(this);
-    }
-
-    private void checkAttack() {
-        if(attackChecked || animationIndex != 6)
-        {
-            return;
-        }
-        else{
-            attackChecked = true;
-            play.checkEnemyHit(attackBox);
-        }
-    }
-
-    private void updateAttackBox() {
-        if(right) {
-            attackBox.x = collisionBox.x + 7 * collisionBox.width/8; // vezi daca ar fi necesar si un offset suplimentar
-        }
-        else if(left) {
-            attackBox.x = collisionBox.x - 2 * collisionBox.width;
-        }
-        attackBox.y = collisionBox.y + collisionBox.height/2;
-    }
-
-    public void updateHealth(int value) {
-        currentHealth += value;
-        currentHealth = Math.max(Math.min(currentHealth, maxHealth), 0);
-    }
-
-    public void draw(Graphics g, int xLevelOffset) {
-        final float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
-
-        BufferedImage image = animations.get(action).get(animationIndex);
-        g.drawImage(image, (int)(collisionBox.x - xOffset) - xLevelOffset + flipX, (int)(collisionBox.y - yOffset), width * flipW, height, null);
-        drawCollisionBox(g, xLevelOffset);
-        drawAttackBox(g, xLevelOffset);
-        drawUI(g);
-    }
-
-    @Override
-    public void drawAttackBox(Graphics g, int xLevelOffset) {
-        g.setColor(Color.green);
-        g.drawRect((int)attackBox.x - xLevelOffset, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
-    }
-
-    private void drawUI(Graphics g) {
-        int hearts_xStart = (int) (110 * GameCONST.SCALE);
-        int hearts_yStart = (int) (50 * GameCONST.SCALE);
-
-        g.drawImage(statusBar, (int)(60*GameCONST.SCALE), (int)(40*GameCONST.SCALE), 270, 150, null);
-        for(int i=0;i<currentHealth;++i)
-        {
-            g.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
-        }
-        for(int i=currentHealth;i<maxHealth;++i)
-        {
-            g.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
-        }
-        g.setColor(Color.black);
-        g.setFont(new Font("SERIF", Font.PLAIN, 40));
-        g.drawString("Score: " + (getScore() + play.getLevelHandler().getCurrentLevel().getLevelScore()), 100, 170);
     }
 
     private void loadAnimations() {
@@ -202,11 +93,106 @@ public class Player extends Character {
         statusBar = Load.getImage(Constants.LifeStatus.staturBar);
     }
 
-    public void loadLevelMatrix(int[][] levelMatrix)
-    {
+    public void loadLevelMatrix(int[][] levelMatrix) {
         this.levelMatrix = levelMatrix;
-        if(!isOnTheFloor(collisionBox, levelMatrix))
+        if (!isOnTheFloor(collisionBox, levelMatrix))
             inAir = true;
+    }
+
+    private void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x + 7 * collisionBox.width / 8, y, (int) (60 * GameCONST.SCALE), (int) (40 * GameCONST.SCALE));
+    }
+
+    public void update() {
+        if (currentHealth <= 0) {
+            if (action != DEAD) {
+                action = DEAD;
+                resetAnimationTick();
+                setIsDead(true);
+            } else if (animationIndex == getSpriteAmount(DEAD) - 1 && animationTick >= animationSpeed - 1) {
+                play.setGameOver(true);
+            } else
+                updateAnimationTick();
+            return; // we want the update() method to stop here
+        }
+
+        updateAttackBox();
+        updatePosition();
+        if (moving) {
+
+            checkFruitTouched();
+            checkSpikeTouched();
+        }
+
+        if ((attacking1 && play.getLevelHandler().getLevelIndex() > 0) || (attacking2 && play.getLevelHandler().getLevelIndex() == 2)) {
+            checkAttack();
+        }
+
+        setAnimation();
+        updateAnimationTick();
+    }
+
+    private void checkFruitTouched() {
+        play.checkObjectTouched(collisionBox);
+    }
+
+    private void checkSpikeTouched() {
+        play.getObjectManager().checkSpikeTouched(this);
+    }
+
+    private void checkAttack() {
+        if (attackChecked || animationIndex != 6) {
+            return;
+        } else {
+            attackChecked = true;
+            play.checkEnemyHit(attackBox);
+        }
+    }
+
+    private void updateAttackBox() {
+        if (right) {
+            attackBox.x = collisionBox.x + 7 * collisionBox.width / 8; // vezi daca ar fi necesar si un offset suplimentar
+        } else if (left) {
+            attackBox.x = collisionBox.x - 2 * collisionBox.width;
+        }
+        attackBox.y = collisionBox.y + collisionBox.height / 2;
+    }
+
+    public void updateHealth(int value) {
+        currentHealth += value;
+        currentHealth = Math.max(Math.min(currentHealth, maxHealth), 0);
+    }
+
+    public void draw(Graphics g, int xLevelOffset) {
+        final float xOffset = 50 * GameCONST.SCALE, yOffset = 55 * GameCONST.SCALE;
+
+        BufferedImage image = animations.get(action).get(animationIndex);
+        g.drawImage(image, (int) (collisionBox.x - xOffset) - xLevelOffset + flipX, (int) (collisionBox.y - yOffset), width * flipW, height, null);
+        drawCollisionBox(g, xLevelOffset);
+        drawAttackBox(g, xLevelOffset);
+        drawUI(g);
+    }
+
+    @Override
+    public void drawAttackBox(Graphics g, int xLevelOffset) {
+        g.setColor(Color.green);
+        g.drawRect((int) attackBox.x - xLevelOffset, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+    }
+
+    private void drawUI(Graphics g) {
+        int hearts_xStart = (int) (110 * GameCONST.SCALE);
+        int hearts_yStart = (int) (50 * GameCONST.SCALE);
+
+        g.drawImage(statusBar, (int) (60 * GameCONST.SCALE), (int) (40 * GameCONST.SCALE), 270, 150, null);
+        for (int i = 0; i < currentHealth; ++i) {
+            g.drawImage(fullHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+        }
+        for (int i = currentHealth; i < maxHealth; ++i) {
+            g.drawImage(emptyHeart, hearts_xStart + i * 40, hearts_yStart, 35, 32, null);
+        }
+        g.setColor(Color.black);
+        g.setFont(new Font("SERIF", Font.PLAIN, 40));
+        g.drawString("Score: " + (getScore() + play.getLevelHandler().getCurrentLevel().getLevelScore()), 100, 170);
     }
 
     private void setAnimation() {
@@ -227,8 +213,7 @@ public class Player extends Character {
 //                return;
 //            }
         }
-        if (attacking2 && play.getLevelHandler().getLevelIndex() == 2)
-            {
+        if (attacking2 && play.getLevelHandler().getLevelIndex() == 2) {
             action = ATTACK_2;
         }
 
@@ -238,8 +223,11 @@ public class Player extends Character {
     }
 
     private void updateAnimationTick() {
-        if(jump) { animationSpeed = 18; }
-        else { animationSpeed = 25; }
+        if (jump) {
+            animationSpeed = 18;
+        } else {
+            animationSpeed = 25;
+        }
 
         animationTick += 1;
         if (animationTick >= animationSpeed) {
@@ -264,9 +252,11 @@ public class Player extends Character {
         float xSpeed = 0;
         moving = false;
 
-        if (jump) { jumping(); }
+        if (jump) {
+            jumping();
+        }
 
-        if(!inAir) {
+        if (!inAir) {
             if ((!left && !right) || (left && right)) {
                 return;
             }
@@ -311,27 +301,26 @@ public class Player extends Character {
         moving = true;
     }
 
-    private void updateXPosition(float xSpeed, int [][]levelMatrix) {
-        if(!isCollision(collisionBox.x+xSpeed, collisionBox.y, collisionBox.width, collisionBox.height, levelMatrix))
-        {
+    private void updateXPosition(float xSpeed, int[][] levelMatrix) {
+        if (!isCollision(collisionBox.x + xSpeed, collisionBox.y, collisionBox.width, collisionBox.height, levelMatrix)) {
             collisionBox.x += xSpeed;
         }
     }
 
     public void respawn() {
         updateHealth(-1);
-        if(currentHealth > 0)
-        { resetAll();}
+        if (currentHealth > 0) {
+            resetAll();
+        }
     }
 
     private void jumping() {
         float jumpSpeed = -2.5f * GameCONST.SCALE;
-        if(inAir)
+        if (inAir)
             return; // we are already in the air
         inAir = true;
         airVelocity = jumpSpeed;
     }
-
 
     public void resetDirection() {
         left = false;
@@ -344,8 +333,22 @@ public class Player extends Character {
         airVelocity = 0;
     }
 
-    public void changeAction(int playerAction)
-    {
+    public void resetAll() {
+        resetDirection();
+        inAir = false;
+        attacking1 = false;
+        attacking2 = false;
+        moving = false;
+        action = IDLE;
+
+        collisionBox.x = x;
+        collisionBox.y = y;
+
+        if (!isOnTheFloor(collisionBox, levelMatrix))
+            inAir = true;
+    }
+
+    public void changeAction(int playerAction) {
         this.action = playerAction;
     }
 
@@ -369,41 +372,35 @@ public class Player extends Character {
         this.jump = jump;
     }
 
-    public BufferedImage getFullHeart() {
-        return fullHeart;
+    public int getHealth(){
+        return currentHealth;
     }
 
-    public void resetHeart(){
+    public void resetHealth() {
         currentHealth = maxHealth;
     }
 
-    public void resetAll() {
-        resetDirection();
-        inAir = false;
-        attacking1 = false; attacking2 = false;
-        moving = false;
-        action = IDLE;
-
-        collisionBox.x = x;
-        collisionBox.y = y;
-
-        if(!isOnTheFloor(collisionBox, levelMatrix))
-            inAir = true;
+    public void setHealth(int health){
+        currentHealth = health;
     }
 
-    public void setScore(int value){
+    public void increaseScore(int value) {
         score += value;
     }
 
-    public int getScore(){
+    public void setScore(int value) {
+        score = value;
+    }
+
+    public int getScore() {
         return score;
     }
 
-    public void setIsDead(boolean dead){
+    public void setIsDead(boolean dead) {
         this.isDead = dead;
     }
 
-    public boolean getIsDead(){
+    public boolean getIsDead() {
         return isDead;
     }
 }

@@ -1,7 +1,6 @@
 package LevelMap;
 
 import Characters.Enemy;
-import Characters.Player;
 import Load.Load;
 import Main.Game;
 
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Graphics.Constants.GameCONST;
-import Objects.Spike;
 
 import static Graphics.Constants.*;
 
@@ -27,7 +25,6 @@ public class Level {
     private final Layer backGroundLayer;
 
     private final List<Enemy> enemies;
-    private final List<Spike> spikes;
 
     public Level(String backGround, String tileMap, int rows, int cols, String groundLayer, String backGroundLayer) {
         levelScore = 0;
@@ -37,26 +34,8 @@ public class Level {
         this.backGroundLayer = new Layer(backGroundLayer);
 
         enemies = new ArrayList<>();
-        spikes = new ArrayList<>();
 
         importMapSprites(tileMap, rows, cols);
-
-        createSpikes();
-    }
-
-    private void createSpikes(){
-        ArrayList<Point2D> spikeCoordinates = getCoordinates(600);
-        for (int j = 0; j < spikeCoordinates.size(); ++j) {
-            spikes.add(new Spike(32 * (int) spikeCoordinates.get(j).getX(), 32 * (int) spikeCoordinates.get(j).getY(), 32, METAL_SPIKE));
-        }
-    }
-
-    public void checkSpikeTouched(Player player){
-        for(Spike s: spikes){
-            if(s.getCollisionBox().intersects(player.getCollisionBox())){
-                player.respawn();
-            }
-        }
     }
 
     public void addEnemy(Enemy enemy){
@@ -99,7 +78,7 @@ public class Level {
     // la care am decis eu (notand pe matrice) locatiile unde se vor afla inamicii (si nu numai)
     // la initializarea nivelului
     public ArrayList<Point2D> getCoordinates(int value) {
-        ArrayList<Point2D> elementCoordinates = new ArrayList<Point2D>();
+        ArrayList<Point2D> elementCoordinates = new ArrayList<>();
 
         for (int j = 0; j < GameCONST.HEIGHT_TILES; ++j) {
             for (int i = 0; i <groundLayer.getLayerMatrix()[0].length; ++i) {
@@ -116,13 +95,8 @@ public class Level {
         return groundLayer;
     }
 
-
     public BufferedImage getBackGround(){
         return backGround;
-    }
-
-    public BufferedImage[] getLevelTileMap(){
-        return levelTileMap;
     }
 
     public List<Enemy> getEnemies(){
@@ -140,9 +114,4 @@ public class Level {
     public void resetScore(){
         this.levelScore = 0;
     }
-
-    public List<Spike> getSpikes(){
-        return spikes;
-    }
-
 }

@@ -3,20 +3,16 @@ package LevelMap;
 import GameStates.GameState;
 import GameStates.Play;
 import Graphics.Constants.LevelLayers;
-import Main.Game;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class LevelHandler {
 
-    private final Game game;
-    private ArrayList<Level> Levels;
+    private final ArrayList<Level> Levels;
     private int levelIndex = 0;
 
-    // public LevelHandler(Game game)
-    public LevelHandler(Game game) {
-        this.game = game;
+    public LevelHandler() {
         Levels = new ArrayList<>();
 
         initLevels();
@@ -37,14 +33,26 @@ public class LevelHandler {
         if(levelIndex >= Levels.size()){
             // game completed
             levelIndex = 0;
-            System.out.println("Congratulations! You have finished the game!");
+            Play.getPlayer().increaseScore(0);
             GameState.state = GameState.MENU;
         }
 
         Level nextLevel = Levels.get(levelIndex);
         Play.getPlayer().loadLevelMatrix(nextLevel.getGroundLayer().getLayerMatrix());
-        Play.getPlayer().setScore(getCurrentLevel().getLevelScore()); // setarea noului scor
-        //game.getPlay().setLevelOffset(nextLevel.getMaxLevelOffsetX());
+        //Play.getPlayer().setScore(getCurrentLevel().getLevelScore()); // setarea noului scor
+    }
+
+    public void loadGame(int levelIndex, int health, int score, int xPos, int yPos){
+        this.levelIndex = levelIndex;
+
+        Level level = Levels.get(levelIndex);
+        Play.getPlayer().loadLevelMatrix(level.getGroundLayer().getLayerMatrix());
+
+        Play.getPlayer().getCollisionBox().x = xPos;
+        Play.getPlayer().getCollisionBox().y = yPos;
+
+        Play.getPlayer().setScore(score);
+        Play.getPlayer().setHealth(health);
     }
 
     public void draw(Graphics g, int xLevelOffset)

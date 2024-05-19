@@ -5,10 +5,11 @@ import Load.Load;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import static Graphics.Constants.Enemy.*;
 import static Graphics.Constants.Enemy.worm_WIDTH;
 import static Graphics.Constants.Enemy.worm_HEIGHT;
 import static Graphics.Constants.Enemy.Type.WORM;
-import static Graphics.Constants.Enemy.*;
+import static Graphics.Constants.GameCONST.SCALE;
 
 public class Worm extends Enemy {
 
@@ -16,6 +17,7 @@ public class Worm extends Enemy {
 
     public Worm(float x, float y) {
         super(x, y, worm_WIDTH, worm_HEIGHT, WORM);
+        this.runSpeed = 0.35f * SCALE;
         initCollisionBox(42, 29); // width-ul si height-ul cutiei de coliziune
         initAttackBox();
     }
@@ -27,31 +29,8 @@ public class Worm extends Enemy {
         images.add(Load.getImage(Images.worm_run));
         images.add(Load.getImage(Images.worm_attack));
         images.add(Load.getImage(Images.worm_dead));
-        wormAnimations = new java.util.ArrayList<>();
 
-        for (BufferedImage image : images) {
-            java.util.List<int[]> imageRegions = Load.getImagesCoords(image);
-            java.util.List<BufferedImage> imagess = new java.util.ArrayList<>();
-            for (int[] imageRegion : imageRegions) {
-                imagess.add(image.getSubimage(imageRegion[0],
-                        imageRegion[1],
-                        imageRegion[2],
-                        imageRegion[3]));
-            }
-            wormAnimations.add(imagess);
-        }
-    }
-
-    public static List<List<BufferedImage>> getEnemyAnimations() {
-        return wormAnimations;
-    }
-
-    @Override
-    public void update(int [][]levelMatrix, Player player)
-    {
-        updateBehavior(levelMatrix, player);
-        updateAnimationTick();
-        updateAttackBox();
+        wormAnimations = Load.getAnimations(images);
     }
 
     @Override
@@ -81,7 +60,7 @@ public class Worm extends Enemy {
                     if(animationIndex == 3 && !attackChecked)
                         checkEnemyHit(attackBox, player);
                     }
-                    case DEAD -> { resetValues(); }
+                    case DEAD -> resetValues();
             }
         }
     }
@@ -91,6 +70,10 @@ public class Worm extends Enemy {
         attacking = 0;
         width = worm_WIDTH;
         height = worm_HEIGHT;
+    }
+
+    public static List<List<BufferedImage>> getEnemyAnimations() {
+        return wormAnimations;
     }
 
 }

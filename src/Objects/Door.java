@@ -1,7 +1,6 @@
 package Objects;
 
 import Characters.EnemyManager;
-import Characters.Player;
 import GameStates.Play;
 
 public class Door extends GameObject{
@@ -17,19 +16,16 @@ public class Door extends GameObject{
     {
         switch(lvlIndex){
             case 0 -> {
-                if(spotPlayer(Play.getPlayer())){
-                    System.out.println("Lvl 1");
+                if(collisionBox.intersects(Play.getPlayer().getCollisionBox())){
                     open = true;
                 } }
             case 1 -> {
-                if(spotPlayer(Play.getPlayer()) && enemyManager.getLvl2Defeated()){
-                    System.out.println("Lvl 2");
+                if(collisionBox.intersects(Play.getPlayer().getCollisionBox()) && enemyManager.getLvl2Defeated()){
                     open = true;
                 }
             }
             case 2 -> {
-                    if(spotPlayer(Play.getPlayer()) && enemyManager.getLvl3Defeated()){
-                        System.out.println("Lvl 3");
+                    if(collisionBox.intersects(Play.getPlayer().getCollisionBox()) && enemyManager.getLvl3Defeated()){
                         open = true;
                     }
             }
@@ -51,16 +47,6 @@ public class Door extends GameObject{
         } else {
             animationIndex = 0;
         }
-    }
-
-    protected boolean spotPlayer(Player player) {
-        return isPlayerTooClose(player);
-    }
-
-    protected boolean isPlayerTooClose(Player player){
-        int xAbsoluteDistance = (int)Math.abs(player.getCollisionBox().x - collisionBox.x);
-        int yAbsoluteDistance = (int)Math.abs(player.getCollisionBox().y - collisionBox.y);
-        return (xAbsoluteDistance <= 15 && yAbsoluteDistance <= 30);
     }
 
     public void setOpen(boolean open){
