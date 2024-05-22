@@ -167,13 +167,13 @@ public class Constants {
 
             public static final String iceKing_idle = "/enemies/bosses/Ice King/IceKing_Idle.png";
             public static final String iceKing_run = "/enemies/bosses/Ice King/IceKing_Run.png";
-            public static final String iceKing_attack = "/enemies/bosses/Ice King/IceKing_Attack.png";
+            public static final String iceKing_attack = "/enemies/bosses/Ice King/IceKing_Attack2.png";
             public static final String iceKing_hurt = "/enemies/bosses/Ice King/IceKing_Hurt.png";
             public static final String iceKing_dead = "/enemies/bosses/Ice King/IceKing_Dead.png";
 
             public static final String marauderLeader_idle = "/enemies/bosses/Marauder Leader/marauderLeader_idle.png";
             public static final String marauderLeader_run = "/enemies/bosses/Marauder Leader/marauderLeader_run.png";
-            public static final String marauderLeader_attack = "/enemies/bosses/Marauder Leader/marauderLeader_attack.png";
+            public static final String marauderLeader_attack = "/enemies/bosses/Marauder Leader/marauderLeader_attack2.png";
             public static final String marauderLeader_hurt = "/enemies/bosses/Marauder Leader/marauderLeader_hurt.png";
             public static final String marauderLeader_dead = "/enemies/bosses/Marauder Leader/marauderLeader_dead.png";
         }

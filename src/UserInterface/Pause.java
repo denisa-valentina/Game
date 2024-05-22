@@ -116,10 +116,10 @@ public class Pause {
     public void mouseReleased(MouseEvent e) {
         if (isIn(e, musicButton)) {
             if (musicButton.isMousePressed())
-                musicButton.setMuted(!musicButton.isMuted());
+                musicButton.setMuted(musicButton.isMuted());
         } else if (isIn(e, soundButton)) {
             if (soundButton.isMousePressed())
-                soundButton.setMuted(!soundButton.isMuted());
+                soundButton.setMuted(soundButton.isMuted());
         } else if (isIn(e, menuButton)) {
             if (menuButton.isMousePressed()) {
                 GameState.state = GameState.MENU;
@@ -140,7 +140,7 @@ public class Pause {
         else if(isIn(e, saveButton)){
             Play.getDataBase().saveGame(play.getLevelHandler().getLevelIndex(),
                     Play.getPlayer().getHealth(),
-                    play.getLevelHandler().getCurrentLevel().getLevelScore(),
+                    Play.getPlayer().getScore(),
                     (int)Play.getPlayer().getCollisionBox().x,
                     (int)Play.getPlayer().getCollisionBox().y);
         }

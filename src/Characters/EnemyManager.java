@@ -98,8 +98,8 @@ public class EnemyManager {
                     }
                     default -> throw new IllegalStateException("Unexpected value: " + e);
                 }
-                e.drawCollisionBox(g, xLevelOffset);
-                e.drawAttackBox(g, xLevelOffset);
+                //e.drawCollisionBox(g, xLevelOffset);
+                //e.drawAttackBox(g, xLevelOffset);
             }
         }
     }

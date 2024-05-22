@@ -168,8 +168,8 @@ public class Player extends Character {
 
         BufferedImage image = animations.get(action).get(animationIndex);
         g.drawImage(image, (int) (collisionBox.x - xOffset) - xLevelOffset + flipX, (int) (collisionBox.y - yOffset), width * flipW, height, null);
-        drawCollisionBox(g, xLevelOffset);
-        drawAttackBox(g, xLevelOffset);
+        //drawCollisionBox(g, xLevelOffset);
+        //drawAttackBox(g, xLevelOffset);
         drawUI(g);
     }
 

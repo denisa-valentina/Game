@@ -19,7 +19,7 @@ import Graphics.Constants.Surroundings;
 import UserInterface.CompletedLevel;
 import UserInterface.GameOver;
 import UserInterface.Pause;
-import UserInterface.DataBase;
+import Load.DataBase;
 
 public class Play extends State implements StateMethods {
     private static Player player;
@@ -38,7 +38,8 @@ public class Play extends State implements StateMethods {
     private boolean isGameOver;
     private boolean isPaused = false;
     private boolean islevelCompleted = false;
-    private boolean load = false;
+    private boolean load = false
+            ;
 
     public Play(Game game) {
         super(game);

@@ -174,7 +174,7 @@ public class ObjectManager {
                 if (h.isActive()) {
                     g.drawImage(heartImage, (int) (h.getCollisionBox().x - h.getxOffset() - xLevelOffset),
                             (int) (h.getCollisionBox().y - h.getxOffset()), 32, 32, null);
-                    h.drawCollisionBox(g, xLevelOffset);
+                    //h.drawCollisionBox(g, xLevelOffset);
                 }
             }
         }
@@ -185,7 +185,7 @@ public class ObjectManager {
             if (s.objectType == METAL_SPIKE) {
                 g.drawImage(Load.getImage(metalSpike), (int) (s.getCollisionBox().x - xLevelOffset),
                         (int) (s.getCollisionBox().y), 32, 32, null);
-                s.drawCollisionBox(g, xLevelOffset);
+                //s.drawCollisionBox(g, xLevelOffset);
             }
         }
     }
@@ -195,7 +195,7 @@ public class ObjectManager {
             if (f.isActive()) {
                 g.drawImage(fruitImages.get(f.objectType).get(f.getAnimationIndex()), (int) (f.getCollisionBox().x - f.getxOffset() - xLevelOffset),
                         (int) (f.getCollisionBox().y - f.getxOffset()), 55, 55, null);
-                f.drawCollisionBox(g, xLevelOffset);
+                //f.drawCollisionBox(g, xLevelOffset);
             }
         }
     }
@@ -239,12 +239,11 @@ public class ObjectManager {
 
     public void applyEffect(GameObject f) {
         switch (f.objectType) {
-            case APPLE -> play.getLevelHandler().getCurrentLevel().setLevelScore(100);
-            case BANANA -> play.getLevelHandler().getCurrentLevel().setLevelScore(150);
-            case CHERRY, KIWI -> play.getLevelHandler().getCurrentLevel().setLevelScore(200);
-            case ORANGE -> play.getLevelHandler().getCurrentLevel().setLevelScore(250);
-            case MELON, PINEAPPLE -> play.getLevelHandler().getCurrentLevel().setLevelScore(300);
-            case STRAWBERRY -> play.getLevelHandler().getCurrentLevel().setLevelScore(400);
+            case APPLE -> play.getLevelHandler().getCurrentLevel().setLevelScore(50);
+            case BANANA, CHERRY -> play.getLevelHandler().getCurrentLevel().setLevelScore(60);
+            case KIWI, MELON -> play.getLevelHandler().getCurrentLevel().setLevelScore(70);
+            case ORANGE, PINEAPPLE -> play.getLevelHandler().getCurrentLevel().setLevelScore(80);
+            case STRAWBERRY -> play.getLevelHandler().getCurrentLevel().setLevelScore(100);
             case HEART -> Play.getPlayer().updateHealth(1);
         }
     }

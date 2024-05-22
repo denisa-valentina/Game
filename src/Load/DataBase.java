@@ -1,11 +1,10 @@
-package UserInterface;
+package Load;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataBase {
-
     public static DataBase dataBaseInstance;
     private Connection c;
     private Statement stmt;
@@ -51,7 +50,7 @@ public class DataBase {
             c.commit();
             c.close();
         } catch ( Exception e ) {
-            System.err.println(STR."\{e.getClass().getName()}: \{e.getMessage()}");
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
         System.out.println("Records created successfully");
@@ -76,7 +75,7 @@ public class DataBase {
             stmt.close();
             c.close();
         } catch (Exception e) {
-            System.err.println(STR."\{e.getClass().getName()}: \{e.getMessage()}");
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         return loadGameValues;
