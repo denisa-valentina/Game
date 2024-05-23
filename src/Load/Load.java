@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Load {
 
-    public static BufferedImage getImage(String sourceName) {
+    public static BufferedImage getImage(String sourceName){
 
         BufferedImage image = null;
         InputStream input = Load.class.getResourceAsStream(sourceName);
@@ -17,12 +17,12 @@ public class Load {
 
             image = ImageIO.read(input);
         } catch (IOException e) {
-            e.printStackTrace();
+           System.out.println("Image not found.");
         } finally {
             try {
                 input.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error while trying to close the image.");
             }
         }
         return image;

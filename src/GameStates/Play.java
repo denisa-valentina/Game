@@ -38,8 +38,7 @@ public class Play extends State implements StateMethods {
     private boolean isGameOver;
     private boolean isPaused = false;
     private boolean islevelCompleted = false;
-    private boolean load = false
-            ;
+    private boolean load = false;
 
     public Play(Game game) {
         super(game);
@@ -100,7 +99,8 @@ public class Play extends State implements StateMethods {
         if (isPaused) {
             pause.update();
         } else if (islevelCompleted) {
-            System.out.println("Congratulations! You finished the game!");
+            if(levelHandler.getLevelIndex() == 2)
+                System.out.println("Congratulations! You finished the game!");
             completedLevel.update();
         } else if (isGameOver) {
             gameOver.update();

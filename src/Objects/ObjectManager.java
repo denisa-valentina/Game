@@ -206,7 +206,7 @@ public class ObjectManager {
             int animIndex = doors.get(currentIndex).isActive() ? doors.get(currentIndex).getAnimationIndex() : 4;
             g.drawImage(doorImages.get(animIndex), (int) (doors.get(currentIndex).getCollisionBox().x - doors.get(currentIndex).getxOffset() - xLevelOffset),
                     (int) (doors.get(currentIndex).getCollisionBox().y - doors.get(currentIndex).getxOffset()), 75, 98, null);
-            doors.get(currentIndex).drawCollisionBox(g, xLevelOffset);
+            //doors.get(currentIndex).drawCollisionBox(g, xLevelOffset);
         }
     }
 

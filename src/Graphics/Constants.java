@@ -75,15 +75,16 @@ public class Constants {
     public static class UI {
 
         public static class Images {
-            public static final String menuButtons = "/UI/Menu/MenuButtons.png";
+
             public static final String menuImage = "/UI/Menu/menu.png";
             public static final String menuBackGround = "/UI/Menu/menuBackground.png";
             public static final String pauseImage = "/UI/Pause/pause.png";
             public static final String gameOverImage = "/UI/GameOver/gameOver.png";
+            public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel.png";
+            public static final String menuButtons = "/UI/Menu/MenuButtons.png";
             public static final String soundButton = "/UI/Pause/soundButton.png";
             public static final String musicButton = "/UI/Pause/musicButton.png";
-            public static final String otherButtons = "/UI/MergedImages(2).png";
-            public static final String completedLevelImage = "/UI/CompletedLevel/CompletedLevel.png";
+            public static final String otherButtons = "/UI/otherButtons.png";
         }
 
         public static class PauseButtons {

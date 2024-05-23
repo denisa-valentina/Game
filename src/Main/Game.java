@@ -23,6 +23,7 @@ public class Game implements Runnable {
     private Play play;
     private Menu menu;
 
+
     public Game() {
 
         init();
